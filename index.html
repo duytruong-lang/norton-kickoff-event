@@ -1477,7 +1477,65 @@ input, select {
 #ticketCanvas {
   display: none;
 }
+
+/* Dynamic Scannable QR Wrap */
+.ticket-qr-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFF;
+  padding: 4px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+.ticket-qr-wrap .ticket-qr-code {
+  width: 58px;
+  height: 58px;
+  display: block;
+}
+.ticket-qr-hint {
+  font-size: 8.5px;
+  color: var(--bronze-400);
+  margin-top: 3px;
+  letter-spacing: 0.02em;
+}
+
+/* Verified Scan Toast */
+.verified-toast {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99999;
+  background: linear-gradient(135deg, #1B211C, #2C332A);
+  border: 1px solid #C29F81;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border-radius: 999px;
+  padding: 8px 18px;
+  color: #FAF7F0;
+  font-family: var(--sans);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: slideDownToast 0.4s ease;
+}
+@keyframes slideDownToast {
+  from { opacity: 0; transform: translate(-50%, -15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+.verified-toast-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #70BD7E;
+  font-weight: 700;
+  font-size: 11px;
+}
+
 </style>
+<script src="assets/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -1489,10 +1547,16 @@ input, select {
       <span class="dot-live" aria-hidden="true"></span>
       <span>DEMO PREVIEW · KICK-OFF SALES PROPOSAL</span>
     </div>
-    <button type="button" class="demo-autofill-btn" id="autofillBtn" title="Tự động điền dữ liệu mẫu để trải nghiệm nhanh">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-      <span>Điền nhanh</span>
-    </button>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button type="button" class="demo-autofill-btn" id="demoQrBtn" title="Xem & tải mã QR gửi Brand Team Norton Park">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Mã QR Demo</span>
+      </button>
+      <button type="button" class="demo-autofill-btn" id="autofillBtn" title="Tự động điền dữ liệu mẫu để trải nghiệm nhanh">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        <span>Điền nhanh</span>
+      </button>
+    </div>
   </div>
 
   <!-- MAIN HEADER -->
@@ -1674,16 +1738,15 @@ input, select {
           <span id="luckyCccd">CCCD: 079092008888</span> · <span id="luckyAgency">ERA Vietnam</span>
         </div>
 
-        <!-- Ticket QR code strip -->
+        <!-- Ticket QR code strip (REAL SCANNABLE DYNAMIC QR) -->
         <div class="ticket-qr-strip">
-          <svg class="ticket-qr-code" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- Simplified high-contrast QR Matrix representation -->
-            <rect width="29" height="29" fill="white"/>
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M2 2h7v7H2V2zm2 2v3h3V4H4zm6-2h1v1h-1V2zm2 0h2v1h-2V2zm3 0h1v2h-1V2zm2 0h1v1h-1V2zm3 0h7v7h-7V2zm2 2v3h3V4h-3zM2 11h1v2H2v-2zm3 0h1v1H5v-1zm3 0h2v1H8v-1zm4 0h1v2h-1v-2zm3 0h1v1h-1v-1zm2 0h2v1h-2v-1zm4 0h1v2h-1v-2zm2 0h1v1h-1v-1zm-18 3h2v1H2v-1zm4 0h2v2H6v-2zm4 0h2v1h-2v-1zm4 0h1v1h-1v-1zm3 0h2v2h-2v-2zm4 0h1v1h-1v-1zm-19 3h1v1H2v-1zm3 0h1v2H5v-2zm4 0h2v1H9v-1zm4 0h3v1h-3v-1zm4 0h1v1h-1v-1zm2 0h2v1h-2v-1zm3 0h2v1h-2v-1zM2 20h7v7H2v-7zm2 2v3h3v-3H4zm6-2h1v2h-1v-2zm3 0h2v1h-2v-1zm4 0h1v2h-1v-2zm2 0h2v1h-2v-1zm3 0h1v1h-1v-1zm2 0h1v2h-1v-2zm-9 3h2v1h-2v-1zm4 0h2v2h-2v-2zm3 0h1v1h-1v-1zm2 0h2v1h-2v-1zm-9 3h1v1h-1v-1zm2 0h1v1h-1v-1zm3 0h1v1h-1v-1zm2 0h2v1h-2v-1z" fill="#1B211C"/>
-          </svg>
+          <div id="ticketQrWrap" class="ticket-qr-wrap" title="Quét mã QR bằng camera điện thoại để đối soát vé">
+            <!-- Generated dynamically via QRCode.generateSvg -->
+          </div>
           <div class="ticket-qr-info">
             <div class="ticket-qr-code-txt" id="luckyCodeDisplay">NP-2026-088</div>
             <div class="ticket-qr-time" id="luckyTimeDisplay">Check-in: 08:00 · 26.10.2026</div>
+            <div class="ticket-qr-hint">📷 Quét QR đối soát vé hợp lệ</div>
           </div>
         </div>
       </div>
@@ -2061,9 +2124,17 @@ input, select {
     luckyPhoneEl.textContent = data.phone;
     luckyCccdEl.textContent = 'CCCD: ' + data.cccd;
     luckyAgencyEl.textContent = data.agency;
-    if (luckyCodeDisplay) luckyCodeDisplay.textContent = 'NP-2026-' + data.luckyNumber.replace('#', '');
+    const ticketCode = 'NP-2026-' + (data.luckyNumber || '088').replace('#', '');
+    if (luckyCodeDisplay) luckyCodeDisplay.textContent = ticketCode;
     if (luckyTimeDisplay && data.timestamp) {
       luckyTimeDisplay.textContent = 'Check-in: ' + data.timestamp;
+    }
+
+    // Dynamic Real Scannable QR Code
+    const ticketQrWrap = document.getElementById('ticketQrWrap');
+    if (ticketQrWrap && window.QRCode && window.QRCode.generateSvg) {
+      const verifyUrl = window.location.origin + window.location.pathname + '?ticket=' + encodeURIComponent(ticketCode) + '&name=' + encodeURIComponent(data.name || '') + '&agency=' + encodeURIComponent(data.agency || '') + '&phone=' + encodeURIComponent(data.phone || '');
+      ticketQrWrap.innerHTML = window.QRCode.generateSvg(verifyUrl, 58, 1);
     }
 
     formState.style.display = 'none';
@@ -2256,19 +2327,32 @@ input, select {
     ctx.font = '20px "Plus Jakarta Sans", sans-serif';
     ctx.fillText('CCCD: ' + cccd + '   ·   ' + agency, 450, 765);
 
-    // 11. Code & Timestamp Box
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-    ctx.fillRect(200, 820, 500, 80);
+    // 11. Real Scannable QR Code & Timestamp Box on Canvas
+    const verifyUrl = window.location.origin + window.location.pathname + '?ticket=' + encodeURIComponent(code) + '&name=' + encodeURIComponent(name) + '&agency=' + encodeURIComponent(agency);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillRect(150, 800, 600, 120);
     ctx.strokeStyle = 'rgba(222, 202, 167, 0.4)';
-    ctx.strokeRect(200, 820, 500, 80);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(150, 800, 600, 120);
 
+    // Draw Real QR Code on Canvas
+    if (window.QRCode && window.QRCode.drawToCanvas) {
+      window.QRCode.drawToCanvas(ctx, verifyUrl, 165, 810, 100, 2);
+    }
+
+    ctx.textAlign = 'left';
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = 'bold 22px monospace';
-    ctx.fillText('MÃ ĐỐI SOÁT: ' + code, 450, 856);
+    ctx.font = 'bold 26px monospace';
+    ctx.fillText(code, 285, 848);
 
     ctx.fillStyle = '#DECAA7';
-    ctx.font = '16px "Plus Jakarta Sans", sans-serif';
-    ctx.fillText('Cấp ngày: ' + time, 450, 884);
+    ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('Check-in: ' + time, 285, 878);
+
+    ctx.fillStyle = '#C29F81';
+    ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText('📷 Quét mã QR bằng camera để đối soát vé', 285, 904);
+    ctx.textAlign = 'center';
 
     // 12. Verification & Venue Notice
     ctx.fillStyle = '#A78061';
@@ -2331,6 +2415,73 @@ input, select {
   legalModal?.addEventListener('click', (e) => {
     if (e.target === legalModal) closeLegalModal();
   });
+
+
+  // 10. Demo QR Modal & Scan Verification Listener
+  const demoQrBtn = document.getElementById('demoQrBtn');
+  const demoQrModal = document.getElementById('demoQrModal');
+  const demoQrModalClose = document.getElementById('demoQrModalClose');
+  const copyDemoLinkBtn = document.getElementById('copyDemoLinkBtn');
+
+  demoQrBtn?.addEventListener('click', () => {
+    if (demoQrModal) {
+      demoQrModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  });
+
+  demoQrModalClose?.addEventListener('click', () => {
+    if (demoQrModal) {
+      demoQrModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  demoQrModal?.addEventListener('click', (e) => {
+    if (e.target === demoQrModal) {
+      demoQrModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  copyDemoLinkBtn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText('https://norton-kickoff-event.vercel.app');
+      copyDemoLinkBtn.innerHTML = '<span>Đã sao chép!</span>';
+      setTimeout(() => { copyDemoLinkBtn.innerHTML = '<span>Sao chép link</span>'; }, 2000);
+    } catch(err) {
+      alert('https://norton-kickoff-event.vercel.app');
+    }
+  });
+
+  // Incoming Scan Verification Listener
+  try {
+    const uParams = new URLSearchParams(window.location.search);
+    const scannedTicket = uParams.get('ticket');
+    if (scannedTicket) {
+      const vName = uParams.get('name') || 'Chuyên viên kinh doanh';
+      const vAgency = uParams.get('agency') || 'Đại lý phân phối F1';
+      const vPhone = uParams.get('phone') || '';
+      const numPart = scannedTicket.replace(/[^0-9]/g, '');
+      const luckyNum = '#' + (numPart.slice(-3) || '088');
+
+      renderSuccessTicket({
+        luckyNumber: luckyNum,
+        name: vName,
+        phone: vPhone,
+        cccd: 'Đã xác thực QR',
+        agency: vAgency,
+        timestamp: 'ĐÃ ĐỐI SOÁT HỢP LỆ'
+      });
+
+      const verifiedToast = document.getElementById('verifiedToast');
+      const verifiedToastTxt = document.getElementById('verifiedToastTxt');
+      if (verifiedToast && verifiedToastTxt) {
+        verifiedToastTxt.textContent = scannedTicket + ' · ' + vName + ' (' + vAgency + ')';
+        verifiedToast.style.display = 'flex';
+      }
+    }
+  } catch(e) {}
 
 })();
 </script>
