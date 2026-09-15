@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 60" width="800" height="60">
+  <defs>
+    <pattern id="petalStrip" width="80" height="60" patternUnits="userSpaceOnUse">
+      <path d="M40 55 C36 42 28 25 24 10 C21 3 26 0 31 1 C35 2 38 8 40 20 C42 8 45 2 49 1 C54 0 59 3 56 10 C52 25 44 42 40 55 Z" fill="#A78061" opacity="0.35"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="60" fill="url(#petalStrip)"/>
+</svg>
