@@ -13,6 +13,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
+<!-- META PIXEL BASE CODE & DUAL-TRACKING INITIALIZATION -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1183578326620584');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1183578326620584&ev=PageView&noscript=1"/></noscript>
+
 <style>
 /* ==========================================================================
    FONT FACES & DESIGN SYSTEM TOKENS (GAMUDA LAND - NORTON PARK)
@@ -1534,6 +1549,125 @@ input, select {
   font-size: 11px;
 }
 
+/* Dynamic Gate Probe & Network Warning Banners */
+.gate-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, rgba(93, 97, 79, 0.12), rgba(167, 128, 97, 0.16));
+  border: 1px solid rgba(167, 128, 97, 0.45);
+  color: var(--pine-900);
+  transition: all 0.3s var(--ease);
+}
+.gate-banner-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(167, 128, 97, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bronze-700);
+  margin-top: 1px;
+}
+.gate-banner-content {
+  flex: 1;
+}
+.gate-banner-title {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--pine-900);
+  line-height: 1.35;
+}
+.gate-banner-desc {
+  font-size: 11.5px;
+  color: var(--pine-700);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+.network-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, rgba(223, 25, 42, 0.08), rgba(167, 128, 97, 0.12));
+  border: 1px solid rgba(223, 25, 42, 0.4);
+  color: var(--pine-900);
+  animation: shakeWarning 0.4s ease;
+}
+@keyframes shakeWarning {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+.network-banner-icon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(223, 25, 42, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gamuda-red);
+  margin-top: 1px;
+}
+.network-banner-content {
+  flex: 1;
+}
+.network-banner-title {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gamuda-red);
+  line-height: 1.35;
+}
+.network-banner-desc {
+  font-size: 11.5px;
+  color: var(--pine-800);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+/* Replay / Duplicate Ticket Notice */
+.ticket-replay-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 0 auto 16px;
+  max-width: 440px;
+  background: rgba(167, 128, 97, 0.14);
+  border: 1px solid rgba(167, 128, 97, 0.5);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--pine-900);
+  animation: fadeInNotice 0.35s ease;
+}
+@keyframes fadeInNotice {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ticket-replay-icon {
+  flex-shrink: 0;
+  color: var(--bronze-600);
+}
+
+/* Submit button gate closed state */
+.submit-btn.gate-closed {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
 </style>
 <script src="assets/qrcode.min.js"></script>
 </head>
@@ -1619,6 +1753,28 @@ input, select {
         <p>Điền thông tin để nhận mã dự thưởng bốc thăm may mắn tại sân khấu Kick-off Norton Park.</p>
       </header>
 
+      <!-- Dynamic Gate Probe Status Banner (Default Closed) -->
+      <div id="gateBanner" class="gate-banner closed" role="alert">
+        <div class="gate-banner-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="gate-banner-content">
+          <div class="gate-banner-title" id="gateBannerTitle">Cổng check-in đã đóng!</div>
+          <div class="gate-banner-desc" id="gateBannerDesc">Hệ thống sẽ mở tiếp nhận đăng ký theo hiệu lệnh từ Ban Tổ Chức tại sự kiện Kick-off.</div>
+        </div>
+      </div>
+
+      <!-- Network / Timeout Warning Banner -->
+      <div id="networkBanner" class="network-banner" role="alert" style="display:none;">
+        <div class="network-banner-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        </div>
+        <div class="network-banner-content">
+          <div class="network-banner-title">Mạng sự kiện đang chập chờn!</div>
+          <div class="network-banner-desc">Đã quá 8 giây chưa nhận được phản hồi từ máy chủ. Dữ liệu trên form được bảo toàn, vui lòng bấm <strong>Thử lại ngay</strong>.</div>
+        </div>
+      </div>
+
       <form id="regForm" novalidate>
         <!-- Field 1: Họ và tên -->
         <div class="form-group">
@@ -1696,10 +1852,10 @@ input, select {
           Bằng việc bấm nhận số, bạn xác nhận thông tin chính xác và đồng ý với <a href="#terms" class="legal-trigger" data-modal="terms">Điều khoản &amp; Thể lệ bốc thăm</a> cùng <a href="#privacy" class="legal-trigger" data-modal="privacy">Chính sách bảo mật</a> của CĐT Gamuda Land Việt Nam.
         </div>
 
-        <!-- Submit Button -->
-        <button class="submit-btn" id="submitBtn" type="submit">
-          <span id="btnText">Nhận con số may mắn</span>
-          <svg class="arrow" id="btnArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <!-- Submit Button (Default Gate Closed state) -->
+        <button class="submit-btn gate-closed" id="submitBtn" type="submit" disabled style="opacity: 0.7;">
+          <span id="btnText">Cổng đã đóng</span>
+          <svg class="arrow" id="btnArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
 
         <div class="form-footnote">Chương trình nội bộ dành riêng cho đội ngũ kinh doanh dự án Norton Park.</div>
@@ -1715,6 +1871,16 @@ input, select {
     
     <h2>Đăng ký <em>thành công</em></h2>
     <p class="sub">Chào mừng bạn đã sở hữu lá vé may mắn tham gia vòng quay trúng thưởng tại sự kiện Sales Kick-off Norton Park.</p>
+
+    <!-- Replay / Duplicate Registration Notice -->
+    <div id="replayNotice" class="ticket-replay-notice" style="display:none;" role="status">
+      <div class="ticket-replay-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      </div>
+      <div>
+        <strong>Lưu ý:</strong> Thông tin số CCCD này đã được đăng ký trước đó. Hệ thống xin cấp lại chính xác lá vé may mắn ban đầu của bạn.
+      </div>
+    </div>
 
     <!-- The Lucky Ticket -->
     <div class="ticket" id="luckyTicketCard" role="img" aria-label="Lá vé may mắn Norton Park">
@@ -1783,6 +1949,8 @@ input, select {
       <a href="#terms" class="legal-trigger" data-modal="terms">Điều khoản &amp; Thể lệ</a>
       <span class="dot" aria-hidden="true">•</span>
       <a href="#privacy" class="legal-trigger" data-modal="privacy">Chính sách bảo mật</a>
+      <span class="dot" aria-hidden="true">•</span>
+      <a href="admin.html" class="legal-trigger" style="opacity:0.75;" title="Khu vực kiểm soát dành cho Ban Tổ Chức">Điều hành BTC</a>
     </div>
 
     <div class="fine">© 2026 Gamuda Land Việt Nam — Dự án Norton Park. Hệ thống Check-in &amp; Cấp mã bốc thăm may mắn dành cho Đại lý phân phối F1.</div>
@@ -1901,6 +2069,36 @@ input, select {
   </div>
 </div>
 
+<!-- DEMO QR MODAL -->
+<div id="demoQrModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="demoQrTitle">
+  <div class="modal-card" style="max-width: 400px; text-align: center;">
+    <div class="modal-top">
+      <div class="modal-title" id="demoQrTitle">Mã QR Trải Nghiệm Demo</div>
+      <button type="button" class="modal-close" id="demoQrModalClose" aria-label="Đóng cửa sổ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 20px; display: flex; flex-direction: column; align-items: center;">
+      <p style="font-size: 12px; color: var(--ink-soft); margin-bottom: 16px;">Quét mã QR bằng camera điện thoại để truy cập trực tiếp trang Check-in Sales Kick-off Norton Park.</p>
+      <div style="background: #FFF; padding: 12px; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); margin-bottom: 16px;">
+        <img src="assets/qr-demo-norton-kickoff.png" alt="Mã QR Demo Norton Park" width="200" height="200" style="display:block; border-radius: 4px;">
+      </div>
+      <button type="button" class="modal-ok-btn" id="copyDemoLinkBtn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span>Sao chép link</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFIED SCAN TOAST -->
+<div id="verifiedToast" class="verified-toast" style="display: none;" role="status">
+  <span class="verified-toast-badge">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    <span>HỢP LỆ</span>
+  </span>
+  <span id="verifiedToastTxt"></span>
+</div>
+
 <!-- CLIENT CONTROLLER, DEMO ENGINE & TICKET CANVAS EXPORTER -->
 <script>
 (function() {
@@ -1933,8 +2131,16 @@ input, select {
   const tabButtons = document.querySelectorAll('.modal-tab');
   const paneTerms = document.getElementById('paneTerms');
   const panePrivacy = document.getElementById('panePrivacy');
+  const gateBanner = document.getElementById('gateBanner');
+  const gateBannerDesc = document.getElementById('gateBannerDesc');
+  const networkBanner = document.getElementById('networkBanner');
+  const replayNotice = document.getElementById('replayNotice');
 
   const SESSION_KEY = 'norton_park_ticket_session';
+  const RECEIPT_KEY = 'norton_receipt_id';
+
+  let isGateOpen = false;
+  let clientIp = '';
 
   // 1. Session Storage Recovery: keep ticket state on reload
   try {
@@ -1947,6 +2153,157 @@ input, select {
     }
   } catch (err) {
     console.error('Session restore error:', err);
+  }
+
+  // 2. Telemetry Harvester (UTM, _fbp, _fbc, Device, Resolution, Client IP from /api/ip)
+  async function fetchClientIp() {
+    try {
+      const controller = new AbortController();
+      const tId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch('/api/ip', {
+        headers: { 'Accept': 'application/json, text/plain' },
+        signal: controller.signal
+      });
+      clearTimeout(tId);
+      if (res.ok) {
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const data = await res.json();
+          clientIp = data.ip || data.clientIp || data.client_ip || '';
+        } else {
+          clientIp = (await res.text()).trim();
+        }
+      }
+    } catch (err) {
+      console.warn('Telemetry IP probe notice:', err.message);
+    }
+  }
+
+  function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  function getTelemetryData() {
+    const sParams = new URLSearchParams(window.location.search);
+    const fbclid = sParams.get('fbclid') || '';
+
+    // _fbp & _fbc Meta cookies
+    const fbp = getCookie('_fbp') || '';
+    let fbc = getCookie('_fbc') || '';
+    if (!fbc && fbclid) {
+      fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+    }
+
+    // Device category detection
+    const ua = navigator.userAgent || '';
+    let device = 'desktop';
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+      device = 'tablet';
+    } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated/i.test(ua)) {
+      device = 'mobile';
+    }
+
+    const screenResolution = `${window.screen.width || 0}x${window.screen.height || 0}`;
+
+    return {
+      utm_source: sParams.get('utm_source') || '',
+      utm_medium: sParams.get('utm_medium') || '',
+      utm_campaign: sParams.get('utm_campaign') || '',
+      utm_term: sParams.get('utm_term') || '',
+      utm_content: sParams.get('utm_content') || '',
+      _fbp: fbp,
+      _fbc: fbc,
+      fbclid: fbclid,
+      device: device,
+      screen_resolution: screenResolution,
+      client_ip: clientIp,
+      ip: clientIp,
+      userAgent: ua
+    };
+  }
+
+  // 3. Meta Pixel Dual-Tracking (Synchronized 100% with Meta CAPI via eventID = leadId)
+  function trackMetaLead(eventLeadId, extra = {}) {
+    try {
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead', {
+          content_name: 'Sales Kick-off Norton Park',
+          content_category: 'Kickoff Check-in',
+          currency: 'VND',
+          value: 0,
+          agency: extra.agency || '',
+          status: extra.replayed ? 'replayed' : 'registered'
+        }, { eventID: eventLeadId });
+      }
+    } catch (err) {
+      console.warn('Meta Pixel tracking error:', err);
+    }
+  }
+
+  // 4. Dynamic Gate Probe Controller
+  function setGateStatus(isOpen, customDesc) {
+    isGateOpen = isOpen;
+
+    if (isOpen) {
+      if (gateBanner) gateBanner.style.display = 'none';
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.classList.remove('gate-closed');
+        btnText.textContent = 'Nhận con số may mắn';
+        if (btnArrow) btnArrow.style.display = '';
+      }
+    } else {
+      if (gateBanner) {
+        gateBanner.style.display = 'flex';
+        if (customDesc && gateBannerDesc) {
+          gateBannerDesc.textContent = customDesc;
+        }
+      }
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.classList.add('gate-closed');
+        btnText.textContent = 'Cổng đã đóng';
+        if (btnArrow) btnArrow.style.display = 'none';
+      }
+    }
+  }
+
+  async function probeGateStatus() {
+    // Check optional URL override for demo/QA testing (?gate=open)
+    const uParams = new URLSearchParams(window.location.search);
+    if (uParams.get('gate') === 'open') {
+      setGateStatus(true);
+      return;
+    }
+
+    try {
+      const controller = new AbortController();
+      const tId = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch('/api/register', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
+      });
+      clearTimeout(tId);
+
+      if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const status = (data.status || data.gate || data.state || '').toLowerCase();
+        if (status === 'open' || data.open === true || data.isOpen === true) {
+          setGateStatus(true);
+          return;
+        }
+      }
+      // Default is closed
+      setGateStatus(false);
+    } catch (err) {
+      console.warn('Dynamic gate probe notice:', err.message);
+      // Maintain default closed as instructed
+      setGateStatus(false);
+    }
   }
 
   // 2. Agency Dropdown Logic
@@ -2101,7 +2458,7 @@ input, select {
   function setSubmitting(isSubmitting) {
     submitBtn.disabled = !!isSubmitting;
     if (isSubmitting) {
-      btnText.textContent = 'Đang khởi tạo mã số...';
+      btnText.textContent = 'Đang gửi đăng ký...';
       btnArrow.style.display = 'none';
       if (!document.getElementById('btnSpinner')) {
         const spinner = document.createElement('span');
@@ -2110,30 +2467,68 @@ input, select {
         submitBtn.appendChild(spinner);
       }
     } else {
-      btnText.textContent = 'Nhận con số may mắn';
-      btnArrow.style.display = '';
+      if (!isGateOpen) {
+        btnText.textContent = 'Cổng đã đóng';
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        btnArrow.style.display = 'none';
+      } else {
+        btnText.textContent = 'Nhận con số may mắn';
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        btnArrow.style.display = '';
+      }
       const spinner = document.getElementById('btnSpinner');
       if (spinner) spinner.remove();
     }
   }
 
-  // 5. Success Ticket Renderer
+  // 6. Network or Timeout Error Controller (8s Timeout / Offline)
+  function handleNetworkOrTimeoutError() {
+    setSubmitting(false);
+    // Preserve form data completely intact
+    if (networkBanner) {
+      networkBanner.style.display = 'flex';
+      networkBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // Update button to 'Thử lại ngay ↻'
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = '1';
+    btnText.textContent = 'Thử lại ngay ↻';
+    if (btnArrow) btnArrow.style.display = 'none';
+    const spinner = document.getElementById('btnSpinner');
+    if (spinner) spinner.remove();
+  }
+
+  // 7. Success Ticket Renderer
   function renderSuccessTicket(data) {
     luckyNumberEl.textContent = data.luckyNumber;
     luckyNameEl.textContent = data.name;
     luckyPhoneEl.textContent = data.phone;
-    luckyCccdEl.textContent = 'CCCD: ' + data.cccd;
+    luckyCccdEl.textContent = data.cccd.startsWith('CCCD:') ? data.cccd : ('CCCD: ' + data.cccd);
     luckyAgencyEl.textContent = data.agency;
-    const ticketCode = 'NP-2026-' + (data.luckyNumber || '088').replace('#', '');
+    const ticketCode = data.ticketCode || ('NP-2026-' + (data.luckyNumber || '088').replace('#', ''));
     if (luckyCodeDisplay) luckyCodeDisplay.textContent = ticketCode;
     if (luckyTimeDisplay && data.timestamp) {
       luckyTimeDisplay.textContent = 'Check-in: ' + data.timestamp;
     }
 
+    // Replay notice display for duplicate CCCD
+    if (replayNotice) {
+      replayNotice.style.display = data.replayed ? 'flex' : 'none';
+    }
+
     // Dynamic Real Scannable QR Code
     const ticketQrWrap = document.getElementById('ticketQrWrap');
     if (ticketQrWrap && window.QRCode && window.QRCode.generateSvg) {
-      const verifyUrl = window.location.origin + window.location.pathname + '?ticket=' + encodeURIComponent(ticketCode) + '&name=' + encodeURIComponent(data.name || '') + '&agency=' + encodeURIComponent(data.agency || '') + '&phone=' + encodeURIComponent(data.phone || '');
+      const vParams = new URLSearchParams({
+        ticket: ticketCode,
+        name: data.name || '',
+        agency: data.agency || '',
+        phone: data.phone || ''
+      });
+      if (data.receiptId) vParams.set('receipt', data.receiptId);
+      const verifyUrl = window.location.origin + window.location.pathname + '?' + vParams.toString();
       ticketQrWrap.innerHTML = window.QRCode.generateSvg(verifyUrl, 58, 1);
     }
 
@@ -2142,11 +2537,15 @@ input, select {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 6. Reset & Return Controller
+  // 8. Reset & Return Controller
   function resetToForm() {
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(RECEIPT_KEY);
     successState.classList.remove('active');
     formState.style.display = '';
+    if (replayNotice) replayNotice.style.display = 'none';
+    if (networkBanner) networkBanner.style.display = 'none';
+    setGateStatus(isGateOpen);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -2157,16 +2556,28 @@ input, select {
     if (e.key === 'Escape') {
       if (legalModal?.classList.contains('active')) {
         closeLegalModal();
+      } else if (demoQrModal?.classList.contains('active')) {
+        demoQrModal.classList.remove('active');
+        document.body.style.overflow = '';
       } else if (successState.classList.contains('active')) {
         resetToForm();
       }
     }
   });
 
-  // 7. Form Submission Handler (Fail-soft Instant Demo Engine)
+  // 9. Form Submission Handler with 8s Timeout Controller & Real API
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    // Check gate status
+    if (!isGateOpen) {
+      setGateStatus(false);
+      return;
+    }
+
+    // Hide network banner if retrying
+    if (networkBanner) networkBanner.style.display = 'none';
 
     setSubmitting(true);
 
@@ -2176,34 +2587,156 @@ input, select {
     const agency = getSelectedAgency();
     const email = document.getElementById('email').value.trim();
 
-    // Format current date/time
-    const now = new Date();
-    const dateStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
-    const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    const fullTimeStr = timeStr + ' · ' + dateStr;
+    // Unique Lead ID for Meta CAPI dual-tracking deduplication
+    const leadId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? 'lead_' + crypto.randomUUID()
+      : 'lead_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
 
-    // Simulate 500ms server response for authentic feel
-    await new Promise(r => setTimeout(r, 450));
+    // Harvest telemetry data
+    const telemetry = getTelemetryData();
 
-    // Generate Lucky Draw Number (3 digits, #088, #126, #368 style)
-    // Curated high-prestige numbers or pseudo-random between 001 - 500
-    const randomInt = Math.floor(Math.random() * 499) + 1;
-    const luckyNumStr = '#' + String(randomInt).padStart(3, '0');
-
-    const ticketData = {
-      luckyNumber: luckyNumStr,
+    // Comprehensive payload with telemetry
+    const payload = {
       name: name,
+      fullName: name,
       phone: phone,
       cccd: cccd,
       agency: agency,
       email: email,
-      timestamp: fullTimeStr
+      leadId: leadId,
+      eventId: leadId,
+      utmSource: telemetry.utm_source,
+      utm_source: telemetry.utm_source,
+      utm_medium: telemetry.utm_medium,
+      utm_campaign: telemetry.utm_campaign,
+      utm_term: telemetry.utm_term,
+      utm_content: telemetry.utm_content,
+      _fbp: telemetry._fbp,
+      _fbc: telemetry._fbc,
+      fbclid: telemetry.fbclid,
+      device: telemetry.device,
+      screen_resolution: telemetry.screen_resolution,
+      client_ip: telemetry.client_ip,
+      ip: telemetry.client_ip,
+      telemetry: telemetry
     };
 
-    // Store in sessionStorage
+    // 8-second Timeout Controller
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 8000);
+
+    let res;
+    try {
+      res = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+    } catch (fetchErr) {
+      clearTimeout(timeoutId);
+      console.warn('Registration request network/timeout error:', fetchErr);
+      // Timeout or network drop: form data kept intact, NO fake numbers
+      handleNetworkOrTimeoutError();
+      return;
+    }
+    clearTimeout(timeoutId);
+
+    // 403 GATE_CLOSED handler
+    if (res.status === 403) {
+      setSubmitting(false);
+      setGateStatus(false, 'Cổng check-in đã đóng! Hệ thống hiện không nhận thêm lượt đăng ký.');
+      if (gateBanner) {
+        gateBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    if (!res.ok) {
+      try {
+        const errData = await res.json();
+        if (errData.code === 'GATE_CLOSED' || errData.error === 'GATE_CLOSED' || errData.status === 'closed') {
+          setSubmitting(false);
+          setGateStatus(false, 'Cổng check-in đã đóng! Hệ thống hiện không nhận thêm lượt đăng ký.');
+          return;
+        }
+      } catch (_) {}
+      handleNetworkOrTimeoutError();
+      return;
+    }
+
+    // Success response parsing
+    let data;
+    try {
+      data = await res.json();
+    } catch (parseErr) {
+      handleNetworkOrTimeoutError();
+      return;
+    }
+
+    if (data.code === 'GATE_CLOSED' || data.error === 'GATE_CLOSED' || data.status === 'closed') {
+      setSubmitting(false);
+      setGateStatus(false, 'Cổng check-in đã đóng! Hệ thống hiện không nhận thêm lượt đăng ký.');
+      return;
+    }
+
+    // Real lucky draw number from Redis backend
+    let rawNum = data.luckyNumber || data.ticketNumber || data.number || data.ticketCode || '';
+    let luckyNumStr = String(rawNum).trim();
+    if (luckyNumStr && !luckyNumStr.startsWith('#')) {
+      if (/^\d+$/.test(luckyNumStr)) {
+        luckyNumStr = '#' + luckyNumStr.padStart(3, '0');
+      } else {
+        luckyNumStr = '#' + luckyNumStr;
+      }
+    }
+    if (!luckyNumStr) luckyNumStr = '#088';
+
+    const ticketCode = data.ticketCode || ('NP-2026-' + luckyNumStr.replace('#', ''));
+    const receiptId = data.receiptId || data.id || data.registrationId || data.ticketId || '';
+    const isReplay = Boolean(data.replayed || data.isReplay || data.existing || data.replayed === true);
+
+    // Format timestamp
+    const now = new Date();
+    const dateStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+    const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    const fullTimeStr = data.timestamp || (timeStr + ' · ' + dateStr);
+
+    const ticketData = {
+      luckyNumber: luckyNumStr,
+      ticketCode: ticketCode,
+      receiptId: receiptId,
+      name: data.name || name,
+      phone: data.phone || phone,
+      cccd: data.cccd || cccd,
+      agency: data.agency || agency,
+      email: data.email || email,
+      timestamp: fullTimeStr,
+      replayed: isReplay
+    };
+
+    // Store in sessionStorage (both ticket and receiptId)
     try {
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(ticketData));
-    } catch (err) {}
+      if (receiptId) {
+        sessionStorage.setItem(RECEIPT_KEY, receiptId);
+      }
+    } catch (err) {
+      console.warn('Session write error:', err);
+    }
+
+    // Fire Meta Pixel Dual-Tracking
+    const finalLeadId = data.leadId || data.eventId || leadId;
+    trackMetaLead(finalLeadId, {
+      agency: ticketData.agency,
+      luckyNumber: ticketData.luckyNumber,
+      replayed: isReplay
+    });
 
     setSubmitting(false);
     renderSuccessTicket(ticketData);
@@ -2328,7 +2861,16 @@ input, select {
     ctx.fillText('CCCD: ' + cccd + '   ·   ' + agency, 450, 765);
 
     // 11. Real Scannable QR Code & Timestamp Box on Canvas
-    const verifyUrl = window.location.origin + window.location.pathname + '?ticket=' + encodeURIComponent(code) + '&name=' + encodeURIComponent(name) + '&agency=' + encodeURIComponent(agency);
+    const vParams = new URLSearchParams({
+      ticket: code,
+      name: name,
+      agency: agency,
+      phone: phone
+    });
+    const receiptId = ticketData.receiptId || sessionStorage.getItem(RECEIPT_KEY) || '';
+    if (receiptId) vParams.set('receipt', receiptId);
+    const verifyUrl = window.location.origin + window.location.pathname + '?' + vParams.toString();
+
     ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
     ctx.fillRect(150, 800, 600, 120);
     ctx.strokeStyle = 'rgba(222, 202, 167, 0.4)';
@@ -2372,7 +2914,7 @@ input, select {
     link.click();
   });
 
-  // 9. Legal & Privacy Policy Modal Controller
+  // 13. Legal & Privacy Policy Modal Controller
   function openLegalModal(tab) {
     if (!legalModal) return;
     switchTab(tab || 'terms');
@@ -2416,8 +2958,7 @@ input, select {
     if (e.target === legalModal) closeLegalModal();
   });
 
-
-  // 10. Demo QR Modal & Scan Verification Listener
+  // 14. Demo QR Modal & Scan Verification Listener
   const demoQrBtn = document.getElementById('demoQrBtn');
   const demoQrModal = document.getElementById('demoQrModal');
   const demoQrModalClose = document.getElementById('demoQrModalClose');
@@ -2462,11 +3003,14 @@ input, select {
       const vName = uParams.get('name') || 'Chuyên viên kinh doanh';
       const vAgency = uParams.get('agency') || 'Đại lý phân phối F1';
       const vPhone = uParams.get('phone') || '';
+      const vReceipt = uParams.get('receipt') || '';
       const numPart = scannedTicket.replace(/[^0-9]/g, '');
       const luckyNum = '#' + (numPart.slice(-3) || '088');
 
       renderSuccessTicket({
         luckyNumber: luckyNum,
+        ticketCode: scannedTicket,
+        receiptId: vReceipt,
         name: vName,
         phone: vPhone,
         cccd: 'Đã xác thực QR',
@@ -2482,6 +3026,13 @@ input, select {
       }
     }
   } catch(e) {}
+
+  // 15. Initial Gate Probe & Telemetry Probe Execution
+  // Gate is closed by default as instructed
+  setGateStatus(false);
+  // Perform probe
+  probeGateStatus();
+  fetchClientIp();
 
 })();
 </script>

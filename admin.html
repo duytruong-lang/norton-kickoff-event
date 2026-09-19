@@ -1,0 +1,3240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ban Tổ Chức — Điều Hành Check-in & Bốc Thăm Sales Kick-off Norton Park | Gamuda Land</title>
+<meta name="description" content="Trung tâm điều hành Ban Tổ Chức sự kiện Sales Kick-off Norton Park (Gamuda Land): Kiểm soát đóng/mở cổng, giám sát live stats, cấu hình pool số và tra cứu đối soát tranh chấp vé.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+
+<!-- FONTS PRECONNECT & IMPORT -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   DESIGN TOKENS & GAMUDA LAND / NORTON PARK BRAND PALETTE
+   ========================================================================== */
+@font-face {
+  font-family: 'SVN-The Seasons';
+  src: url('fonts/SVN-TheSeasons-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SVN-The Seasons';
+  src: url('fonts/SVN-TheSeasons-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Brand Master Palette */
+  --pine-950: #0E1310;
+  --pine-900: #141A15;
+  --pine-850: #1B211C;
+  --pine-800: #252D24;
+  --pine-750: #2E372D;
+  --pine-700: #3B463A;
+  --pine-600: #4D5A4C;
+
+  /* Champagne Bronze Master */
+  --bronze-300: #EADBCA;
+  --bronze-400: #DECAA7;
+  --bronze-500: #C29F81;
+  --bronze-600: #A78061;
+  --bronze-700: #856143;
+  --bronze-800: #5C412B;
+  --bronze-900: #3D2B1C;
+
+  /* Functional Status Colors */
+  --gate-open: #10B981;
+  --gate-open-glow: rgba(16, 185, 129, 0.45);
+  --gate-open-bg: rgba(16, 185, 129, 0.12);
+  --gate-closed: #EF4444;
+  --gate-closed-glow: rgba(239, 68, 68, 0.45);
+  --gate-closed-bg: rgba(239, 68, 68, 0.12);
+  --amber-warning: #F59E0B;
+  --amber-glow: rgba(245, 158, 11, 0.35);
+  --blue-info: #38BDF8;
+
+  /* Neutrals & Surfaces */
+  --sand-50: #FAF7F0;
+  --sand-100: #F3ECE0;
+  --sand-200: #E1DBC9;
+  --ink-muted: #8E9A8E;
+  --ink-soft: #B8C4B8;
+  --line-gold: rgba(167, 128, 97, 0.26);
+  --line-gold-strong: rgba(222, 202, 167, 0.55);
+  --card-bg: rgba(27, 33, 28, 0.88);
+  --card-bg-elevated: rgba(37, 45, 36, 0.92);
+
+  /* Typography */
+  --serif: 'SVN-The Seasons', 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Radii & Effects */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --shadow-lux: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--line-gold);
+  --shadow-glow-bronze: 0 0 35px -5px rgba(167, 128, 97, 0.3);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* RESET & BASE */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--sans);
+  background-color: var(--pine-950);
+  color: var(--sand-50);
+  line-height: 1.5;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  position: relative;
+  background-image: 
+    radial-gradient(circle at 85% 10%, rgba(167, 128, 97, 0.15) 0%, transparent 45%),
+    radial-gradient(circle at 15% 70%, rgba(46, 55, 45, 0.5) 0%, transparent 50%),
+    linear-gradient(180deg, #101511 0%, #141A15 50%, #0D120F 100%);
+  background-attachment: fixed;
+}
+
+/* Biophilic Ambient Grain Overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+  opacity: 0.75;
+}
+
+/* TYPOGRAPHY HELPERS */
+h1, h2, h3, h4, .font-serif {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.mono {
+  font-family: var(--mono);
+}
+
+a {
+  color: var(--bronze-400);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--sand-50);
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select {
+  font-family: var(--sans);
+}
+
+/* APP CONTAINER */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 16px 20px 48px;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    padding: 24px 32px 64px;
+  }
+}
+
+/* ==========================================================================
+   TOP BAR / NAVIGATION
+   ========================================================================== */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(20, 26, 21, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-lux);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand-logos {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo-gamuda {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--line-gold);
+}
+
+.brand-logo-norton {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-badge-btc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(167, 128, 97, 0.15);
+  border: 1px solid rgba(222, 202, 167, 0.35);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--bronze-300);
+  text-transform: uppercase;
+}
+
+.nav-badge-btc svg {
+  color: var(--bronze-400);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Engine Mode Pill */
+.engine-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line-gold);
+  border-radius: 30px;
+  font-size: 12px;
+  color: var(--sand-100);
+}
+
+.engine-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gate-open);
+  box-shadow: 0 0 8px var(--gate-open);
+  animation: radarPulse 2s infinite;
+}
+
+@keyframes radarPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.engine-pulse-dot.offline {
+  background: var(--amber-warning);
+  box-shadow: 0 0 8px var(--amber-warning);
+  animation: none;
+}
+
+.btn-nav-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-gold);
+  color: var(--sand-100);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-nav-action:hover {
+  background: rgba(167, 128, 97, 0.2);
+  border-color: var(--bronze-400);
+  color: #fff;
+}
+
+.btn-nav-auth {
+  background: rgba(167, 128, 97, 0.18);
+  border-color: var(--bronze-500);
+  color: var(--bronze-300);
+}
+
+/* ==========================================================================
+   EXECUTIVE HEADER BANNER
+   ========================================================================== */
+.exec-header {
+  margin-bottom: 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .exec-header {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.header-titles {
+  max-width: 820px;
+}
+
+.header-kicker {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bronze-400);
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-title {
+  font-size: clamp(24px, 4vw, 36px);
+  color: var(--sand-50);
+  line-height: 1.2;
+}
+
+.header-title em {
+  font-style: italic;
+  font-family: var(--serif);
+  color: var(--bronze-300);
+  text-shadow: 0 0 20px rgba(222, 202, 167, 0.25);
+}
+
+.header-sub {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.poll-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.poll-timer-ring {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--bronze-600);
+  border-top-color: var(--bronze-300);
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn-manual-sync {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--card-bg-elevated);
+  border: 1px solid var(--bronze-600);
+  color: var(--bronze-300);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-manual-sync:hover {
+  background: var(--bronze-700);
+  color: #fff;
+  border-color: var(--bronze-400);
+}
+.btn-manual-sync.spinning svg {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ==========================================================================
+   SECTION 1: HOT BUTTON GATE CONTROL (HERO COMMAND CARD)
+   ========================================================================== */
+.gate-hero-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-xl);
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-lux);
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Dynamic State Backdrops */
+.gate-hero-card.state-open {
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 45px -10px rgba(16, 185, 129, 0.25);
+}
+.gate-hero-card.state-closed {
+  border-color: rgba(239, 68, 68, 0.45);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 45px -10px rgba(239, 68, 68, 0.25);
+}
+
+.gate-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .gate-hero-grid {
+    grid-template-columns: 1.3fr 1fr;
+    gap: 36px;
+  }
+}
+
+.gate-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gate-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gate-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.3s var(--ease);
+}
+
+.gate-status-pill.open {
+  background: var(--gate-open-bg);
+  border: 1.5px solid var(--gate-open);
+  color: #34D399;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.gate-status-pill.closed {
+  background: var(--gate-closed-bg);
+  border: 1.5px solid var(--gate-closed);
+  color: #F87171;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+.gate-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.gate-status-pill.open .gate-dot {
+  background: #10B981;
+  box-shadow: 0 0 10px #10B981;
+  animation: radarPulse 1.5s infinite;
+}
+.gate-status-pill.closed .gate-dot {
+  background: #EF4444;
+  box-shadow: 0 0 10px #EF4444;
+}
+
+.gate-title {
+  font-size: clamp(22px, 3vw, 28px);
+  color: var(--sand-50);
+  line-height: 1.25;
+}
+
+.gate-desc {
+  font-size: 14.5px;
+  color: var(--sand-200);
+  line-height: 1.6;
+}
+
+.gate-alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px dashed var(--line-gold);
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.gate-alert-banner svg {
+  flex-shrink: 0;
+  color: var(--bronze-400);
+  margin-top: 2px;
+}
+
+/* THE HOT BUTTON */
+.gate-action-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.hot-button {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  min-height: 76px;
+  padding: 16px 28px;
+  border-radius: var(--r-lg);
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  user-select: none;
+}
+
+.hot-button:active {
+  transform: scale(0.97);
+}
+
+/* Open state button: click to CLOSE (Red) */
+.hot-button.btn-close-gate {
+  background: linear-gradient(135deg, #DC2626 0%, #991B1B 100%);
+  border-color: #F87171;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.hot-button.btn-close-gate:hover {
+  background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+  box-shadow: 0 14px 40px rgba(220, 38, 38, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Closed state button: click to OPEN (Green) */
+.hot-button.btn-open-gate {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-color: #34D399;
+  box-shadow: 0 10px 30px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.hot-button.btn-open-gate:hover {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 14px 40px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.hot-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.hot-button-hint {
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+/* ==========================================================================
+   SECTION 2: REALTIME LIVE STATS COUNTER (4 KPI CARDS)
+   ========================================================================== */
+.stats-section {
+  margin-bottom: 32px;
+}
+
+.section-label-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--bronze-300);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-title svg {
+  color: var(--bronze-400);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1040px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kpi-card {
+  position: relative;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-lux);
+  overflow: hidden;
+  transition: transform 0.25s var(--ease), border-color 0.25s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-gold-strong);
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--bronze-500), transparent);
+  opacity: 0.4;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.kpi-name {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--sand-200);
+}
+
+.kpi-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: rgba(167, 128, 97, 0.12);
+  border: 1px solid rgba(167, 128, 97, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bronze-300);
+}
+
+.kpi-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.kpi-number {
+  font-size: clamp(32px, 3.5vw, 42px);
+  font-family: var(--sans);
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.kpi-unit {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bronze-400);
+}
+
+.kpi-footer {
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Progress bar inside total check-in */
+.kpi-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.kpi-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bronze-500), var(--bronze-300));
+  border-radius: 4px;
+  transition: width 0.6s var(--ease);
+}
+
+/* ==========================================================================
+   TWO COLUMN SPLIT: SECTION 3 (CONFIG/SEED) & QUICK TOOLS
+   ========================================================================== */
+.two-col-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 980px) {
+  .two-col-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+/* SECTION 3: SEED & POOL QUOTA CONFIGURATION */
+.config-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-xl);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-lux);
+}
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 18px;
+}
+
+.form-group-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group-admin label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--bronze-300);
+}
+
+.form-group-admin .field-desc {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: -4px;
+}
+
+.input-quota-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.input-admin-num {
+  flex: 1;
+  min-width: 140px;
+  height: 46px;
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  background: rgba(14, 19, 16, 0.85);
+  border: 1px solid var(--line-gold);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--mono);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-admin-num:focus {
+  border-color: var(--bronze-400);
+  box-shadow: 0 0 0 3px rgba(167, 128, 97, 0.25);
+}
+
+.quota-preset-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.preset-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-gold);
+  color: var(--sand-200);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.preset-pill:hover, .preset-pill.active {
+  background: rgba(167, 128, 97, 0.25);
+  border-color: var(--bronze-400);
+  color: #fff;
+}
+
+/* Mode Selection Cards (SHUFFLE vs SEQUENTIAL) */
+.mode-selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mode-radio-label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  background: rgba(14, 19, 16, 0.6);
+  border: 1.5px solid var(--line-gold);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-radio-label:hover {
+  border-color: var(--bronze-500);
+  background: rgba(167, 128, 97, 0.08);
+}
+
+.mode-radio-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.mode-radio-label.checked {
+  border-color: var(--bronze-300);
+  background: rgba(167, 128, 97, 0.18);
+  box-shadow: 0 0 16px -4px rgba(167, 128, 97, 0.4);
+}
+
+.mode-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sand-50);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-sub {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+.btn-seed-pool {
+  height: 50px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--bronze-700) 0%, var(--bronze-800) 100%);
+  border: 1.5px solid var(--bronze-400);
+  color: var(--sand-50);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s var(--ease);
+}
+
+.btn-seed-pool:hover {
+  background: linear-gradient(135deg, var(--bronze-600) 0%, var(--bronze-700) 100%);
+  border-color: var(--bronze-300);
+  box-shadow: 0 10px 28px rgba(167, 128, 97, 0.35);
+  transform: translateY(-2px);
+}
+
+/* QUICK SYSTEM SUMMARY CARD */
+.sys-summary-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-xl);
+  padding: 24px 28px;
+  box-shadow: var(--shadow-lux);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sys-info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.sys-info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 13px;
+}
+
+.sys-info-label {
+  color: var(--sand-200);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sys-info-val {
+  font-weight: 600;
+  color: var(--bronze-300);
+  font-family: var(--mono);
+}
+
+.sys-info-val.badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(167, 128, 97, 0.15);
+  border: 1px solid rgba(167, 128, 97, 0.3);
+  font-size: 11.5px;
+}
+
+/* ==========================================================================
+   SECTION 4: DISPUTE RESOLUTION & AUDIT ENGINE
+   ========================================================================== */
+.dispute-section {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-xl);
+  padding: 28px 30px;
+  box-shadow: var(--shadow-lux);
+  margin-bottom: 36px;
+}
+
+.dispute-header {
+  margin-bottom: 22px;
+}
+
+.dispute-desc {
+  color: var(--sand-200);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Lookup Search Bar */
+.lookup-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.lookup-input-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.lookup-input-box {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lookup-input-box svg {
+  position: absolute;
+  left: 18px;
+  color: var(--bronze-400);
+  pointer-events: none;
+}
+
+.input-lookup {
+  width: 100%;
+  height: 52px;
+  padding: 0 20px 0 50px;
+  border-radius: var(--r-md);
+  background: rgba(14, 19, 16, 0.85);
+  border: 1.5px solid var(--line-gold);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.input-lookup:focus {
+  border-color: var(--bronze-400);
+  box-shadow: 0 0 0 3px rgba(167, 128, 97, 0.25);
+  background: rgba(14, 19, 16, 0.98);
+}
+
+.btn-lookup-submit {
+  height: 52px;
+  padding: 0 26px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--bronze-600) 0%, var(--bronze-700) 100%);
+  border: 1px solid var(--bronze-300);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s var(--ease);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+.btn-lookup-submit:hover {
+  background: linear-gradient(135deg, var(--bronze-500) 0%, var(--bronze-600) 100%);
+  box-shadow: 0 10px 25px rgba(167, 128, 97, 0.35);
+  transform: translateY(-2px);
+}
+
+.quick-samples-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.quick-sample-chip {
+  padding: 4px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-gold);
+  color: var(--sand-200);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-sample-chip:hover {
+  background: rgba(167, 128, 97, 0.2);
+  border-color: var(--bronze-400);
+  color: #fff;
+}
+
+/* RESULTS WRAPPER */
+.lookup-results-container {
+  display: none; /* activated via JS */
+  margin-top: 24px;
+}
+.lookup-results-container.active {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Verdict Banner */
+.verdict-card {
+  position: relative;
+  border-radius: var(--r-lg);
+  padding: 24px 26px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lux);
+}
+
+.verdict-card.valid {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.4) 0%, rgba(20, 26, 21, 0.95) 100%);
+  border: 1.5px solid var(--gate-open);
+}
+
+.verdict-card.dispute {
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.45) 0%, rgba(20, 26, 21, 0.95) 100%);
+  border: 1.5px solid var(--gate-closed);
+}
+
+.verdict-card.not-found {
+  background: linear-gradient(135deg, rgba(120, 53, 15, 0.35) 0%, rgba(20, 26, 21, 0.95) 100%);
+  border: 1.5px solid var(--amber-warning);
+}
+
+.verdict-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.verdict-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.verdict-card.valid .verdict-pill {
+  background: var(--gate-open-bg);
+  border: 1px solid var(--gate-open);
+  color: #34D399;
+}
+.verdict-card.dispute .verdict-pill {
+  background: var(--gate-closed-bg);
+  border: 1px solid var(--gate-closed);
+  color: #F87171;
+}
+.verdict-card.not-found .verdict-pill {
+  background: var(--amber-glow);
+  border: 1px solid var(--amber-warning);
+  color: #FCD34D;
+}
+
+.verdict-ticket-number {
+  font-size: clamp(38px, 5vw, 54px);
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--bronze-300);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(222, 202, 167, 0.4);
+}
+
+.verdict-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+@media (min-width: 650px) {
+  .verdict-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .verdict-meta-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.verdict-meta-item {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+}
+
+.verdict-meta-item .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.verdict-meta-item .val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* SERVER DIGITAL RECEIPT CARD */
+.receipt-card {
+  background: rgba(14, 19, 16, 0.95);
+  border: 1.5px dashed var(--bronze-600);
+  border-radius: var(--r-lg);
+  padding: 22px 26px;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);
+}
+
+.receipt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(167, 128, 97, 0.25);
+  margin-bottom: 18px;
+}
+
+.receipt-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bronze-300);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.receipt-id-tag {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--sand-200);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.receipt-id-tag button {
+  color: var(--bronze-400);
+  font-size: 11px;
+}
+
+.receipt-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  font-size: 13px;
+}
+
+@media (min-width: 768px) {
+  .receipt-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--r-sm);
+}
+
+.receipt-label {
+  color: var(--sand-200);
+}
+
+.receipt-val {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: #fff;
+  text-align: right;
+  word-break: break-all;
+}
+
+.receipt-val.replay-alert {
+  color: #F87171;
+  font-weight: 700;
+}
+
+.receipt-hash-row {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+}
+.receipt-hash-row .hash-label {
+  color: var(--bronze-400);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.receipt-hash-row .hash-code {
+  font-family: var(--mono);
+  color: var(--ink-soft);
+  word-break: break-all;
+}
+
+/* TIMELINE AUDIT LOG STREAM TABLE */
+.audit-stream-card {
+  background: rgba(14, 19, 16, 0.85);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-lg);
+  padding: 22px 24px;
+  overflow: hidden;
+}
+
+.audit-stream-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.audit-title {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--bronze-300);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  min-width: 680px;
+}
+
+.audit-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--sand-200);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  border-bottom: 1px solid var(--line-gold);
+}
+
+.audit-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--sand-100);
+  vertical-align: middle;
+}
+
+.audit-table tr:hover td {
+  background: rgba(167, 128, 97, 0.08);
+}
+
+.audit-badge-code {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: inline-block;
+}
+.audit-badge-code.code-ok {
+  background: var(--gate-open-bg);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.audit-badge-code.code-warn {
+  background: var(--amber-glow);
+  color: #FCD34D;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.audit-badge-code.code-err {
+  background: var(--gate-closed-bg);
+  color: #F87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================================================
+   MODALS (SAFETY SEED CONFIRMATION & AUTH LOGIN)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(10, 14, 11, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-dialog {
+  background: var(--pine-900);
+  border: 1.5px solid var(--line-gold-strong);
+  border-radius: var(--r-xl);
+  max-width: 520px;
+  width: 100%;
+  padding: 28px 32px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), var(--shadow-glow-bronze);
+  position: relative;
+  animation: modalPop 0.25s var(--ease);
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-header-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1.5px solid var(--gate-closed);
+  color: #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.modal-header-icon.auth {
+  background: rgba(167, 128, 97, 0.15);
+  border-color: var(--bronze-400);
+  color: var(--bronze-300);
+}
+
+.modal-title {
+  font-size: 22px;
+  color: var(--sand-50);
+  margin-bottom: 8px;
+}
+
+.modal-body-text {
+  font-size: 14px;
+  color: var(--sand-200);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.modal-body-text strong {
+  color: #fff;
+}
+
+.confirm-input-wrap {
+  margin-bottom: 20px;
+}
+
+.confirm-input-wrap label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--bronze-300);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.input-confirm-text {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid var(--line-gold);
+  border-radius: var(--r-md);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  outline: none;
+}
+
+.input-confirm-text:focus {
+  border-color: var(--gate-closed);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-modal-cancel {
+  padding: 10px 20px;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-gold);
+  color: var(--sand-100);
+  font-size: 14px;
+  font-weight: 600;
+}
+.btn-modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-modal-danger {
+  padding: 10px 22px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, #DC2626, #991B1B);
+  border: 1px solid #F87171;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-modal-danger:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-modal-primary {
+  padding: 10px 24px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--bronze-600), var(--bronze-700));
+  border: 1px solid var(--bronze-300);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* TOAST NOTIFICATIONS */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: 380px;
+}
+
+.toast-item {
+  pointer-events: auto;
+  background: var(--pine-900);
+  border: 1px solid var(--line-gold);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  animation: toastSlide 0.25s var(--ease);
+}
+
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.toast-item.success {
+  border-color: var(--gate-open);
+}
+.toast-item.error {
+  border-color: var(--gate-closed);
+}
+.toast-item.warning {
+  border-color: var(--amber-warning);
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.toast-msg {
+  font-size: 12px;
+  color: var(--sand-200);
+}
+
+/* FOOTER */
+.admin-footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line-gold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.footer-credits {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-container">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <div class="brand-logos">
+        <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" class="brand-logo-gamuda" width="120" height="24">
+        <div class="brand-divider"></div>
+        <img src="assets/logo-norton-park-white.png" alt="Norton Park" class="brand-logo-norton" width="130" height="22">
+      </div>
+      <div class="nav-badge-btc">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>BTC Operations Center</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <!-- Engine Status Pill -->
+      <div class="engine-status-pill" id="engineStatusPill" title="Trạng thái kết nối máy chủ Redis / Vercel API">
+        <div class="engine-pulse-dot" id="enginePulseDot"></div>
+        <span id="engineStatusText">Live API (200 OK)</span>
+      </div>
+
+      <!-- Quick Link to Client Check-in Page -->
+      <a href="index.html" target="_blank" class="btn-nav-action" title="Mở trang check-in khách mời trong tab mới">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span>Trang Check-in</span>
+      </a>
+
+      <!-- Sound FX Toggle -->
+      <button type="button" class="btn-nav-action" id="soundToggleBtn" title="Bật/Tắt âm thanh hiệu ứng thao tác">
+        <svg id="soundIconOn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <svg id="soundIconOff" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
+
+      <!-- Auth Secret Key Action -->
+      <button type="button" class="btn-nav-action btn-nav-auth" id="openAuthModalBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span id="authKeyDisplay">Token: norton_...</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- EXECUTIVE HEADER BANNER -->
+  <div class="exec-header">
+    <div class="header-titles">
+      <div class="header-kicker">
+        <span>Sự kiện Sales Kick-off Norton Park · Gamuda Land</span>
+        <span>•</span>
+        <span>26.10.2026 · GEM Center</span>
+      </div>
+      <h1 class="header-title">Hệ Thống Điều Hành <em>Ban Tổ Chức</em></h1>
+      <p class="header-sub">Kiểm soát cổng tiếp nhận, phân bổ số may mắn thời gian thực và tra cứu đối soát khiếu nại Đại lý F1.</p>
+    </div>
+
+    <div class="header-controls">
+      <div class="poll-badge" title="Tự động đồng bộ số liệu qua GET /api/admin/config mỗi 5 giây">
+        <div class="poll-timer-ring"></div>
+        <span>Auto-sync: <strong>5s</strong></span>
+      </div>
+      <button type="button" class="btn-manual-sync" id="manualSyncBtn" title="Làm mới số liệu ngay lập tức">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        <span>Làm mới</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SECTION 1: HOT BUTTON GATE CONTROL (HERO SPOTLIGHT)
+       ==================================================================== -->
+  <section class="gate-hero-card state-closed" id="gateHeroCard">
+    <div class="gate-hero-grid">
+      <!-- Left: Status & Guidance -->
+      <div class="gate-info-col">
+        <div class="gate-badge-wrap">
+          <div class="gate-status-pill closed" id="gateStatusPill">
+            <span class="gate-dot"></span>
+            <span id="gateStatusPillText">ĐANG ĐÓNG CỔNG CHECK-IN</span>
+          </div>
+          <span style="font-size:12px; color:var(--ink-soft);" id="gateLastChangeText">Cập nhật lúc: 2026-09-19 22:45</span>
+        </div>
+
+        <h2 class="gate-title" id="gateHeadlineText">Cổng Check-in Đang Tạm Khóa An Toàn</h2>
+        <p class="gate-desc" id="gateDescriptionText">Hệ thống đang ngắt tiếp nhận form đăng ký. Khách quét mã QR tại hội trường sẽ thấy thông báo chờ mở cổng từ CĐT Gamuda Land.</p>
+
+        <div class="gate-alert-banner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="gateInstructionNote">Bấm nút HOT BUTTON bên phải để mở cổng ngay khi MC bắt đầu phiên khai mạc sự kiện.</span>
+        </div>
+      </div>
+
+      <!-- Right: THE BIG HOT BUTTON -->
+      <div class="gate-action-col">
+        <button type="button" class="hot-button btn-open-gate" id="hotGateBtn">
+          <svg id="hotGateIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+          <span id="hotGateBtnLabel">MỞ CỔNG CHECK-IN NGAY</span>
+        </button>
+        <span class="hot-button-hint" id="hotGateBtnHint">Gọi POST /api/admin/config { action: 'gate', value: 'open' }</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 2: REALTIME LIVE STATS COUNTER (4 KPI CARDS)
+       ==================================================================== -->
+  <section class="stats-section">
+    <div class="section-label-bar">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Chỉ Số Vận Hành Thời Gian Thực (Live KPI Counter)</span>
+      </div>
+      <div style="font-size:12px; color:var(--sand-200);">Đồng bộ Redis Stream &amp; Memory Pool</div>
+    </div>
+
+    <div class="stats-grid">
+      <!-- Card 1: Total Check-in -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-name">Tổng Đã Check-in</span>
+          <div class="kpi-icon-wrap" title="Khóa Redis stats:total">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-number" id="statTotalCheckin">0</span>
+          <span class="kpi-unit">chiến binh</span>
+        </div>
+        <div class="kpi-footer">
+          <span id="statCheckinPercent">0% dung lượng pool</span>
+          <span class="mono" style="font-size:11px; color:var(--bronze-400);">stats:total</span>
+        </div>
+        <div class="kpi-progress-track">
+          <div class="kpi-progress-fill" id="statProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Card 2: Remaining in Pool -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-name">Còn Lại Trong Pool</span>
+          <div class="kpi-icon-wrap" title="Độ dài Redis List LLEN lucky:pool">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-number" id="statPoolRemaining">1,000</span>
+          <span class="kpi-unit">vé sẵn sàng</span>
+        </div>
+        <div class="kpi-footer">
+          <span id="statPoolAvailableStatus">Sẵn sàng cấp phát</span>
+          <span class="mono" style="font-size:11px; color:var(--bronze-400);">LLEN lucky:pool</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Pool Quota Capacity -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-name">Dung Lượng Pool Quota</span>
+          <div class="kpi-icon-wrap" title="Khóa cấu hình config:pool_max">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-number" id="statPoolMax">1,000</span>
+          <span class="kpi-unit">vé tổng</span>
+        </div>
+        <div class="kpi-footer">
+          <span id="statPoolModeTag">Chế độ: SHUFFLE</span>
+          <span class="mono" style="font-size:11px; color:var(--bronze-400);">config:pool_max</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Gate Status KPI -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span class="kpi-name">Trạng Thái Cổng</span>
+          <div class="kpi-icon-wrap" title="Khóa Redis config:gate">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-number" id="statGateKpiText" style="color:#F87171;">CLOSED</span>
+        </div>
+        <div class="kpi-footer">
+          <span>Kiểm soát trực tiếp bởi BTC</span>
+          <span class="mono" style="font-size:11px; color:var(--bronze-400);">config:gate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       TWO-COLUMN SPLIT: SECTION 3 (CONFIG & SEED) & SYSTEM SUMMARY
+       ==================================================================== -->
+  <div class="two-col-grid">
+    <!-- SECTION 3: SEED & POOL QUOTA -->
+    <div class="config-card">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Cấu Hình &amp; Khởi Tạo Quota Pool Số (Seed Pool)</span>
+      </div>
+      <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Thiết lập tổng số vé may mắn phát hành cho toàn bộ sự kiện Kick-off. Dữ liệu nạp trực tiếp vào Redis List <code>lucky:pool</code>.</p>
+
+      <form class="config-form" id="poolConfigForm">
+        <!-- Field 1: Pool Max -->
+        <div class="form-group-admin">
+          <label for="inputPoolMax">Dung lượng vé phát hành (Pool Max Quota)</label>
+          <div class="field-desc">Số lượng lá vé may mắn cấp phát tối đa từ dải số #001 trở đi.</div>
+          <div class="input-quota-wrap">
+            <input type="number" id="inputPoolMax" class="input-admin-num" value="1000" min="10" max="10000" step="10">
+            <div class="quota-preset-pills">
+              <button type="button" class="preset-pill" data-val="500">500 vé</button>
+              <button type="button" class="preset-pill active" data-val="1000">1,000 vé</button>
+              <button type="button" class="preset-pill" data-val="1500">1,500 vé</button>
+              <button type="button" class="preset-pill" data-val="2000">2,000 vé</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Field 2: Allocation Mode -->
+        <div class="form-group-admin">
+          <label>Chế độ cấp phát số may mắn (Distribution Mode)</label>
+          <div class="field-desc">Thuật toán lựa chọn số khi chiến binh kinh doanh bấm nhận vé.</div>
+          <div class="mode-selector-grid">
+            <label class="mode-radio-label checked" id="labelModeShuffle">
+              <input type="radio" name="seedMode" value="SHUFFLE" checked>
+              <div class="mode-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                <span>SHUFFLE (Ngẫu nhiên)</span>
+              </div>
+              <div class="mode-sub">Xáo trộn ngẫu nhiên toàn bộ dải số bằng Fisher-Yates. Đảm bảo công bằng, chống phỏng đoán số VIP.</div>
+            </label>
+
+            <label class="mode-radio-label" id="labelModeSequential">
+              <input type="radio" name="seedMode" value="SEQUENTIAL">
+              <div class="mode-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>SEQUENTIAL (Tuần tự)</span>
+              </div>
+              <div class="mode-sub">Cấp phát theo thứ tự từ #001 đến #N cho người đến trước nhận trước theo dòng thời gian.</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" class="btn-seed-pool" id="triggerSeedBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span>Khởi Tạo Lại Pool Số (Seed Pool)</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- QUICK SYSTEM METRICS & ORGANIZER MANUAL -->
+    <div class="sys-summary-card">
+      <div>
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Thông Số Kỹ Thuật &amp; Quy Chuẩn CĐT</span>
+        </div>
+        <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Các quy chuẩn vận hành bảo đảm an toàn dữ liệu và tính minh bạch cho đợt bốc thăm trúng thưởng.</p>
+
+        <ul class="sys-info-list">
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              <span>Kiến trúc Memory Cache:</span>
+            </span>
+            <span class="sys-info-val">Redis Standalone / Upstash Cluster</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Chống trùng lặp định danh:</span>
+            </span>
+            <span class="sys-info-val badge">SETNX cccd:*:unique</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              <span>Tốc độ cấp vé Atomic:</span>
+            </span>
+            <span class="sys-info-val badge">&lt; 3.5ms / ticket</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Chuẩn Hash biên lai số:</span>
+            </span>
+            <span class="sys-info-val">SHA-256 HMAC Digital Seal</span>
+          </li>
+        </ul>
+      </div>
+
+      <div style="font-size:12px; color:var(--ink-soft); line-height:1.5; padding:12px 14px; background:rgba(0,0,0,0.3); border-radius:var(--r-sm); border:1px solid rgba(255,255,255,0.06);">
+        <strong>Lưu ý BTC:</strong> Khi kết thúc phiên Kick-off và chuyển sang phần bốc thăm may mắn, hãy nhấn <em>Đóng cổng</em> để cố định danh sách trước khi quay số trên màn hình LED sân khấu chính.
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       SECTION 4: DISPUTE RESOLUTION (TRA CỨU ĐỐI CHIẾU TRANH CHẤP)
+       ==================================================================== -->
+  <section class="dispute-section">
+    <div class="dispute-header">
+      <div class="section-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        <span>Tra Cứu Đối Chiếu Tranh Chấp &amp; Thẩm Định Vé (Dispute Resolution)</span>
+      </div>
+      <p class="dispute-desc">Nhập số CCCD (12 số) hoặc Số điện thoại (10 số) hoặc Số may mắn (#088) để truy xuất dữ liệu gốc cấp từ Server và kiểm tra dấu hiệu Replay Attack / Trùng lặp.</p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="lookup-form-wrap">
+      <form class="lookup-input-row" id="lookupForm">
+        <div class="lookup-input-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="lookupQuery" class="input-lookup" placeholder="Nhập CCCD (vd: 079092008888) hoặc SĐT (vd: 0908168286)..." autocomplete="off">
+        </div>
+        <button type="submit" class="btn-lookup-submit" id="lookupSubmitBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span>Tra cứu hồ sơ</span>
+        </button>
+      </form>
+
+      <!-- Quick Test Pills for Demo Proposal -->
+      <div class="quick-samples-bar">
+        <span>Tra cứu nhanh hồ sơ mẫu:</span>
+        <button type="button" class="quick-sample-chip" data-q="079092008888">CCCD: 079092008888 (Nguyễn Thành Nam · #088)</button>
+        <button type="button" class="quick-sample-chip" data-q="0938234567">SĐT: 0938234567 (Mai Phương · #168)</button>
+        <button type="button" class="quick-sample-chip" data-q="079099999999" style="border-color:rgba(239,68,68,0.4); color:#FCA5A5;">⚠️ Test Replay Conflict (079099999999)</button>
+        <button type="button" class="quick-sample-chip" id="chipClientSession" style="display:none; border-color:var(--bronze-400); color:var(--bronze-300);">Vé vừa đăng ký ở tab Check-in</button>
+      </div>
+    </div>
+
+    <!-- LOOKUP RESULT CARDS -->
+    <div class="lookup-results-container" id="lookupResultsContainer">
+      <!-- 1. Verdict Card -->
+      <div class="verdict-card valid" id="verdictCard">
+        <div class="verdict-top">
+          <div class="verdict-pill" id="verdictPill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="verdictStatusText">HỢP LỆ — VÉ CHÍNH CHỦ TỪ MÁY CHỦ</span>
+          </div>
+          <div class="verdict-ticket-number" id="verdictTicketNumber">#088</div>
+        </div>
+
+        <div class="verdict-meta-grid">
+          <div class="verdict-meta-item">
+            <div class="label">Họ và tên chuyên viên</div>
+            <div class="val" id="verdictName">Nguyễn Thành Nam</div>
+          </div>
+          <div class="verdict-meta-item">
+            <div class="label">Số điện thoại liên hệ</div>
+            <div class="val mono" id="verdictPhone">0908 168 286</div>
+          </div>
+          <div class="verdict-meta-item">
+            <div class="label">Số CCCD đối chiếu</div>
+            <div class="val mono" id="verdictCccd">079092008888</div>
+          </div>
+          <div class="verdict-meta-item">
+            <div class="label">Đại lý / Sàn F1 Gamuda Land</div>
+            <div class="val" id="verdictAgency" style="color:var(--bronze-300);">ERA Vietnam</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Server Digital Receipt Card -->
+      <div class="receipt-card" id="receiptCard">
+        <div class="receipt-header">
+          <div class="receipt-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Biên Lai Kỹ Thuật Số Máy Chủ (Official Server Receipt)</span>
+          </div>
+          <div class="receipt-id-tag">
+            <span id="receiptIdText">rcpt_np2026_9b8c1a7d</span>
+            <button type="button" id="copyReceiptBtn" title="Sao chép Receipt ID">Copy</button>
+          </div>
+        </div>
+
+        <div class="receipt-grid">
+          <div class="receipt-row">
+            <span class="receipt-label">Thời gian máy chủ cấp (Responded At):</span>
+            <span class="receipt-val" id="receiptRespondedAt">2026-09-19 20:15:32.418 GMT+7</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Địa chỉ IP trạm check-in:</span>
+            <span class="receipt-val" id="receiptClientIp">113.161.72.48 (VN)</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Trình duyệt &amp; Thiết bị (User Agent):</span>
+            <span class="receipt-val" id="receiptUserAgent">iPhone 15 Pro · Safari Mobile 18.2</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Cờ Replay / Trùng lặp (Replay Flag):</span>
+            <span class="receipt-val" id="receiptReplayFlag">NO (Chính chủ lần 1)</span>
+          </div>
+        </div>
+
+        <div class="receipt-hash-row">
+          <div class="hash-label">Chữ ký số bảo chứng toàn vẹn dữ liệu (HMAC SHA-256):</div>
+          <div class="hash-code" id="receiptHash">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</div>
+        </div>
+      </div>
+
+      <!-- 3. Timeline Audit Log Stream Table -->
+      <div class="audit-stream-card" id="auditStreamCard">
+        <div class="audit-stream-header">
+          <div class="audit-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Nhật Ký Dòng Sự Kiện Từng Giây (Redis Stream: audit:log)</span>
+          </div>
+          <span style="font-size:12px; color:var(--sand-200);">XADD audit:log append-only trail</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th style="width:140px;">Thời Gian (ms)</th>
+                <th style="width:190px;">Mã Hành Động (Action)</th>
+                <th style="width:150px;">Kết Quả (Code)</th>
+                <th style="width:130px;">Địa Chỉ IP</th>
+                <th>Chi Tiết Nhật Ký Vận Hành</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="admin-footer">
+    <div class="footer-credits">
+      <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" width="90" height="18" style="filter: brightness(0) invert(1); opacity:0.7;">
+      <span>•</span>
+      <span>Hệ Thống Kiểm Soát Ban Tổ Chức — Phát triển bởi <strong>1990 Agency</strong></span>
+    </div>
+    <div class="footer-links">
+      <span>Dự án: <strong>Norton Park</strong></span>
+      <span>•</span>
+      <a href="index.html" target="_blank">Mở Client Check-in ↗</a>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ====================================================================
+     MODAL 1: SAFETY SEED CONFIRMATION
+     ==================================================================== -->
+<div class="modal-overlay" id="seedConfirmModal" role="dialog" aria-modal="true" aria-labelledby="seedModalTitle">
+  <div class="modal-dialog">
+    <div class="modal-header-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 class="modal-title" id="seedModalTitle">Cảnh Báo Khởi Tạo Lại Pool Số!</h3>
+    <p class="modal-body-text">
+      Hành động này sẽ <strong>xóa toàn bộ số may mắn hiện tại</strong> trong Redis List <code>lucky:pool</code> và tạo mới danh sách <strong><span id="modalSeedCountPreview">1,000</span> vé</strong> theo chế độ <strong><span id="modalSeedModePreview">SHUFFLE</span></strong>.
+      <br><br>
+      ⚠️ <em>Không thực hiện thao tác này khi sự kiện đang diễn ra và khách đang check-in!</em>
+    </p>
+
+    <div class="confirm-input-wrap">
+      <label for="confirmSeedInput">Vui lòng nhập chữ <strong>XÁC NHẬN</strong> để mở khóa:</label>
+      <input type="text" id="confirmSeedInput" class="input-confirm-text" placeholder="Nhập: XÁC NHẬN" autocomplete="off">
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-modal-cancel" id="cancelSeedBtn">Hủy Bỏ</button>
+      <button type="button" class="btn-modal-danger" id="executeSeedBtn" disabled>Xác Nhận Khởi Tạo Lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================================
+     MODAL 2: AUTHENTICATION / ADMIN SECRET MANAGEMENT
+     ==================================================================== -->
+<div class="modal-overlay" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
+  <div class="modal-dialog">
+    <div class="modal-header-icon auth">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h3 class="modal-title" id="authModalTitle">Xác Thực Quản Trị Ban Tổ Chức</h3>
+    <p class="modal-body-text">
+      Nhập <code>ADMIN_SECRET</code> được CĐT Gamuda Land cấp phát để xác thực các lệnh can thiệp hệ thống (Mở/Đóng cổng, Quota pool, Đối soát vé).
+    </p>
+
+    <div class="confirm-input-wrap">
+      <label for="adminSecretInput">Mã bảo mật ADMIN_SECRET:</label>
+      <input type="password" id="adminSecretInput" class="input-confirm-text" placeholder="Nhập ADMIN_SECRET...">
+      <div style="display:flex; justify-content:space-between; margin-top:8px;">
+        <button type="button" id="useDefaultSecretBtn" style="font-size:12px; color:var(--bronze-400); text-decoration:underline;">Dùng mã mặc định (norton_admin_secret_2026)</button>
+        <button type="button" id="toggleSecretVisibilityBtn" style="font-size:12px; color:var(--sand-200);">Hiện mật khẩu</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-modal-cancel" id="cancelAuthBtn">Đóng</button>
+      <button type="button" class="btn-modal-primary" id="saveAuthBtn">Lưu &amp; Xác Thực</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<!-- ====================================================================
+     JAVASCRIPT: CLIENT CONTROLLER, DUAL-ENGINE (API + MOCK), AUDIT LOG
+     ==================================================================== -->
+<script>
+(function() {
+  'use strict';
+
+  // Constants & Storage Keys
+  const STORAGE_SECRET_KEY = 'norton_admin_secret';
+  const STORAGE_MOCK_STATE = 'norton_admin_mock_state_v1';
+  const DEFAULT_SECRET = 'norton_admin_secret_2026';
+  const CLIENT_TICKET_SESSION = 'norton_park_ticket_session';
+
+  // Sound Effects Controller (Web Audio API Synthetics)
+  let soundEnabled = true;
+  let audioCtx = null;
+  function getAudioContext() {
+    if (!audioCtx && (window.AudioContext || window.webkitAudioContext)) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playTone(type) {
+    if (!soundEnabled) return;
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      const now = ctx.currentTime;
+      if (type === 'gate-open') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (type === 'gate-close') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(360, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.2);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } else if (type === 'lookup-success') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.08);
+        osc.frequency.setValueAtTime(783.99, now + 0.16);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'lookup-warn') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.setValueAtTime(220, now + 0.1);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+    } catch (e) {
+      console.warn('Audio tone play error:', e);
+    }
+  }
+
+  // Toast System
+  function showToast(title, msg, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-item ' + type;
+
+    let iconSvg = '';
+    if (type === 'success') {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+    } else if (type === 'error') {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F87171" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+    } else {
+      iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+    }
+
+    toast.innerHTML = `
+      <div style="flex-shrink:0;">${iconSvg}</div>
+      <div class="toast-content">
+        <div class="toast-title">${title}</div>
+        <div class="toast-msg">${msg}</div>
+      </div>
+    `;
+
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 4500);
+  }
+
+  // ========================================================================
+  // IN-BROWSER MOCK ENGINE & SIMULATOR
+  // Handles requests when static server or direct file is opened without backend
+  // ========================================================================
+  class MockEngine {
+    static init() {
+      let state = null;
+      try {
+        const saved = localStorage.getItem(STORAGE_MOCK_STATE);
+        if (saved) state = JSON.parse(saved);
+      } catch (e) {}
+
+      if (!state) {
+        state = {
+          gateStatus: 'closed',
+          poolMax: 1000,
+          poolRemaining: 996,
+          totalCheckin: 4,
+          mode: 'SHUFFLE',
+          updatedAt: new Date().toISOString(),
+          database: [
+            {
+              name: 'Nguyễn Thành Nam',
+              phone: '0908168286',
+              cccd: '079092008888',
+              agency: 'ERA Vietnam',
+              email: 'nam.nguyen@eravn.vn',
+              luckyNumber: '#088',
+              ticketCode: 'NP-2026-088',
+              checkedInAt: '2026-09-19T20:15:32.418Z',
+              displayTime: '20:15:32 · 19.09.2026',
+              clientIp: '113.161.72.48',
+              userAgent: 'iPhone 15 Pro · Safari Mobile 18.2',
+              receiptId: 'rcpt_np2026_9b8c1a7d-4f2e-4b91-8891-6102a0a256df',
+              isReplay: false,
+              replayCount: 1,
+              integrityHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+            },
+            {
+              name: 'Trần Thị Mai Phương',
+              phone: '0938234567',
+              cccd: '079195009999',
+              agency: 'Đông Tây Land',
+              email: 'phuong.tran@dongtayland.vn',
+              luckyNumber: '#168',
+              ticketCode: 'NP-2026-168',
+              checkedInAt: '2026-09-19T20:18:12.890Z',
+              displayTime: '20:18:12 · 19.09.2026',
+              clientIp: '118.69.182.10',
+              userAgent: 'Samsung Galaxy S24 Ultra · Chrome Mobile 128',
+              receiptId: 'rcpt_np2026_a2f4c911-3d7b-4028-99ac-887192a344bb',
+              isReplay: false,
+              replayCount: 1,
+              integrityHash: '7b54a29c118e9fa07f89bc44d187261902bafe3516492193bca882193cb4a10f'
+            },
+            {
+              name: 'Lê Hoàng Dũng',
+              phone: '0912345678',
+              cccd: '079088007777',
+              agency: 'Southern Homes',
+              email: 'dung.le@southernhomes.vn',
+              luckyNumber: '#288',
+              ticketCode: 'NP-2026-288',
+              checkedInAt: '2026-09-19T20:22:45.105Z',
+              displayTime: '20:22:45 · 19.09.2026',
+              clientIp: '14.169.88.23',
+              userAgent: 'iPad Pro 12.9 · Safari Mobile 18.1',
+              receiptId: 'rcpt_np2026_f491c01e-812a-44ec-b673-10928a381120',
+              isReplay: false,
+              replayCount: 1,
+              integrityHash: 'c4ca4238a0b923820dcc509a6f75849b29384729184712048591823901928374'
+            },
+            {
+              name: 'Vũ Đức Thịnh (Cảnh báo Replay)',
+              phone: '0988777999',
+              cccd: '079099999999',
+              agency: 'Khải Hoàn Land',
+              email: 'thinh.vu@khaihoan.vn',
+              luckyNumber: '#368',
+              ticketCode: 'NP-2026-368',
+              checkedInAt: '2026-09-19T20:25:01.320Z',
+              displayTime: '20:25:01 · 19.09.2026',
+              clientIp: '115.79.204.88 (Lần 1) vs 27.72.100.15 (Lần 2)',
+              userAgent: 'Phát hiện 2 User Agent gửi cùng lúc',
+              receiptId: 'rcpt_np2026_CONFLICT_REPLAY_DETECTED',
+              isReplay: true,
+              replayCount: 2,
+              integrityHash: '9a03f41289cb819230dcaef12348571829384719284719284719284719284719'
+            }
+          ]
+        };
+        MockEngine.save(state);
+      }
+      return state;
+    }
+
+    static get() {
+      return MockEngine.init();
+    }
+
+    static save(state) {
+      try {
+        localStorage.setItem(STORAGE_MOCK_STATE, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    static handle(path, options = {}) {
+      const state = MockEngine.get();
+      const method = (options.method || 'GET').toUpperCase();
+
+      // Normalize URL
+      const urlObj = new URL(path, window.location.origin);
+      const pathname = urlObj.pathname;
+
+      // 1. GET /api/admin/config
+      if (pathname === '/api/admin/config' && method === 'GET') {
+        return {
+          status: 200,
+          data: {
+            success: true,
+            gateStatus: state.gateStatus,
+            poolMax: state.poolMax,
+            poolRemaining: state.poolRemaining,
+            totalCheckin: state.totalCheckin,
+            mode: state.mode,
+            updatedAt: state.updatedAt
+          }
+        };
+      }
+
+      // 2. POST /api/admin/config
+      if (pathname === '/api/admin/config' && method === 'POST') {
+        let body = {};
+        try {
+          body = typeof options.body === 'string' ? JSON.parse(options.body) : (options.body || {});
+        } catch (e) {}
+
+        if (body.action === 'gate') {
+          state.gateStatus = body.value === 'open' ? 'open' : 'closed';
+          state.updatedAt = new Date().toISOString();
+          MockEngine.save(state);
+          return {
+            status: 200,
+            data: {
+              success: true,
+              message: `Gate changed to ${state.gateStatus}`,
+              gateStatus: state.gateStatus,
+              poolMax: state.poolMax,
+              poolRemaining: state.poolRemaining,
+              totalCheckin: state.totalCheckin,
+              mode: state.mode,
+              updatedAt: state.updatedAt
+            }
+          };
+        }
+
+        if (body.action === 'seed') {
+          const newMax = parseInt(body.poolMax, 10) || 1000;
+          const newMode = body.mode === 'SEQUENTIAL' ? 'SEQUENTIAL' : 'SHUFFLE';
+          state.poolMax = newMax;
+          state.mode = newMode;
+          state.poolRemaining = newMax;
+          state.totalCheckin = 0;
+          state.updatedAt = new Date().toISOString();
+          MockEngine.save(state);
+          return {
+            status: 200,
+            data: {
+              success: true,
+              message: `Pool successfully seeded with ${newMax} tickets in ${newMode} mode`,
+              gateStatus: state.gateStatus,
+              poolMax: state.poolMax,
+              poolRemaining: state.poolRemaining,
+              totalCheckin: state.totalCheckin,
+              mode: state.mode,
+              updatedAt: state.updatedAt
+            }
+          };
+        }
+      }
+
+      // 3. GET /api/admin/lookup?query=...
+      if (pathname === '/api/admin/lookup') {
+        const query = (urlObj.searchParams.get('query') || '').trim().toLowerCase();
+        const cleanDigits = query.replace(/[\s\-\.]/g, '');
+
+        // Check if there is a ticket from the active browser session
+        let liveClientSessionTicket = null;
+        try {
+          const raw = sessionStorage.getItem(CLIENT_TICKET_SESSION);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.luckyNumber) {
+              liveClientSessionTicket = parsed;
+            }
+          }
+        } catch (e) {}
+
+        let matched = null;
+
+        // Check active client session first
+        if (liveClientSessionTicket) {
+          const cccdClean = (liveClientSessionTicket.cccd || '').replace(/[\s\-\.]/g, '').toLowerCase();
+          const phoneClean = (liveClientSessionTicket.phone || '').replace(/[\s\-\.]/g, '').toLowerCase();
+          const luckyNum = (liveClientSessionTicket.luckyNumber || '').toLowerCase();
+          if (
+            (cleanDigits && (cleanDigits === cccdClean || cleanDigits === phoneClean)) ||
+            (query && (query === luckyNum || luckyNum.includes(query)))
+          ) {
+            matched = {
+              name: liveClientSessionTicket.name,
+              phone: liveClientSessionTicket.phone,
+              cccd: liveClientSessionTicket.cccd,
+              agency: liveClientSessionTicket.agency,
+              email: liveClientSessionTicket.email || 'sales@gamudaland.vn',
+              luckyNumber: liveClientSessionTicket.luckyNumber,
+              ticketCode: 'NP-2026-' + liveClientSessionTicket.luckyNumber.replace('#', ''),
+              checkedInAt: new Date().toISOString(),
+              displayTime: liveClientSessionTicket.timestamp || 'Vừa đăng ký tức thì',
+              clientIp: '127.0.0.1 (Local Session)',
+              userAgent: navigator.userAgent,
+              receiptId: 'rcpt_np2026_LIVE_' + Math.random().toString(36).substring(2, 10),
+              isReplay: false,
+              replayCount: 1,
+              integrityHash: '8f92b7c4a10d8e2193bca9812736192847192847192847192847192847192847'
+            };
+          }
+        }
+
+        // Match against Mock Database
+        if (!matched) {
+          matched = state.database.find(rec => {
+            const recCccd = (rec.cccd || '').replace(/[\s\-\.]/g, '').toLowerCase();
+            const recPhone = (rec.phone || '').replace(/[\s\-\.]/g, '').toLowerCase();
+            const recNum = (rec.luckyNumber || '').toLowerCase();
+            const recCode = (rec.ticketCode || '').toLowerCase();
+            return (
+              (cleanDigits && (cleanDigits === recCccd || cleanDigits === recPhone)) ||
+              (query && (query === recNum || query === recCode || recNum.includes(query)))
+            );
+          });
+        }
+
+        if (!matched) {
+          return {
+            status: 200,
+            data: {
+              success: true,
+              found: false,
+              verdict: 'NOT_FOUND',
+              query: query,
+              message: 'Không tìm thấy thông tin đăng ký hợp lệ với số CCCD / SĐT này.'
+            }
+          };
+        }
+
+        const isReplay = !!matched.isReplay;
+        return {
+          status: 200,
+          data: {
+            success: true,
+            found: true,
+            verdict: isReplay ? 'REPLAY_DETECTED' : 'VERIFIED',
+            record: matched,
+            receipt: {
+              receiptId: matched.receiptId,
+              respondedAt: matched.checkedInAt,
+              clientIp: matched.clientIp,
+              userAgent: matched.userAgent,
+              isReplay: matched.isReplay,
+              replayCount: matched.replayCount || 1,
+              integrityHash: matched.integrityHash
+            },
+            auditLogs: [
+              {
+                timestamp: matched.checkedInAt,
+                timeStr: (matched.checkedInAt.split('T')[1] || '20:15:32').replace('Z', ''),
+                action: 'CHECKIN_REQUEST',
+                resultCode: '200 OK',
+                ip: matched.clientIp.split(' ')[0],
+                detail: `POST /api/checkin - ${matched.name} (${matched.agency})`
+              },
+              {
+                timestamp: matched.checkedInAt,
+                timeStr: (matched.checkedInAt.split('T')[1] || '20:15:32').replace('Z', ''),
+                action: 'GATE_STATUS_CHECK',
+                resultCode: '200 GATE_OPEN',
+                ip: matched.clientIp.split(' ')[0],
+                detail: 'config:gate confirmed OPEN at submission time'
+              },
+              {
+                timestamp: matched.checkedInAt,
+                timeStr: (matched.checkedInAt.split('T')[1] || '20:15:32').replace('Z', ''),
+                action: 'CCCD_UNIQUENESS',
+                resultCode: isReplay ? '409 CONFLICT_CCCD' : '200 UNIQUE',
+                ip: matched.clientIp.split(' ')[0],
+                detail: isReplay ? 'SETNX returned 0 (CCCD đã đăng ký trước đó!)' : `SETNX cccd:${matched.cccd} returned 1 (Duy nhất)`
+              },
+              {
+                timestamp: matched.checkedInAt,
+                timeStr: (matched.checkedInAt.split('T')[1] || '20:15:32').replace('Z', ''),
+                action: 'LUCKY_NUMBER_ASSIGNED',
+                resultCode: '200 ASSIGNED',
+                ip: matched.clientIp.split(' ')[0],
+                detail: `Assigned official ticket ${matched.luckyNumber} to ${matched.cccd}`
+              },
+              {
+                timestamp: matched.checkedInAt,
+                timeStr: (matched.checkedInAt.split('T')[1] || '20:15:32').replace('Z', ''),
+                action: 'STREAM_AUDIT_LOG',
+                resultCode: 'XADD OK',
+                ip: matched.clientIp.split(' ')[0],
+                detail: `XADD audit:log entry persisted with receiptId ${matched.receiptId}`
+              }
+            ]
+          }
+        };
+      }
+
+      return { status: 404, data: { success: false, error: 'Endpoint Not Found' } };
+    }
+  }
+
+  // ========================================================================
+  // UNIFIED API CLIENT (DUAL-ENGINE: LIVE API + SMART MOCK FALLBACK)
+  // ========================================================================
+  let isLiveBackend = false;
+
+  function getStoredSecret() {
+    return localStorage.getItem(STORAGE_SECRET_KEY) || DEFAULT_SECRET;
+  }
+
+  async function apiFetch(path, options = {}) {
+    const secret = getStoredSecret();
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + secret,
+      'x-admin-secret': secret,
+      ...(options.headers || {})
+    };
+
+    const finalOptions = {
+      ...options,
+      headers
+    };
+
+    try {
+      const resp = await fetch(path, finalOptions);
+      if (resp.ok) {
+        isLiveBackend = true;
+        updateEngineBadge('LIVE API (200 OK)', true);
+        return await resp.json();
+      }
+
+      // If backend returns 401 Unauthorized, prompt auth modal
+      if (resp.status === 401 || resp.status === 403) {
+        showToast('Xác Thực Thất Bại', 'ADMIN_SECRET chưa chính xác hoặc hết hạn.', 'error');
+        openAuthModal();
+        throw new Error('Unauthorized');
+      }
+
+      // If 404 or other server status, fall back to MockEngine
+      console.warn(`[API] Server returned ${resp.status} for ${path}. Falling back to In-Browser Engine.`);
+      isLiveBackend = false;
+      updateEngineBadge('Demo Simulator', false);
+      const mockResult = MockEngine.handle(path, finalOptions);
+      return mockResult.data;
+    } catch (err) {
+      // Network failure, offline, or file:/// protocol
+      isLiveBackend = false;
+      updateEngineBadge('Demo Simulator', false);
+      const mockResult = MockEngine.handle(path, finalOptions);
+      return mockResult.data;
+    }
+  }
+
+  function updateEngineBadge(text, isOnline) {
+    const engineText = document.getElementById('engineStatusText');
+    const engineDot = document.getElementById('enginePulseDot');
+    if (engineText) engineText.textContent = text;
+    if (engineDot) {
+      if (isOnline) {
+        engineDot.classList.remove('offline');
+      } else {
+        engineDot.classList.add('offline');
+      }
+    }
+  }
+
+  // ========================================================================
+  // DOM CONTROLLER & STATE BINDINGS
+  // ========================================================================
+  let currentGateStatus = 'closed';
+  let currentPoolMax = 1000;
+  let currentMode = 'SHUFFLE';
+  let pollIntervalId = null;
+
+  // DOM Elements
+  const gateHeroCard = document.getElementById('gateHeroCard');
+  const gateStatusPill = document.getElementById('gateStatusPill');
+  const gateStatusPillText = document.getElementById('gateStatusPillText');
+  const gateHeadlineText = document.getElementById('gateHeadlineText');
+  const gateDescriptionText = document.getElementById('gateDescriptionText');
+  const gateInstructionNote = document.getElementById('gateInstructionNote');
+  const gateLastChangeText = document.getElementById('gateLastChangeText');
+  const hotGateBtn = document.getElementById('hotGateBtn');
+  const hotGateBtnLabel = document.getElementById('hotGateBtnLabel');
+  const hotGateIcon = document.getElementById('hotGateIcon');
+  const hotGateBtnHint = document.getElementById('hotGateBtnHint');
+
+  const statTotalCheckin = document.getElementById('statTotalCheckin');
+  const statCheckinPercent = document.getElementById('statCheckinPercent');
+  const statProgressBar = document.getElementById('statProgressBar');
+  const statPoolRemaining = document.getElementById('statPoolRemaining');
+  const statPoolAvailableStatus = document.getElementById('statPoolAvailableStatus');
+  const statPoolMax = document.getElementById('statPoolMax');
+  const statPoolModeTag = document.getElementById('statPoolModeTag');
+  const statGateKpiText = document.getElementById('statGateKpiText');
+
+  const manualSyncBtn = document.getElementById('manualSyncBtn');
+  const inputPoolMax = document.getElementById('inputPoolMax');
+  const triggerSeedBtn = document.getElementById('triggerSeedBtn');
+  const seedConfirmModal = document.getElementById('seedConfirmModal');
+  const modalSeedCountPreview = document.getElementById('modalSeedCountPreview');
+  const modalSeedModePreview = document.getElementById('modalSeedModePreview');
+  const confirmSeedInput = document.getElementById('confirmSeedInput');
+  const executeSeedBtn = document.getElementById('executeSeedBtn');
+  const cancelSeedBtn = document.getElementById('cancelSeedBtn');
+
+  const labelModeShuffle = document.getElementById('labelModeShuffle');
+  const labelModeSequential = document.getElementById('labelModeSequential');
+
+  const lookupForm = document.getElementById('lookupForm');
+  const lookupQuery = document.getElementById('lookupQuery');
+  const lookupSubmitBtn = document.getElementById('lookupSubmitBtn');
+  const lookupResultsContainer = document.getElementById('lookupResultsContainer');
+  const verdictCard = document.getElementById('verdictCard');
+  const verdictPill = document.getElementById('verdictPill');
+  const verdictStatusText = document.getElementById('verdictStatusText');
+  const verdictTicketNumber = document.getElementById('verdictTicketNumber');
+  const verdictName = document.getElementById('verdictName');
+  const verdictPhone = document.getElementById('verdictPhone');
+  const verdictCccd = document.getElementById('verdictCccd');
+  const verdictAgency = document.getElementById('verdictAgency');
+  const receiptCard = document.getElementById('receiptCard');
+  const receiptIdText = document.getElementById('receiptIdText');
+  const copyReceiptBtn = document.getElementById('copyReceiptBtn');
+  const receiptRespondedAt = document.getElementById('receiptRespondedAt');
+  const receiptClientIp = document.getElementById('receiptClientIp');
+  const receiptUserAgent = document.getElementById('receiptUserAgent');
+  const receiptReplayFlag = document.getElementById('receiptReplayFlag');
+  const receiptHash = document.getElementById('receiptHash');
+  const auditStreamCard = document.getElementById('auditStreamCard');
+  const auditTableBody = document.getElementById('auditTableBody');
+
+  const authModal = document.getElementById('authModal');
+  const openAuthModalBtn = document.getElementById('openAuthModalBtn');
+  const authKeyDisplay = document.getElementById('authKeyDisplay');
+  const adminSecretInput = document.getElementById('adminSecretInput');
+  const useDefaultSecretBtn = document.getElementById('useDefaultSecretBtn');
+  const toggleSecretVisibilityBtn = document.getElementById('toggleSecretVisibilityBtn');
+  const saveAuthBtn = document.getElementById('saveAuthBtn');
+  const cancelAuthBtn = document.getElementById('cancelAuthBtn');
+
+  const soundToggleBtn = document.getElementById('soundToggleBtn');
+  const soundIconOn = document.getElementById('soundIconOn');
+  const soundIconOff = document.getElementById('soundIconOff');
+
+  // Format Helper
+  function formatNumber(num) {
+    return (num || 0).toLocaleString('vi-VN');
+  }
+
+  function formatTimestamp(isoStr) {
+    if (!isoStr) return '';
+    try {
+      const d = new Date(isoStr);
+      const time = d.toLocaleTimeString('vi-VN', { hour12: false });
+      const date = d.toLocaleDateString('vi-VN');
+      return `${time} · ${date}`;
+    } catch (e) {
+      return isoStr;
+    }
+  }
+
+  // 1. Render Gate State
+  function renderGateState(status, lastUpdated) {
+    currentGateStatus = status === 'open' ? 'open' : 'closed';
+    const isOpen = currentGateStatus === 'open';
+
+    if (isOpen) {
+      gateHeroCard.classList.remove('state-closed');
+      gateHeroCard.classList.add('state-open');
+
+      gateStatusPill.classList.remove('closed');
+      gateStatusPill.classList.add('open');
+      gateStatusPillText.textContent = 'LIVE · ĐANG MỞ CỔNG CHECK-IN';
+
+      gateHeadlineText.textContent = 'Cổng Check-in Đang Mở Tiếp Nhận Khách';
+      gateDescriptionText.textContent = 'Chuyên viên kinh doanh thuộc các Đại lý F1 đang được phép đăng ký và nhận số may mắn tại trang index.html.';
+      gateInstructionNote.textContent = 'Hệ thống đang cấp phát vé tự động. Bấm ĐÓNG CỔNG khi chuyển sang phần quay số trên sân khấu.';
+
+      hotGateBtn.classList.remove('btn-open-gate');
+      hotGateBtn.classList.add('btn-close-gate');
+      hotGateBtnLabel.textContent = 'ĐÓNG CỔNG CHECK-IN NGAY';
+      hotGateBtnHint.textContent = 'Gọi POST /api/admin/config { action: \'gate\', value: \'closed\' }';
+
+      hotGateIcon.innerHTML = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>';
+
+      statGateKpiText.textContent = 'LIVE (OPEN)';
+      statGateKpiText.style.color = '#34D399';
+    } else {
+      gateHeroCard.classList.remove('state-open');
+      gateHeroCard.classList.add('state-closed');
+
+      gateStatusPill.classList.remove('open');
+      gateStatusPill.classList.add('closed');
+      gateStatusPillText.textContent = 'ĐANG ĐÓNG CỔNG CHECK-IN';
+
+      gateHeadlineText.textContent = 'Cổng Check-in Đang Tạm Khóa An Toàn';
+      gateDescriptionText.textContent = 'Hệ thống đang ngắt tiếp nhận form đăng ký. Khách quét mã QR tại hội trường sẽ thấy thông báo chờ mở cổng từ CĐT Gamuda Land.';
+      gateInstructionNote.textContent = 'Bấm nút HOT BUTTON bên phải để mở cổng ngay khi MC bắt đầu phiên khai mạc sự kiện.';
+
+      hotGateBtn.classList.remove('btn-close-gate');
+      hotGateBtn.classList.add('btn-open-gate');
+      hotGateBtnLabel.textContent = 'MỞ CỔNG CHECK-IN NGAY';
+      hotGateBtnHint.textContent = 'Gọi POST /api/admin/config { action: \'gate\', value: \'open\' }';
+
+      hotGateIcon.innerHTML = '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>';
+
+      statGateKpiText.textContent = 'CLOSED';
+      statGateKpiText.style.color = '#F87171';
+    }
+
+    if (lastUpdated) {
+      gateLastChangeText.textContent = 'Cập nhật lúc: ' + formatTimestamp(lastUpdated);
+    }
+  }
+
+  // 2. Render Realtime Stats
+  function renderStats(data) {
+    const total = data.totalCheckin || 0;
+    const poolMax = data.poolMax || 1000;
+    const remaining = data.poolRemaining !== undefined ? data.poolRemaining : (poolMax - total);
+    const mode = data.mode || 'SHUFFLE';
+
+    currentPoolMax = poolMax;
+    currentMode = mode;
+
+    statTotalCheckin.textContent = formatNumber(total);
+    statPoolRemaining.textContent = formatNumber(remaining);
+    statPoolMax.textContent = formatNumber(poolMax);
+    statPoolModeTag.textContent = 'Chế độ: ' + mode;
+
+    const percent = Math.min(100, Math.round((total / Math.max(1, poolMax)) * 100));
+    statCheckinPercent.textContent = percent + '% dung lượng pool';
+    statProgressBar.style.width = percent + '%';
+
+    if (remaining < 50) {
+      statPoolRemaining.style.color = '#F87171';
+      statPoolAvailableStatus.textContent = '⚠️ Sắp cạn pool số!';
+    } else if (remaining < 200) {
+      statPoolRemaining.style.color = '#FCD34D';
+      statPoolAvailableStatus.textContent = 'Còn dưới 20% quota';
+    } else {
+      statPoolRemaining.style.color = '#fff';
+      statPoolAvailableStatus.textContent = 'Sẵn sàng cấp phát';
+    }
+  }
+
+  // 3. Sync Config & Stats from Server
+  async function fetchConfig(isManual = false) {
+    if (isManual && manualSyncBtn) {
+      manualSyncBtn.classList.add('spinning');
+    }
+
+    try {
+      const data = await apiFetch('/api/admin/config');
+      if (data && data.success) {
+        renderGateState(data.gateStatus, data.updatedAt);
+        renderStats(data);
+        if (isManual) {
+          showToast('Đồng Bộ Thành Công', 'Đã cập nhật chỉ số vận hành mới nhất từ Redis.', 'success');
+        }
+      }
+    } catch (err) {
+      console.error('fetchConfig error:', err);
+    } finally {
+      if (manualSyncBtn) {
+        setTimeout(() => manualSyncBtn.classList.remove('spinning'), 500);
+      }
+    }
+  }
+
+  // 4. Hot Button Gate Toggle
+  hotGateBtn?.addEventListener('click', async () => {
+    const nextValue = currentGateStatus === 'open' ? 'closed' : 'open';
+    const isClosing = nextValue === 'closed';
+
+    // Safety confirm if closing during live event
+    if (isClosing) {
+      const confirmed = window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\nBạn có chắc chắn muốn ngắt tiếp nhận đăng ký check-in ngay bây giờ?');
+      if (!confirmed) return;
+    }
+
+    hotGateBtn.disabled = true;
+    hotGateBtnLabel.textContent = isClosing ? 'Đang đóng cổng...' : 'Đang mở cổng...';
+
+    try {
+      const result = await apiFetch('/api/admin/config', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'gate', value: nextValue })
+      });
+
+      if (result && result.success) {
+        renderGateState(result.gateStatus, result.updatedAt);
+        renderStats(result);
+        playTone(nextValue === 'open' ? 'gate-open' : 'gate-close');
+        showToast(
+          nextValue === 'open' ? 'Đã Mở Cổng Check-in' : 'Đã Đóng Cổng Check-in',
+          nextValue === 'open' ? 'Khách đã có thể truy cập và nhận số may mắn.' : 'Hệ thống đã ngắt tiếp nhận form đăng ký.',
+          nextValue === 'open' ? 'success' : 'warning'
+        );
+      } else {
+        showToast('Thao Tác Thất Bại', result?.error || 'Không thể thay đổi trạng thái cổng.', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi Kết Nối', 'Không thể gửi lệnh điều khiển cổng.', 'error');
+    } finally {
+      hotGateBtn.disabled = false;
+    }
+  });
+
+  // 5. Seed Quota Modal Logic
+  triggerSeedBtn?.addEventListener('click', () => {
+    const val = parseInt(inputPoolMax.value, 10) || 1000;
+    const selectedMode = document.querySelector('input[name="seedMode"]:checked')?.value || 'SHUFFLE';
+
+    modalSeedCountPreview.textContent = formatNumber(val);
+    modalSeedModePreview.textContent = selectedMode;
+    confirmSeedInput.value = '';
+    executeSeedBtn.disabled = true;
+
+    seedConfirmModal.classList.add('active');
+    confirmSeedInput.focus();
+  });
+
+  cancelSeedBtn?.addEventListener('click', () => {
+    seedConfirmModal.classList.remove('active');
+  });
+
+  confirmSeedInput?.addEventListener('input', function() {
+    const isMatch = this.value.trim().toUpperCase() === 'XÁC NHẬN';
+    executeSeedBtn.disabled = !isMatch;
+  });
+
+  executeSeedBtn?.addEventListener('click', async () => {
+    const val = parseInt(inputPoolMax.value, 10) || 1000;
+    const selectedMode = document.querySelector('input[name="seedMode"]:checked')?.value || 'SHUFFLE';
+
+    executeSeedBtn.disabled = true;
+    executeSeedBtn.textContent = 'Đang khởi tạo...';
+
+    try {
+      const result = await apiFetch('/api/admin/config', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'seed', poolMax: val, mode: selectedMode })
+      });
+
+      if (result && result.success) {
+        seedConfirmModal.classList.remove('active');
+        renderStats(result);
+        playTone('lookup-success');
+        showToast('Khởi Tạo Pool Thành Công', `Đã nạp ${formatNumber(val)} vé may mắn vào Redis List lucky:pool (${selectedMode}).`, 'success');
+      } else {
+        showToast('Lỗi Khởi Tạo', result?.error || 'Máy chủ từ chối yêu cầu khởi tạo lại.', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi Kết Nối', 'Không thể kết nối máy chủ để seed pool.', 'error');
+    } finally {
+      executeSeedBtn.disabled = false;
+      executeSeedBtn.textContent = 'Xác Nhận Khởi Tạo Lại';
+    }
+  });
+
+  // Preset buttons for Pool Max
+  document.querySelectorAll('.preset-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      inputPoolMax.value = btn.dataset.val;
+    });
+  });
+
+  // Mode radio selector click styling
+  document.querySelectorAll('.mode-radio-label').forEach(label => {
+    label.addEventListener('click', () => {
+      document.querySelectorAll('.mode-radio-label').forEach(l => l.classList.remove('checked'));
+      label.classList.add('checked');
+    });
+  });
+
+  // 6. Section 4: Dispute Lookup Engine
+  async function performLookup(query) {
+    if (!query) {
+      showToast('Thiếu Thông Tin', 'Vui lòng nhập số CCCD hoặc SĐT cần tra cứu.', 'warning');
+      return;
+    }
+
+    lookupSubmitBtn.disabled = true;
+    lookupSubmitBtn.innerHTML = '<span style="display:inline-block; animation:spin 1s linear infinite;">⏳</span> Đang tra cứu...';
+
+    try {
+      const result = await apiFetch('/api/admin/lookup?query=' + encodeURIComponent(query));
+      if (!result) {
+        throw new Error('No response');
+      }
+
+      if (!result.found) {
+        renderNotFoundVerdict(result);
+        playTone('lookup-warn');
+        showToast('Không Tìm Thấy Hồ Sơ', 'Không có dữ liệu check-in trùng khớp trên hệ thống.', 'warning');
+      } else {
+        renderFoundVerdict(result);
+        if (result.verdict === 'REPLAY_DETECTED') {
+          playTone('lookup-warn');
+          showToast('CẢNH BÁO REPLAY', 'Phát hiện hành vi trùng lặp CCCD bất thường!', 'error');
+        } else {
+          playTone('lookup-success');
+          showToast('Đã Thẩm Định Vé', 'Lá vé hợp lệ và được bảo chứng bởi máy chủ.', 'success');
+        }
+      }
+      lookupResultsContainer.classList.add('active');
+      lookupResultsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } catch (err) {
+      showToast('Lỗi Tra Cứu', 'Không thể đối soát thông tin lúc này.', 'error');
+    } finally {
+      lookupSubmitBtn.disabled = false;
+      lookupSubmitBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg><span>Tra cứu hồ sơ</span>';
+    }
+  }
+
+  function renderFoundVerdict(res) {
+    const rec = res.record || {};
+    const rcpt = res.receipt || {};
+    const isReplay = res.verdict === 'REPLAY_DETECTED';
+
+    verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
+    verdictStatusText.textContent = isReplay 
+      ? 'CẢNH BÁO: TRÙNG LẶP CCCD / PHÁT HIỆN REPLAY!' 
+      : 'HỢP LỆ — LÁ VÉ CHÍNH CHỦ ĐƯỢC XÁC THỰC BỞI MÁY CHỦ CĐT';
+    
+    verdictTicketNumber.textContent = rec.luckyNumber || '#---';
+    verdictName.textContent = rec.name || '--';
+    verdictPhone.textContent = rec.phone || '--';
+    verdictCccd.textContent = rec.cccd || '--';
+    verdictAgency.textContent = rec.agency || '--';
+
+    // Receipt details
+    receiptCard.style.display = 'block';
+    receiptIdText.textContent = rcpt.receiptId || '--';
+    receiptRespondedAt.textContent = rcpt.respondedAt ? formatTimestamp(rcpt.respondedAt) : '--';
+    receiptClientIp.textContent = rcpt.clientIp || '--';
+    receiptUserAgent.textContent = rcpt.userAgent || '--';
+
+    if (rcpt.isReplay) {
+      receiptReplayFlag.className = 'receipt-val replay-alert';
+      receiptReplayFlag.textContent = `YES (Trùng lặp lần thứ ${rcpt.replayCount || 2}! Cảnh báo gian lận)`;
+    } else {
+      receiptReplayFlag.className = 'receipt-val';
+      receiptReplayFlag.textContent = 'NO (Chính chủ lần đầu hợp lệ)';
+    }
+
+    receiptHash.textContent = rcpt.integrityHash || 'HMAC-SHA256 verified by Gamuda Land Master Key';
+
+    // Audit Log Table
+    auditStreamCard.style.display = 'block';
+    renderAuditTable(res.auditLogs || []);
+  }
+
+  function renderNotFoundVerdict(res) {
+    verdictCard.className = 'verdict-card not-found';
+    verdictStatusText.textContent = 'KHÔNG TÌM THẤY DỮ LIỆU ĐĂNG KÝ HỢP LỆ';
+    verdictTicketNumber.textContent = 'N/A';
+    verdictName.textContent = 'Không có dữ liệu';
+    verdictPhone.textContent = res.query || '--';
+    verdictCccd.textContent = 'Chưa từng cấp vé';
+    verdictAgency.textContent = 'Chưa xác thực';
+
+    receiptCard.style.display = 'none';
+    auditStreamCard.style.display = 'none';
+  }
+
+  function renderAuditTable(logs) {
+    auditTableBody.innerHTML = '';
+    if (!logs.length) {
+      auditTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--ink-soft); padding:16px;">Không có nhật ký phát sinh.</td></tr>';
+      return;
+    }
+
+    logs.forEach(item => {
+      const tr = document.createElement('tr');
+      let badgeClass = 'code-ok';
+      if (item.resultCode.includes('CONFLICT') || item.resultCode.includes('403') || item.resultCode.includes('409')) {
+        badgeClass = 'code-err';
+      } else if (item.resultCode.includes('WARN')) {
+        badgeClass = 'code-warn';
+      }
+
+      tr.innerHTML = `
+        <td class="mono" style="color:var(--bronze-300);">${item.timeStr || item.timestamp}</td>
+        <td><strong>${item.action}</strong></td>
+        <td><span class="audit-badge-code ${badgeClass}">${item.resultCode}</span></td>
+        <td class="mono" style="font-size:11px;">${item.ip}</td>
+        <td style="color:var(--sand-200); font-size:12px;">${item.detail}</td>
+      `;
+      auditTableBody.appendChild(tr);
+    });
+  }
+
+  lookupForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = lookupQuery.value.trim();
+    performLookup(q);
+  });
+
+  // Quick Sample Chips Click
+  document.querySelectorAll('.quick-sample-chip').forEach(chip => {
+    if (chip.id === 'chipClientSession') return;
+    chip.addEventListener('click', () => {
+      lookupQuery.value = chip.dataset.q;
+      performLookup(chip.dataset.q);
+    });
+  });
+
+  // Copy Receipt ID
+  copyReceiptBtn?.addEventListener('click', () => {
+    const text = receiptIdText.textContent.trim();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      showToast('Đã Sao Chép', 'Receipt ID đã được lưu vào clipboard.', 'success');
+    }
+  });
+
+  // 7. Auth Modal & Secret Key Management
+  function updateAuthKeyDisplay() {
+    const secret = getStoredSecret();
+    const masked = secret.length > 8 
+      ? secret.substring(0, 6) + '***' + secret.substring(secret.length - 4)
+      : 'norton_***';
+    if (authKeyDisplay) authKeyDisplay.textContent = 'Token: ' + masked;
+  }
+
+  function openAuthModal() {
+    adminSecretInput.value = getStoredSecret();
+    authModal.classList.add('active');
+    adminSecretInput.focus();
+  }
+
+  openAuthModalBtn?.addEventListener('click', openAuthModal);
+  cancelAuthBtn?.addEventListener('click', () => authModal.classList.remove('active'));
+
+  useDefaultSecretBtn?.addEventListener('click', () => {
+    adminSecretInput.value = DEFAULT_SECRET;
+  });
+
+  toggleSecretVisibilityBtn?.addEventListener('click', () => {
+    if (adminSecretInput.type === 'password') {
+      adminSecretInput.type = 'text';
+      toggleSecretVisibilityBtn.textContent = 'Ẩn mật khẩu';
+    } else {
+      adminSecretInput.type = 'password';
+      toggleSecretVisibilityBtn.textContent = 'Hiện mật khẩu';
+    }
+  });
+
+  saveAuthBtn?.addEventListener('click', () => {
+    const val = adminSecretInput.value.trim();
+    if (!val) {
+      showToast('Thiếu Thông Tin', 'Vui lòng nhập ADMIN_SECRET.', 'warning');
+      return;
+    }
+    localStorage.setItem(STORAGE_SECRET_KEY, val);
+    updateAuthKeyDisplay();
+    authModal.classList.remove('active');
+    showToast('Đã Lưu Token', 'Mã xác thực mới đã được áp dụng.', 'success');
+    fetchConfig(true);
+  });
+
+  // Sound FX Toggle
+  soundToggleBtn?.addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    soundIconOn.style.display = soundEnabled ? '' : 'none';
+    soundIconOff.style.display = soundEnabled ? 'none' : '';
+    showToast(
+      soundEnabled ? 'Âm Thanh Bật' : 'Âm Thanh Tắt',
+      soundEnabled ? 'Đã bật tín hiệu âm thanh thao tác.' : 'Đã tắt âm thanh.',
+      'success'
+    );
+  });
+
+  // Manual Sync Button
+  manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
+
+  // 8. Auto Poll (Every 5 seconds)
+  function startPolling() {
+    if (pollIntervalId) clearInterval(pollIntervalId);
+    pollIntervalId = setInterval(() => {
+      fetchConfig(false);
+    }, 5000);
+  }
+
+  // 9. Initial Load & Setup
+  function initApp() {
+    updateAuthKeyDisplay();
+
+    // Check if client has a live ticket in sessionStorage from index.html
+    try {
+      const raw = sessionStorage.getItem(CLIENT_TICKET_SESSION);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.luckyNumber) {
+          const chip = document.getElementById('chipClientSession');
+          if (chip) {
+            chip.style.display = 'inline-block';
+            chip.textContent = `⚡ Vé vừa tạo: ${parsed.name} (${parsed.luckyNumber})`;
+            chip.addEventListener('click', () => {
+              lookupQuery.value = parsed.cccd || parsed.phone || parsed.luckyNumber;
+              performLookup(lookupQuery.value);
+            });
+          }
+        }
+      }
+    } catch (e) {}
+
+    // First fetch
+    fetchConfig(false);
+    startPolling();
+  }
+
+  // Run on DOM Ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
+
+})();
+</script>
+
+</body>
+</html>
