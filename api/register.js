@@ -92,28 +92,7 @@ module.exports = async function handler(req, res) {
   body = body || {};
 
   try {
-    // 2.1 Gate Check: Default 'closed' if unset in Redis
-    const gateStatus = (await redis.get('config:gate')) || 'closed';
-    if (gateStatus !== 'open') {
-      const responseTimeMs = Date.now() - startTime;
-      // Record rejected request into audit stream (fail-soft)
-      logRequest({
-        action: 'register_rejected',
-        status: 'GATE_CLOSED',
-        ip: clientIp,
-        geo: { city, country, region },
-        userAgent,
-        responseTimeMs,
-      }).catch(() => {});
-
-      return res.status(403).json({
-        success: false,
-        error: 'GATE_CLOSED',
-        message: 'Cổng check-in hiện đang đóng. Vui lòng liên hệ Ban Tổ Chức.',
-      });
-    }
-
-    // 2.2 Validate Input fields
+    // 2.1 Validate Input fields
     const fullName = String(body.fullName || body.name || '').trim();
     const rawPhone = String(body.phone || '').trim();
     const rawCCCD = String(body.cccd || body.idCard || '').trim();
@@ -149,7 +128,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 2.3 Absolute CCCD Idempotency Check (reg:cccd:{cleanCCCD})
+    // 2.2 Absolute CCCD Idempotency Check (reg:cccd:{cleanCCCD})
     const cccdKey = `reg:cccd:${cleanId}`;
     const existing = await redis.hgetall(cccdKey);
 
@@ -194,6 +173,27 @@ module.exports = async function handler(req, res) {
         replayed: true,
         responseTimeMs,
         message: 'Số CCCD này đã được cấp vé trước đó. Thông tin vé cũ được bảo lưu an toàn.',
+      });
+    }
+
+    // 2.3 Gate Check: Default 'closed' if unset in Redis
+    const gateStatus = (await redis.get('config:gate')) || 'closed';
+    if (gateStatus !== 'open') {
+      const responseTimeMs = Date.now() - startTime;
+      // Record rejected request into audit stream (fail-soft)
+      logRequest({
+        action: 'register_rejected',
+        status: 'GATE_CLOSED',
+        ip: clientIp,
+        geo: { city, country, region },
+        userAgent,
+        responseTimeMs,
+      }).catch(() => {});
+
+      return res.status(403).json({
+        success: false,
+        error: 'GATE_CLOSED',
+        message: 'Cổng check-in hiện đang đóng. Vui lòng liên hệ Ban Tổ Chức.',
       });
     }
 

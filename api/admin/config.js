@@ -238,10 +238,88 @@ module.exports = async function handler(req, res) {
         });
       }
 
+      // 2.4 Action: Nuclear Reset
+      if (action === 'reset') {
+        if (body.confirm !== 'XÓA HẾT') {
+          return res.status(400).json({
+            success: false,
+            error: 'CONFIRMATION_REQUIRED',
+            message: 'Thiếu xác nhận hoặc xác nhận không đúng. Yêu cầu: confirm = "XÓA HẾT"',
+          });
+        }
+
+        const cccdKeys = (await redis.keys('reg:cccd:*')) || [];
+        const phoneKeys = (await redis.keys('reg:phone:*')) || [];
+        const receiptKeys = (await redis.keys('receipt:*')) || [];
+        const keysToDelete = [...cccdKeys, ...phoneKeys, ...receiptKeys];
+
+        const CHUNK_SIZE = 100;
+        for (let i = 0; i < keysToDelete.length; i += CHUNK_SIZE) {
+          const chunk = keysToDelete.slice(i, i + CHUNK_SIZE);
+          const p = redis.pipeline();
+          chunk.forEach(k => p.del(k));
+          await p.exec();
+        }
+
+        await redis.del('lucky:pool');
+        await redis.set('stats:total', 0);
+        await redis.set('stats:overflow_counter', 0);
+        await redis.del('audit:log');
+        await redis.del('audit:admin');
+        await redis.set('config:gate', 'closed');
+
+        const poolMaxRaw = body.poolMax || await redis.get('config:pool_max') || 1000;
+        const poolMax = Math.max(1, parseInt(poolMaxRaw, 10));
+        const modeRaw = body.mode || await redis.get('config:pool_mode') || 'SHUFFLE';
+        const mode = (String(modeRaw).toUpperCase() === 'SEQUENTIAL') ? 'SEQUENTIAL' : 'SHUFFLE';
+
+        const poolItems = [];
+        for (let i = 1; i <= poolMax; i++) {
+          poolItems.push(`NP-2026-${padZero(i, 3)}`);
+        }
+
+        if (mode === 'SHUFFLE') {
+          for (let i = poolItems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [poolItems[i], poolItems[j]] = [poolItems[j], poolItems[i]];
+          }
+        }
+
+        for (let i = 0; i < poolItems.length; i += CHUNK_SIZE) {
+          const chunk = poolItems.slice(i, i + CHUNK_SIZE);
+          await redis.rpush('lucky:pool', ...chunk);
+        }
+
+        await Promise.all([
+          redis.set('config:pool_max', poolMax),
+          redis.set('config:pool_mode', mode),
+        ]);
+
+        await logAdminAction({
+          action: 'nuclear_reset',
+          adminUser: 'admin',
+          ip: clientIp,
+          details: { poolMax, mode, keysDeleted: keysToDelete.length },
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: `Đã xóa toàn bộ dữ liệu và reset hệ thống (xóa ${keysToDelete.length} keys), khởi tạo lại ${poolMax} vé.`,
+          gateStatus: 'closed',
+          gate: 'closed',
+          poolMax,
+          poolRemaining: poolMax,
+          totalCheckin: 0,
+          overflowCount: 0,
+          mode,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
       return res.status(400).json({
         success: false,
         error: 'INVALID_ACTION',
-        message: `Action '${action}' không được hỗ trợ. Sử dụng 'gate', 'seed', hoặc 'config'.`,
+        message: `Action '${action}' không được hỗ trợ. Sử dụng 'gate', 'seed', 'config', hoặc 'reset'.`,
       });
     } catch (err) {
       console.error('[Admin Config:POST Error]:', err.message);

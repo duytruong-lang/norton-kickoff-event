@@ -389,7 +389,7 @@ input, select {
   border-radius: 50%;
   border: 2px solid var(--bronze-600);
   border-top-color: var(--bronze-300);
-  animation: spin 5s linear infinite;
+  animation: spin 3s linear infinite;
 }
 
 @keyframes spin {
@@ -727,7 +727,7 @@ input, select {
 }
 
 .kpi-number {
-  font-size: clamp(32px, 3.5vw, 42px);
+  font-size: 3.5rem;
   font-family: var(--sans);
   font-weight: 800;
   line-height: 1;
@@ -1723,9 +1723,9 @@ input, select {
     </div>
 
     <div class="header-controls">
-      <div class="poll-badge" title="Tự động đồng bộ số liệu qua GET /api/admin/config mỗi 5 giây">
+      <div class="poll-badge" title="Tự động đồng bộ số liệu qua GET /api/admin/config mỗi 3 giây">
         <div class="poll-timer-ring"></div>
-        <span>Auto-sync: <strong>5s</strong></span>
+        <span>Auto-sync: <strong>3s</strong></span>
       </div>
       <button type="button" class="btn-manual-sync" id="manualSyncBtn" title="Làm mới số liệu ngay lập tức">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -1857,114 +1857,6 @@ input, select {
       </div>
     </div>
   </section>
-
-  <!-- ====================================================================
-       TWO-COLUMN SPLIT: SECTION 3 (CONFIG & SEED) & SYSTEM SUMMARY
-       ==================================================================== -->
-  <div class="two-col-grid">
-    <!-- SECTION 3: SEED & POOL QUOTA -->
-    <div class="config-card">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        <span>Cấu Hình &amp; Khởi Tạo Quota Pool Số (Seed Pool)</span>
-      </div>
-      <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Thiết lập tổng số vé may mắn phát hành cho toàn bộ sự kiện Kick-off. Dữ liệu nạp trực tiếp vào Redis List <code>lucky:pool</code>.</p>
-
-      <form class="config-form" id="poolConfigForm">
-        <!-- Field 1: Pool Max -->
-        <div class="form-group-admin">
-          <label for="inputPoolMax">Dung lượng vé phát hành (Pool Max Quota)</label>
-          <div class="field-desc">Số lượng lá vé may mắn cấp phát tối đa từ dải số #001 trở đi.</div>
-          <div class="input-quota-wrap">
-            <input type="number" id="inputPoolMax" class="input-admin-num" value="1000" min="10" max="10000" step="10">
-            <div class="quota-preset-pills">
-              <button type="button" class="preset-pill" data-val="500">500 vé</button>
-              <button type="button" class="preset-pill active" data-val="1000">1,000 vé</button>
-              <button type="button" class="preset-pill" data-val="1500">1,500 vé</button>
-              <button type="button" class="preset-pill" data-val="2000">2,000 vé</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Field 2: Allocation Mode -->
-        <div class="form-group-admin">
-          <label>Chế độ cấp phát số may mắn (Distribution Mode)</label>
-          <div class="field-desc">Thuật toán lựa chọn số khi chiến binh kinh doanh bấm nhận vé.</div>
-          <div class="mode-selector-grid">
-            <label class="mode-radio-label checked" id="labelModeShuffle">
-              <input type="radio" name="seedMode" value="SHUFFLE" checked>
-              <div class="mode-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-                <span>SHUFFLE (Ngẫu nhiên)</span>
-              </div>
-              <div class="mode-sub">Xáo trộn ngẫu nhiên toàn bộ dải số bằng Fisher-Yates. Đảm bảo công bằng, chống phỏng đoán số VIP.</div>
-            </label>
-
-            <label class="mode-radio-label" id="labelModeSequential">
-              <input type="radio" name="seedMode" value="SEQUENTIAL">
-              <div class="mode-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                <span>SEQUENTIAL (Tuần tự)</span>
-              </div>
-              <div class="mode-sub">Cấp phát theo thứ tự từ #001 đến #N cho người đến trước nhận trước theo dòng thời gian.</div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="button" class="btn-seed-pool" id="triggerSeedBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          <span>Khởi Tạo Lại Pool Số (Seed Pool)</span>
-        </button>
-      </form>
-    </div>
-
-    <!-- QUICK SYSTEM METRICS & ORGANIZER MANUAL -->
-    <div class="sys-summary-card">
-      <div>
-        <div class="section-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Thông Số Kỹ Thuật &amp; Quy Chuẩn CĐT</span>
-        </div>
-        <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Các quy chuẩn vận hành bảo đảm an toàn dữ liệu và tính minh bạch cho đợt bốc thăm trúng thưởng.</p>
-
-        <ul class="sys-info-list">
-          <li class="sys-info-item">
-            <span class="sys-info-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-              <span>Kiến trúc Memory Cache:</span>
-            </span>
-            <span class="sys-info-val">Redis Standalone / Upstash Cluster</span>
-          </li>
-          <li class="sys-info-item">
-            <span class="sys-info-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              <span>Chống trùng lặp định danh:</span>
-            </span>
-            <span class="sys-info-val badge">SETNX cccd:*:unique</span>
-          </li>
-          <li class="sys-info-item">
-            <span class="sys-info-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-              <span>Tốc độ cấp vé Atomic:</span>
-            </span>
-            <span class="sys-info-val badge">&lt; 3.5ms / ticket</span>
-          </li>
-          <li class="sys-info-item">
-            <span class="sys-info-label">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span>Chuẩn Hash biên lai số:</span>
-            </span>
-            <span class="sys-info-val">SHA-256 HMAC Digital Seal</span>
-          </li>
-        </ul>
-      </div>
-
-      <div style="font-size:12px; color:var(--ink-soft); line-height:1.5; padding:12px 14px; background:rgba(0,0,0,0.3); border-radius:var(--r-sm); border:1px solid rgba(255,255,255,0.06);">
-        <strong>Lưu ý BTC:</strong> Khi kết thúc phiên Kick-off và chuyển sang phần bốc thăm may mắn, hãy nhấn <em>Đóng cổng</em> để cố định danh sách trước khi quay số trên màn hình LED sân khấu chính.
-      </div>
-    </div>
-  </div>
 
   <!-- ====================================================================
        SECTION 4: DISPUTE RESOLUTION (TRA CỨU ĐỐI CHIẾU TRANH CHẤP)
@@ -2101,6 +1993,133 @@ input, select {
     </div>
   </section>
 
+  <!-- ====================================================================
+       TWO-COLUMN SPLIT: SECTION 3 (CONFIG & SEED) & SYSTEM SUMMARY
+       ==================================================================== -->
+  <details class="advanced-settings-accordion" style="margin-top: 24px;">
+    <summary style="cursor: pointer; padding: 16px 20px; background: var(--card-bg); border: 1px solid var(--line-gold); border-radius: var(--r-lg); color: var(--bronze-300); font-family: var(--sans); font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 10px; user-select: none;">
+      <span>⚙️ Cài đặt nâng cao & Seed Pool</span>
+    </summary>
+    <div style="padding: 16px 0 0;">
+  <div class="two-col-grid">
+    <!-- SECTION 3: SEED & POOL QUOTA -->
+    <div class="config-card">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Cấu Hình &amp; Khởi Tạo Quota Pool Số (Seed Pool)</span>
+      </div>
+      <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Thiết lập tổng số vé may mắn phát hành cho toàn bộ sự kiện Kick-off. Dữ liệu nạp trực tiếp vào Redis List <code>lucky:pool</code>.</p>
+
+      <form class="config-form" id="poolConfigForm">
+        <!-- Field 1: Pool Max -->
+        <div class="form-group-admin">
+          <label for="inputPoolMax">Dung lượng vé phát hành (Pool Max Quota)</label>
+          <div class="field-desc">Số lượng lá vé may mắn cấp phát tối đa từ dải số #001 trở đi.</div>
+          <div class="input-quota-wrap">
+            <input type="number" id="inputPoolMax" class="input-admin-num" value="1000" min="10" max="10000" step="10">
+            <div class="quota-preset-pills">
+              <button type="button" class="preset-pill" data-val="500">500 vé</button>
+              <button type="button" class="preset-pill active" data-val="1000">1,000 vé</button>
+              <button type="button" class="preset-pill" data-val="1500">1,500 vé</button>
+              <button type="button" class="preset-pill" data-val="2000">2,000 vé</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Field 2: Allocation Mode -->
+        <div class="form-group-admin">
+          <label>Chế độ cấp phát số may mắn (Distribution Mode)</label>
+          <div class="field-desc">Thuật toán lựa chọn số khi chiến binh kinh doanh bấm nhận vé.</div>
+          <div class="mode-selector-grid">
+            <label class="mode-radio-label checked" id="labelModeShuffle">
+              <input type="radio" name="seedMode" value="SHUFFLE" checked>
+              <div class="mode-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+                <span>SHUFFLE (Ngẫu nhiên)</span>
+              </div>
+              <div class="mode-sub">Xáo trộn ngẫu nhiên toàn bộ dải số bằng Fisher-Yates. Đảm bảo công bằng, chống phỏng đoán số VIP.</div>
+            </label>
+
+            <label class="mode-radio-label" id="labelModeSequential">
+              <input type="radio" name="seedMode" value="SEQUENTIAL">
+              <div class="mode-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>SEQUENTIAL (Tuần tự)</span>
+              </div>
+              <div class="mode-sub">Cấp phát theo thứ tự từ #001 đến #N cho người đến trước nhận trước theo dòng thời gian.</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="button" class="btn-seed-pool" id="triggerSeedBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span>Khởi Tạo Lại Pool Số (Seed Pool)</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- QUICK SYSTEM METRICS & ORGANIZER MANUAL -->
+    <div class="sys-summary-card">
+      <div>
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Thông Số Kỹ Thuật &amp; Quy Chuẩn CĐT</span>
+        </div>
+        <p style="font-size:13px; color:var(--sand-200); margin-top:6px;">Các quy chuẩn vận hành bảo đảm an toàn dữ liệu và tính minh bạch cho đợt bốc thăm trúng thưởng.</p>
+
+        <ul class="sys-info-list">
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+              <span>Kiến trúc Memory Cache:</span>
+            </span>
+            <span class="sys-info-val">Redis Standalone / Upstash Cluster</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Chống trùng lặp định danh:</span>
+            </span>
+            <span class="sys-info-val badge">SETNX cccd:*:unique</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+              <span>Tốc độ cấp vé Atomic:</span>
+            </span>
+            <span class="sys-info-val badge">&lt; 3.5ms / ticket</span>
+          </li>
+          <li class="sys-info-item">
+            <span class="sys-info-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Chuẩn Hash biên lai số:</span>
+            </span>
+            <span class="sys-info-val">SHA-256 HMAC Digital Seal</span>
+          </li>
+        </ul>
+      </div>
+
+      <div style="font-size:12px; color:var(--ink-soft); line-height:1.5; padding:12px 14px; background:rgba(0,0,0,0.3); border-radius:var(--r-sm); border:1px solid rgba(255,255,255,0.06);">
+        <strong>Lưu ý BTC:</strong> Khi kết thúc phiên Kick-off và chuyển sang phần bốc thăm may mắn, hãy nhấn <em>Đóng cổng</em> để cố định danh sách trước khi quay số trên màn hình LED sân khấu chính.
+      </div>
+    </div>
+  </div>
+
+      <!-- NEW: Clean All Data Section -->
+      <div style="margin-top: 24px; padding: 20px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--r-lg);">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          <span style="font-family: var(--sans); font-weight: 700; font-size: 15px; color: #EF4444;">Xóa Toàn Bộ Dữ Liệu & Bắt Đầu Lại (Nuclear Reset)</span>
+        </div>
+        <p style="font-size: 13px; color: var(--sand-200); margin-bottom: 16px;">Xóa toàn bộ dữ liệu check-in, vé đã phát, biên lai, nhật ký kiểm toán. Pool số sẽ được khởi tạo lại từ đầu. Cổng sẽ tự động đóng.</p>
+        <button type="button" id="triggerResetBtn" style="padding: 12px 24px; background: #EF4444; color: white; border: none; border-radius: var(--r-md); font-family: var(--sans); font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;" onmouseover="this.style.background='#DC2626'" onmouseout="this.style.background='#EF4444'">
+          🗑️ XÓA TOÀN BỘ DỮ LIỆU & BẮT ĐẦU LẠI
+        </button>
+      </div>
+    </div>
+  </details>
+
   <!-- FOOTER -->
   <footer class="admin-footer">
     <div class="footer-credits">
@@ -2140,6 +2159,32 @@ input, select {
     <div class="modal-actions">
       <button type="button" class="btn-modal-cancel" id="cancelSeedBtn">Hủy Bỏ</button>
       <button type="button" class="btn-modal-danger" id="executeSeedBtn" disabled>Xác Nhận Khởi Tạo Lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Nuclear Reset Confirmation -->
+<div class="modal-overlay" id="confirmResetModal" style="display:none; align-items:center; justify-content:center; z-index:9999; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); position:fixed; inset:0;">
+  <div class="modal-card" style="max-width:480px; background:var(--card-bg); border:1px solid rgba(239,68,68,0.3); border-radius:var(--r-lg); padding:24px; width:90%;">
+    <div class="modal-header">
+      <h3 style="color:#EF4444; font-family:var(--sans); font-size:18px; font-weight:800; margin:0;">⚠️ Xác Nhận Xóa Toàn Bộ Dữ Liệu</h3>
+    </div>
+    <div class="modal-body" style="margin:20px 0;">
+      <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:var(--r-md); padding:14px; margin-bottom:16px;">
+        <p style="font-size:13px; color:var(--sand-100); line-height:1.6; margin:0;">Hành động này sẽ <strong style="color:#EF4444;">XÓA TOÀN BỘ</strong> dữ liệu check-in, vé đã phát, biên lai, và nhật ký kiểm toán. Pool số sẽ được khởi tạo lại từ đầu. <strong>Không thể hoàn tác.</strong></p>
+      </div>
+      <div class="form-group-admin" style="margin-bottom:14px; display:flex; flex-direction:column;">
+        <label style="font-size:13px; color:var(--sand-200);">Gõ <strong style="color:#EF4444;">XÓA HẾT</strong> để xác nhận:</label>
+        <input type="text" id="resetConfirmInput" class="input-admin" placeholder="Gõ XÓA HẾT" autocomplete="off" style="margin-top:6px; background:rgba(0,0,0,0.2); border:1px solid var(--bronze-600); color:white; padding:10px; border-radius:var(--r-md);">
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+        <input type="checkbox" id="resetConfirmCheckbox" style="width:18px; height:18px; accent-color:#EF4444;">
+        <label for="resetConfirmCheckbox" style="font-size:13px; color:var(--sand-200); cursor:pointer;">Tôi hiểu rằng hành động này không thể hoàn tác</label>
+      </div>
+    </div>
+    <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:12px;">
+      <button type="button" class="btn-modal-cancel" id="cancelResetBtn" style="padding:10px 16px; background:transparent; color:var(--bronze-300); border:1px solid var(--bronze-600); border-radius:var(--r-md); cursor:pointer;">Hủy Bỏ</button>
+      <button type="button" id="executeResetBtn" disabled style="padding:10px 24px; background:#4B5563; color:#9CA3AF; border:none; border-radius:var(--r-md); font-family:var(--sans); font-weight:700; font-size:14px; cursor:not-allowed; transition:all 0.2s;">🗑️ XÓA TOÀN BỘ</button>
     </div>
   </div>
 </div>
@@ -3195,10 +3240,78 @@ input, select {
     if (pollIntervalId) clearInterval(pollIntervalId);
     pollIntervalId = setInterval(() => {
       fetchConfig(false);
-    }, 5000);
+    }, 3000);
   }
 
-  // 9. Initial Load & Setup
+  // === NUCLEAR RESET HANDLER ===
+const triggerResetBtn = document.getElementById('triggerResetBtn');
+const confirmResetModal = document.getElementById('confirmResetModal');
+const resetConfirmInput = document.getElementById('resetConfirmInput');
+const resetConfirmCheckbox = document.getElementById('resetConfirmCheckbox');
+const executeResetBtn = document.getElementById('executeResetBtn');
+const cancelResetBtn = document.getElementById('cancelResetBtn');
+
+function checkResetReady() {
+  const textOk = resetConfirmInput && resetConfirmInput.value.trim() === 'XÓA HẾT';
+  const checkOk = resetConfirmCheckbox && resetConfirmCheckbox.checked;
+  if (executeResetBtn) {
+    executeResetBtn.disabled = !(textOk && checkOk);
+    executeResetBtn.style.background = (textOk && checkOk) ? '#EF4444' : '#4B5563';
+    executeResetBtn.style.color = (textOk && checkOk) ? 'white' : '#9CA3AF';
+    executeResetBtn.style.cursor = (textOk && checkOk) ? 'pointer' : 'not-allowed';
+  }
+}
+
+if (triggerResetBtn) {
+  triggerResetBtn.addEventListener('click', () => {
+    if (resetConfirmInput) resetConfirmInput.value = '';
+    if (resetConfirmCheckbox) resetConfirmCheckbox.checked = false;
+    checkResetReady();
+    if (confirmResetModal) confirmResetModal.style.display = 'flex';
+  });
+}
+
+if (resetConfirmInput) resetConfirmInput.addEventListener('input', checkResetReady);
+if (resetConfirmCheckbox) resetConfirmCheckbox.addEventListener('change', checkResetReady);
+
+if (cancelResetBtn) {
+  cancelResetBtn.addEventListener('click', () => {
+    if (confirmResetModal) confirmResetModal.style.display = 'none';
+  });
+}
+
+if (executeResetBtn) {
+  executeResetBtn.addEventListener('click', async () => {
+    if (executeResetBtn.disabled) return;
+    executeResetBtn.disabled = true;
+    executeResetBtn.textContent = '⏳ Đang xóa...';
+    try {
+      const poolMaxVal = document.getElementById('inputPoolMax') ? parseInt(document.getElementById('inputPoolMax').value, 10) || 1000 : 1000;
+      const modeVal = document.querySelector('input[name="seedMode"]:checked') ? document.querySelector('input[name="seedMode"]:checked').value : 'SHUFFLE';
+      
+      const resp = await fetch('/api/admin/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        body: JSON.stringify({ action: 'reset', confirm: 'XÓA HẾT', poolMax: poolMaxVal, mode: modeVal }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        if (typeof showToast === 'function') showToast('✅ ' + data.message, 'success');
+        if (typeof playTone === 'function') playTone('success');
+        if (typeof fetchAdminConfig === 'function') fetchAdminConfig();
+      } else {
+        if (typeof showToast === 'function') showToast('❌ ' + (data.message || 'Reset thất bại'), 'error');
+      }
+    } catch (err) {
+      if (typeof showToast === 'function') showToast('❌ Lỗi kết nối: ' + err.message, 'error');
+    }
+    if (confirmResetModal) confirmResetModal.style.display = 'none';
+    executeResetBtn.disabled = false;
+    executeResetBtn.textContent = '🗑️ XÓA TOÀN BỘ';
+  });
+}
+
+// 9. Initial Load & Setup
   function initApp() {
     updateAuthKeyDisplay();
 
