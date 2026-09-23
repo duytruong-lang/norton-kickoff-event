@@ -33,6 +33,38 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'SVN-Gotham';
+  src: url('fonts/SVN-Gotham-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SVN-Gotham';
+  src: url('fonts/SVN-Gotham-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('fonts/SFUFuturaRegular.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('fonts/SFUFuturaBook.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Brand Master Palette */
   --pine-950: #0E1310;
@@ -74,9 +106,12 @@
   --card-bg: rgba(27, 33, 28, 0.88);
   --card-bg-elevated: rgba(37, 45, 36, 0.92);
 
-  /* Typography */
-  --serif: 'SVN-The Seasons', 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Brand Kit Typography — Norton Park Brand Guidelines */
+  --font-headline: 'SVN-The Seasons', 'The Seasons', Georgia, serif;
+  --font-subheading: 'SFU Futura', 'Futura', sans-serif;
+  --font-body: 'SVN-Gotham', 'Gotham', -apple-system, BlinkMacSystemFont, sans-serif;
+  --serif: var(--font-headline);
+  --sans: var(--font-body);
   --mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 
   /* Radii & Effects */
@@ -1875,7 +1910,7 @@ input, select {
       <form class="lookup-input-row" id="lookupForm">
         <div class="lookup-input-box">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="lookupQuery" class="input-lookup" placeholder="Nhập CCCD (vd: 079092008888) hoặc SĐT (vd: 0908168286)..." autocomplete="off">
+          <input type="text" id="lookupQuery" class="input-lookup" placeholder="Nhập SĐT (10 số) hoặc 4 số cuối CCCD..." autocomplete="off">
         </div>
         <button type="submit" class="btn-lookup-submit" id="lookupSubmitBtn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -3074,20 +3109,29 @@ input, select {
   }
 
   function renderFoundVerdict(res) {
-    const rec = res.record || {};
+    const records = Array.isArray(res.records) ? res.records : (res.record ? [res.record] : [{}]);
+    const rec = records[0];
     const rcpt = res.receipt || {};
-    const isReplay = res.verdict === 'REPLAY_DETECTED';
+    const isReplay = res.verdict === 'REPLAY_DETECTED' || records.length > 1;
 
     verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
     verdictStatusText.textContent = isReplay 
-      ? 'CẢNH BÁO: TRÙNG LẶP CCCD / PHÁT HIỆN REPLAY!' 
+      ? `CẢNH BÁO: TRÙNG LẶP CCCD / PHÁT HIỆN REPLAY! (${records.length} HỒ SƠ)` 
       : 'HỢP LỆ — LÁ VÉ CHÍNH CHỦ ĐƯỢC XÁC THỰC BỞI MÁY CHỦ CĐT';
     
-    verdictTicketNumber.textContent = rec.luckyNumber || '#---';
+    verdictTicketNumber.textContent = records.map(r => r.luckyNumber || '#---').join(', ');
     verdictName.textContent = rec.name || '--';
     verdictPhone.textContent = rec.phone || '--';
-    verdictCccd.textContent = rec.cccd || '--';
-    verdictAgency.textContent = rec.agency || '--';
+    
+    const cccdStr = rec.cccd || '--';
+    if (cccdStr !== '--') {
+      const last4 = cccdStr.length >= 4 ? cccdStr.slice(-4) : cccdStr;
+      verdictCccd.textContent = `•••• •••• ${last4}`;
+    } else {
+      verdictCccd.textContent = '--';
+    }
+    
+    verdictAgency.textContent = records.map(r => r.agency || '--').join(', ');
 
     // Receipt details
     receiptCard.style.display = 'block';

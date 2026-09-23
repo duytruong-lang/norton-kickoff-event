@@ -73,41 +73,28 @@ module.exports = async function handler(req, res) {
 
   try {
     const cleanDigits = rawQuery.replace(/\D/g, '');
-    let matchedCccd = null;
-    let registration = null;
+    let registrations = [];
 
-    // 1. Try finding by CCCD key directly
-    if (cleanDigits) {
-      const byCccd = await redis.hgetall(`reg:cccd:${cleanDigits}`);
-      if (byCccd && byCccd.ticketNumber) {
-        matchedCccd = cleanDigits;
-        registration = byCccd;
+    if (cleanDigits.length === 4) {
+      const phones = await redis.smembers(`reg:cccd4:${cleanDigits}`);
+      if (phones && phones.length > 0) {
+        const pipeline = redis.pipeline();
+        phones.forEach(phone => pipeline.hgetall(`reg:phone:${phone}`));
+        const results = await pipeline.exec();
+        registrations = results.map(res => res[1]).filter(r => r && r.ticketNumber);
       }
-    }
-
-    // 2. If not found, try finding via Phone Index
-    if (!registration) {
+    } else {
       const phoneInfo = normalizePhoneVN(rawQuery);
-      if (phoneInfo.local) {
-        const cccdFromPhone = await redis.get(`reg:phone:${phoneInfo.local}`);
-        if (cccdFromPhone) {
-          matchedCccd = cccdFromPhone;
-          registration = await redis.hgetall(`reg:cccd:${cccdFromPhone}`);
+      let targetPhone = phoneInfo.isValid ? phoneInfo.local : cleanDigits;
+      if (targetPhone) {
+        const reg = await redis.hgetall(`reg:phone:${targetPhone}`);
+        if (reg && reg.ticketNumber) {
+          registrations = [reg];
         }
       }
     }
 
-    // 3. If still not found, search in raw query format
-    if (!registration && cleanDigits) {
-      const cccdFromPhone = await redis.get(`reg:phone:${cleanDigits}`);
-      if (cccdFromPhone) {
-        matchedCccd = cccdFromPhone;
-        registration = await redis.hgetall(`reg:cccd:${cccdFromPhone}`);
-      }
-    }
-
-    // If no record found
-    if (!registration || !registration.ticketNumber) {
+    if (registrations.length === 0) {
       return res.status(200).json({
         success: true,
         matched: null,
@@ -118,83 +105,95 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 4. Retrieve immutable verification receipt
-    const leadId = registration.leadId;
-    const receipt = await getReceipt(leadId);
-
-    // 5. Query Redis Stream audit:log for dispute timeline
-    let timeline = [];
-    try {
-      // Fetch recent 100 audit entries
-      const streamEntries = await redis.xrange('audit:log', '-', '+', 100);
-      if (Array.isArray(streamEntries)) {
-        const cccdHashed = sha256Hex(registration.cccd);
-        const phoneLocal = registration.phone;
-
-        timeline = streamEntries
-          .map(([msgId, fields]) => {
-            const entry = typeof fields === 'object' ? fields : {};
-            return {
-              messageId: msgId,
-              timestamp: entry.timestamp || new Date().toISOString(),
-              action: entry.action || 'system_event',
-              status: entry.status || 'INFO',
-              leadId: entry.leadId || '',
-              ticketNumber: entry.ticketNumber || '',
-              ip: entry.ip || '',
-              cccdHash: entry.cccdHash || '',
-              phoneMasked: entry.phoneMasked || '',
-              responseTimeMs: entry.responseTimeMs || '0',
-            };
-          })
-          .filter(e => {
-            return (
-              (e.leadId && e.leadId === leadId) ||
-              (e.ticketNumber && e.ticketNumber === registration.ticketNumber) ||
-              (e.cccdHash && e.cccdHash === cccdHashed) ||
-              (e.phoneMasked && phoneLocal && e.phoneMasked.includes(phoneLocal.slice(-3)))
-            );
-          });
+    const processRegistration = async (registration) => {
+      const leadId = registration.leadId;
+      const receipt = await getReceipt(leadId);
+      
+      let timeline = [];
+      try {
+        const streamEntries = await redis.xrange('audit:log', '-', '+', 100);
+        if (Array.isArray(streamEntries)) {
+          const cccdHashed = sha256Hex(registration.cccdLast4 || registration.cccd);
+          const phoneLocal = registration.phone;
+          timeline = streamEntries
+            .map(([msgId, fields]) => {
+              const entry = typeof fields === 'object' ? fields : {};
+              return {
+                messageId: msgId,
+                timestamp: entry.timestamp || new Date().toISOString(),
+                action: entry.action || 'system_event',
+                status: entry.status || 'INFO',
+                leadId: entry.leadId || '',
+                ticketNumber: entry.ticketNumber || '',
+                ip: entry.ip || '',
+                cccdHash: entry.cccdHash || '',
+                phoneMasked: entry.phoneMasked || '',
+                responseTimeMs: entry.responseTimeMs || '0',
+              };
+            })
+            .filter(e => {
+              return (
+                (e.leadId && e.leadId === leadId) ||
+                (e.ticketNumber && e.ticketNumber === registration.ticketNumber) ||
+                (e.cccdHash && e.cccdHash === cccdHashed) ||
+                (e.phoneMasked && phoneLocal && e.phoneMasked.includes(phoneLocal.slice(-3)))
+              );
+            });
+        }
+      } catch (streamErr) {
+        console.warn('[Admin Lookup] Stream audit query error (fail-soft):', streamErr.message);
       }
-    } catch (streamErr) {
-      console.warn('[Admin Lookup] Stream audit query error (fail-soft):', streamErr.message);
-    }
 
-    // 6. Format matched view model compatible with admin.html UI
-    const isReplay = registration.replayed === 'true' || (receipt && receipt.replayed);
-    const luckyNum = (registration.ticketNumber || '')
-      .replace('NP-2026-', '')
-      .replace('NP-OVERFLOW-', 'OVERFLOW-');
+      const isReplay = registration.replayed === 'true' || (receipt && receipt.replayed);
+      const luckyNum = (registration.ticketNumber || '')
+        .replace('NP-2026-', '')
+        .replace('NP-OVERFLOW-', 'OVERFLOW-');
 
-    const matched = {
-      name: registration.fullName,
-      phone: registration.phone,
-      cccd: registration.cccd,
-      agency: registration.agency || 'Khách mời tự do',
-      email: registration.email || 'sales@gamudaland.vn',
-      luckyNumber: luckyNum,
-      ticketCode: registration.ticketNumber,
-      checkedInAt: registration.issuedAt,
-      displayTime: new Date(registration.issuedAt).toLocaleString('vi-VN', {
-        timeZone: 'Asia/Ho_Chi_Minh',
-        hour12: false,
-      }),
-      clientIp: registration.ip || (receipt && receipt.clientIp) || '127.0.0.1',
-      userAgent: registration.userAgent || '',
-      receiptId: receipt ? receipt.receiptId : registration.receiptId,
-      isReplay: Boolean(isReplay),
-      replayCount: isReplay ? 2 : 1,
-      integrityHash: receipt ? receipt.signature : sha256Hex(`${leadId}|${registration.ticketNumber}`),
+      const matched = {
+        name: registration.fullName,
+        phone: registration.phone,
+        cccd: registration.cccdLast4 || registration.cccd,
+        agency: registration.agency || 'Khách mời tự do',
+        email: registration.email || 'sales@gamudaland.vn',
+        luckyNumber: luckyNum,
+        ticketCode: registration.ticketNumber,
+        checkedInAt: registration.issuedAt,
+        displayTime: new Date(registration.issuedAt).toLocaleString('vi-VN', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          hour12: false,
+        }),
+        clientIp: registration.ip || (receipt && receipt.clientIp) || '127.0.0.1',
+        userAgent: registration.userAgent || '',
+        receiptId: receipt ? receipt.receiptId : registration.receiptId,
+        isReplay: Boolean(isReplay),
+        replayCount: isReplay ? 2 : 1,
+        integrityHash: receipt ? receipt.signature : sha256Hex(`${leadId}|${registration.ticketNumber}`),
+      };
+
+      return { matched, registration, receipt, timeline };
     };
 
-    return res.status(200).json({
-      success: true,
-      matched,
-      registration,
-      receipt,
-      timeline,
-      message: 'Tra cứu hồ sơ thành công.',
-    });
+    const results = await Promise.all(registrations.map(processRegistration));
+    
+    if (results.length === 1) {
+      return res.status(200).json({
+        success: true,
+        matched: results[0].matched,
+        registration: results[0].registration,
+        receipt: results[0].receipt,
+        timeline: results[0].timeline,
+        message: 'Tra cứu hồ sơ thành công.',
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        matched: results.map(r => r.matched),
+        registration: results.map(r => r.registration),
+        receipt: results.map(r => r.receipt),
+        timeline: results.map(r => r.timeline),
+        message: `Tìm thấy ${results.length} hồ sơ.`,
+      });
+    }
   } catch (err) {
     console.error('[Admin Lookup Error]:', err.message);
     return res.status(500).json({

@@ -9,7 +9,7 @@
  */
 
 const { redis } = require('../lib/redis');
-const { padZero, normalizePhoneVN, cleanCCCD } = require('../lib/helpers');
+const { padZero, normalizePhoneVN, cleanCCCDLast4 } = require('../lib/helpers');
 const { logRequest, writeReceipt } = require('../lib/audit');
 const { sendMetaLeadEvent } = require('../lib/capi');
 const { appendLeadToSheet } = require('../lib/sheets');
@@ -101,7 +101,7 @@ module.exports = async function handler(req, res) {
     const role = String(body.role || 'Chiến binh kinh doanh').trim();
     const utmSource = String(body.utmSource || body.source || 'LDP').trim();
 
-    const cleanId = cleanCCCD(rawCCCD);
+    const clean4Id = cleanCCCDLast4(rawCCCD);
     const phoneInfo = normalizePhoneVN(rawPhone);
 
     if (!fullName) {
@@ -112,11 +112,11 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    if (!cleanId || cleanId.length < 8) {
+    if (!clean4Id || clean4Id.length !== 4) {
       return res.status(400).json({
         success: false,
         error: 'INVALID_CCCD',
-        message: 'Số CCCD / CMND không hợp lệ (yêu cầu từ 9-12 chữ số).',
+        message: 'Vui lòng nhập đúng 4 chữ số cuối CCCD / CMND.',
       });
     }
 
@@ -128,9 +128,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 2.2 Absolute CCCD Idempotency Check (reg:cccd:{cleanCCCD})
-    const cccdKey = `reg:cccd:${cleanId}`;
-    const existing = await redis.hgetall(cccdKey);
+    // 2.2 Absolute Phone Idempotency Check (reg:phone:{phoneLocal})
+    const phoneKey = `reg:phone:${phoneInfo.local}`;
+    const existing = await redis.hgetall(phoneKey);
 
     if (existing && existing.ticketNumber) {
       const responseTimeMs = Date.now() - startTime;
@@ -149,7 +149,7 @@ module.exports = async function handler(req, res) {
         leadId: replayLeadId,
         receiptId: existing.receiptId,
         ticketNumber: existing.ticketNumber,
-        cccd: cleanId,
+        cccdLast4: clean4Id,
         phone: phoneInfo.local,
         ip: clientIp,
         geo: { city, country, region },
@@ -168,7 +168,7 @@ module.exports = async function handler(req, res) {
         fullName: existing.fullName,
         phone: existing.phone,
         agency: existing.agency || agency,
-        cccd: cleanId,
+        cccdLast4: clean4Id,
         issuedAt: existing.issuedAt,
         replayed: true,
         responseTimeMs,
@@ -225,7 +225,7 @@ module.exports = async function handler(req, res) {
       fullName,
       phone: phoneInfo.local,
       phoneE164: phoneInfo.e164Plain,
-      cccd: cleanId,
+      cccdLast4: clean4Id,
       agency: agency || 'Khách mời tự do',
       email: email || '',
       role,
@@ -240,8 +240,8 @@ module.exports = async function handler(req, res) {
 
     // 2.6 Persistence: Redis Hash, phone index, counter, receipt, audit stream
     await Promise.all([
-      redis.hset(cccdKey, registrationRecord),
-      redis.set(`reg:phone:${phoneInfo.local}`, cleanId),
+      redis.hset(phoneKey, registrationRecord),
+      redis.sadd('reg:cccd4:' + clean4Id, phoneInfo.local),
       redis.incr('stats:total'),
       writeReceipt(leadId, {
         ...registrationRecord,
@@ -253,7 +253,7 @@ module.exports = async function handler(req, res) {
         leadId,
         receiptId,
         ticketNumber,
-        cccd: cleanId,
+        cccdLast4: clean4Id,
         phone: phoneInfo.local,
         ip: clientIp,
         geo: { city, country, region },
@@ -276,7 +276,7 @@ module.exports = async function handler(req, res) {
       fullName,
       phone: phoneInfo.local,
       agency: registrationRecord.agency,
-      cccd: cleanId,
+      cccdLast4: clean4Id,
       issuedAt,
       replayed: false,
       responseTimeMs,
@@ -303,7 +303,7 @@ module.exports = async function handler(req, res) {
         ticketNumber,
         fullName,
         phone: phoneInfo.raw,
-        cccd: cleanId,
+        cccdLast4: clean4Id,
         agency: registrationRecord.agency,
         email,
         role,

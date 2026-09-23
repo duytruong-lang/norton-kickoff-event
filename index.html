@@ -48,6 +48,38 @@ fbq('track', 'PageView');
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'SVN-Gotham';
+  src: url('fonts/SVN-Gotham-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SVN-Gotham';
+  src: url('fonts/SVN-Gotham-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('fonts/SFUFuturaRegular.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SFU Futura';
+  src: url('fonts/SFUFuturaBook.TTF') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Gamuda Land & Norton Park Brand Palette */
   --pine-900: #1B211C;
@@ -75,9 +107,12 @@ fbq('track', 'PageView');
   --danger: #DF192A;
   --success-color: #2F6E45;
 
-  /* Typography Stacks */
-  --serif: 'SVN-The Seasons', 'The Seasons', 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Plus Jakarta Sans', 'Futura', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Brand Kit Typography — Norton Park Brand Guidelines */
+  --font-headline: 'SVN-The Seasons', 'The Seasons', Georgia, serif;
+  --font-subheading: 'SFU Futura', 'Futura', sans-serif;
+  --font-body: 'SVN-Gotham', 'Gotham', -apple-system, BlinkMacSystemFont, sans-serif;
+  --serif: var(--font-headline);
+  --sans: var(--font-body);
   --script: 'Pinyon Script', 'Allura', cursive;
 
   /* Spacing & Radii */
@@ -256,7 +291,7 @@ input, select {
 }
 
 .header-proposal-tag {
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -283,7 +318,7 @@ input, select {
 .hero-eyebrow {
   display: block;
   text-align: center;
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.22em;
@@ -483,7 +518,7 @@ input, select {
 
 .event-strip .time .d {
   display: block;
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -574,7 +609,7 @@ input, select {
 }
 
 .form-header .eyebrow {
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.28em;
@@ -625,7 +660,7 @@ input, select {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -989,7 +1024,7 @@ input, select {
 }
 
 .ticket .stub-top .kicker {
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.32em;
@@ -1024,7 +1059,7 @@ input, select {
 
 .lucky-label {
   text-align: center;
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.28em;
@@ -1453,7 +1488,7 @@ input, select {
   border-radius: 4px;
   background: rgba(167, 128, 97, 0.15);
   border: 1px solid rgba(167, 128, 97, 0.35);
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1578,7 +1613,7 @@ input, select {
   flex: 1;
 }
 .gate-banner-title {
-  font-family: var(--sans);
+  font-family: var(--font-subheading);
   font-size: 13.5px;
   font-weight: 700;
   color: var(--pine-900);
@@ -1796,14 +1831,14 @@ input, select {
           <div class="form-error" data-for="phone">Số điện thoại chưa hợp lệ (gồm 10 chữ số).</div>
         </div>
 
-        <!-- Field 3: Số CCCD -->
+        <!-- Field 3: 4 số cuối CCCD / CMND -->
         <div class="form-group">
-          <label for="cccd">Số CCCD <span class="req">*</span></label>
+          <label for="cccd">4 số cuối CCCD / CMND <span class="req">*</span></label>
           <div class="input-wrap">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2"/><path d="M15 12h2"/><path d="M7 16h10"/></svg>
-            <input id="cccd" name="cccd" type="tel" inputmode="numeric" autocomplete="off" placeholder="VD: 079092008888 (12 số)" maxlength="12" required>
+            <input id="cccd" name="cccd" type="tel" inputmode="numeric" autocomplete="off" placeholder="VD: 8877" maxlength="4" pattern="[0-9]{4}" required>
           </div>
-          <div class="form-error" data-for="cccd">Số CCCD/CMND chưa hợp lệ (9 hoặc 12 số).</div>
+          <div class="form-error" data-for="cccd">Vui lòng nhập đúng 4 chữ số cuối CCCD.</div>
         </div>
 
         <!-- Field 4: Sàn phân phối F1 Gamuda Land -->
@@ -1901,7 +1936,7 @@ input, select {
         <div class="name" id="luckyName">Nguyễn Thành Nam</div>
         <div class="phone" id="luckyPhone">0908 168 286</div>
         <div class="ticket-meta">
-          <span id="luckyCccd">CCCD: 079092008888</span> · <span id="luckyAgency">ERA Vietnam</span>
+          <span id="luckyCccd">CCCD: •••• •••• 8877</span> · <span id="luckyAgency">ERA Vietnam</span>
         </div>
 
         <!-- Ticket QR code strip (REAL SCANNABLE DYNAMIC QR) -->
@@ -2363,10 +2398,10 @@ input, select {
   // 3. Quick Test Autofill (Demo Proposal Convenience)
   autofillBtn?.addEventListener('click', () => {
     const sampleProfiles = [
-      { name: 'Nguyễn Thành Nam', phone: '0908 168 286', cccd: '079092008888', agency: 'ERA Vietnam', email: 'nam.nguyen@eravn.vn' },
-      { name: 'Trần Thị Mai Phương', phone: '0938 234 567', cccd: '079195009999', agency: 'Đông Tây Land', email: 'phuong.tran@dongtayland.vn' },
-      { name: 'Lê Hoàng Dũng', phone: '0912 345 678', cccd: '079088007777', agency: 'Southern Homes', email: 'dung.le@southernhomes.vn' },
-      { name: 'Phạm Minh Tuấn', phone: '0989 888 666', cccd: '079090001234', agency: 'CBRE Vietnam', email: 'tuan.pham@cbre.com' }
+      { name: 'Nguyễn Thành Nam', phone: '0908 168 286', cccd: '8888', agency: 'ERA Vietnam', email: 'nam.nguyen@eravn.vn' },
+      { name: 'Trần Thị Mai Phương', phone: '0938 234 567', cccd: '9999', agency: 'Đông Tây Land', email: 'phuong.tran@dongtayland.vn' },
+      { name: 'Lê Hoàng Dũng', phone: '0912 345 678', cccd: '7777', agency: 'Southern Homes', email: 'dung.le@southernhomes.vn' },
+      { name: 'Phạm Minh Tuấn', phone: '0989 888 666', cccd: '1234', agency: 'CBRE Vietnam', email: 'tuan.pham@cbre.com' }
     ];
     const picked = sampleProfiles[Math.floor(Math.random() * sampleProfiles.length)];
     
@@ -2424,8 +2459,8 @@ input, select {
       showError('phone', false);
     }
 
-    // 3. CCCD validation (9 or 12 digits)
-    if (!/^\d{9}(\d{3})?$/.test(cccd)) {
+    // 3. CCCD validation (4 digits)
+    if (!/^\d{4}$/.test(cccd)) {
       showError('cccd', true);
       isValid = false;
     } else {
@@ -2505,7 +2540,8 @@ input, select {
     luckyNumberEl.textContent = data.luckyNumber;
     luckyNameEl.textContent = data.name;
     luckyPhoneEl.textContent = data.phone;
-    luckyCccdEl.textContent = data.cccd.startsWith('CCCD:') ? data.cccd : ('CCCD: ' + data.cccd);
+    const cccdDisplay = data.cccdLast4 || data.cccd || '';
+    luckyCccdEl.textContent = 'CCCD: •••• •••• ' + cccdDisplay;
     luckyAgencyEl.textContent = data.agency;
     const ticketCode = data.ticketCode || ('NP-2026-' + (data.luckyNumber || '088').replace('#', ''));
     if (luckyCodeDisplay) luckyCodeDisplay.textContent = ticketCode;
@@ -2713,7 +2749,7 @@ input, select {
       receiptId: receiptId,
       name: data.name || name,
       phone: data.phone || phone,
-      cccd: data.cccd || cccd,
+      cccdLast4: data.cccd || cccd,
       agency: data.agency || agency,
       email: data.email || email,
       timestamp: fullTimeStr,

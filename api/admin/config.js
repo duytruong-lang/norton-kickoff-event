@@ -248,7 +248,7 @@ module.exports = async function handler(req, res) {
           });
         }
 
-        const cccdKeys = (await redis.keys('reg:cccd:*')) || [];
+        const cccdKeys = (await redis.keys('reg:cccd4:*')) || [];
         const phoneKeys = (await redis.keys('reg:phone:*')) || [];
         const receiptKeys = (await redis.keys('receipt:*')) || [];
         const keysToDelete = [...cccdKeys, ...phoneKeys, ...receiptKeys];
