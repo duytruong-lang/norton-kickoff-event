@@ -81,7 +81,7 @@ module.exports = async function handler(req, res) {
         const pipeline = redis.pipeline();
         phones.forEach(phone => pipeline.hgetall(`reg:phone:${phone}`));
         const results = await pipeline.exec();
-        registrations = results.map(res => res[1]).filter(r => r && r.ticketNumber);
+        registrations = results.filter(r => r && r.ticketNumber);
       }
     } else {
       const phoneInfo = normalizePhoneVN(rawQuery);
