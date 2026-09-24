@@ -1135,9 +1135,9 @@ input, select {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 8px;
-  font-size: 11.5px;
+  font-size: 10.5px;
 }
 
 .footer-legal a {
@@ -1145,6 +1145,7 @@ input, select {
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
+  white-space: nowrap;
   transition: color 0.15s;
 }
 
@@ -1154,8 +1155,15 @@ input, select {
 
 .footer-legal .dot {
   color: var(--bronze-500);
-  font-size: 8px;
+  font-size: 7px;
   opacity: 0.6;
+}
+
+@media (min-width: 480px) {
+  .footer-legal {
+    font-size: 11.5px;
+    gap: 12px;
+  }
 }
 
 .footer .fine {
