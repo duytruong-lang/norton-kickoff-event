@@ -266,211 +266,47 @@ input, select {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--line);
-  margin-bottom: 12px;
-}
-
-.header-brand-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .logo-gamuda {
-  height: 28px;
-  width: auto;
-  display: block;
-}
-
-.header-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--line);
-}
-
-.header-proposal-tag {
-  font-family: var(--font-subheading);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--pine-800);
-  background: rgba(167, 128, 97, 0.14);
-  border: 1px solid rgba(167, 128, 97, 0.35);
-  padding: 3px 8px;
-  border-radius: 4px;
-}
-
-.header-motif-icon {
-  width: 22px;
   height: 26px;
-  opacity: 0.85;
-}
-
-/* TITLE & HERO SECTION */
-.title-block {
-  text-align: center;
-  padding: 4px 2px 8px;
-}
-
-.hero-eyebrow {
+  width: auto;
+  max-width: 125px;
   display: block;
-  text-align: center;
-  font-family: var(--font-subheading);
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-indent: 0.22em;
-  color: var(--pine-800);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-@media (min-width: 600px) {
-  .hero-eyebrow {
-    font-size: 12px;
-    letter-spacing: 0.26em;
-    text-indent: 0.26em;
-    margin-bottom: 14px;
-  }
-}
-
-/* BRAND RIBBON BAR WITH NORTON PARK LOGO */
-.brand-ribbon-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 4px auto 14px;
-  padding: 10px 24px 9px;
-  width: 100%;
-  max-width: 390px;
-  background: linear-gradient(90deg, 
-    rgba(44, 51, 42, 0) 0%, 
-    rgba(44, 51, 42, 0.45) 12%, 
-    rgba(27, 33, 28, 0.95) 30%, 
-    rgba(27, 33, 28, 0.98) 50%, 
-    rgba(27, 33, 28, 0.95) 70%, 
-    rgba(44, 51, 42, 0.45) 88%, 
-    rgba(44, 51, 42, 0) 100%
-  );
-  border-top: 1px solid rgba(194, 159, 129, 0.5);
-  border-bottom: 1px solid rgba(122, 91, 62, 0.4);
-  box-shadow: 0 4px 20px rgba(27, 33, 28, 0.2);
-  position: relative;
-}
-
-@media (min-width: 600px) {
-  .brand-ribbon-bar {
-    max-width: 440px;
-    padding: 12px 32px 11px;
-  }
-}
-
-.brand-ribbon-bar::before,
-.brand-ribbon-bar::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  transform: translateY(-50%);
-  background-image: url('assets/hoa-dau-motif.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.4;
-}
-
-.brand-ribbon-bar::before { left: 16px; }
-.brand-ribbon-bar::after { right: 16px; transform: translateY(-50%) scaleX(-1); }
-
-.logo-norton-white {
-  width: 100%;
-  max-width: 250px;
-  height: auto;
-  max-height: 28px;
   object-fit: contain;
+}
+
+.logo-norton {
+  height: 22px;
+  width: auto;
+  max-width: 130px;
   display: block;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+  object-fit: contain;
 }
 
-@media (min-width: 600px) {
-  .logo-norton-white {
-    max-width: 280px;
-    max-height: 32px;
-  }
-}
-
-/* HEADLINE TYPOGRAPHY */
-.hero-h1 {
-  font-family: var(--serif);
-  color: var(--pine-900);
-  line-height: 1.1;
-  text-align: center;
-  margin-top: 4px;
-}
-
-.hero-h1 .line-danhthuc {
-  display: block;
-  font-family: var(--serif);
-  font-size: clamp(24px, 6.8vw, 38px);
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-indent: 0.2em;
-  text-transform: uppercase;
-  color: var(--pine-900);
-  line-height: 1.15;
-}
-
-.hero-h1 .line-tuyettac {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 8px;
-  margin-top: -2px;
-}
-
-.hero-h1 .script-tuyettac {
-  font-family: var(--script);
-  font-weight: 400;
-  font-size: clamp(38px, 10vw, 64px);
-  color: var(--bronze-600);
-  line-height: 0.95;
-  transform: translateY(4px);
-  letter-spacing: 0;
-  white-space: nowrap;
-}
-
-.hero-h1 .serif-biophilic {
-  font-family: var(--serif);
-  font-size: clamp(24px, 6.8vw, 38px);
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-indent: 0.16em;
-  text-transform: uppercase;
-  color: var(--pine-900);
-  line-height: 1.15;
-  white-space: nowrap;
-}
-
-@media (max-width: 390px) {
-  .hero-h1 .line-tuyettac { gap: 6px; }
-  .hero-h1 .line-danhthuc,
-  .hero-h1 .serif-biophilic { letter-spacing: 0.12em; text-indent: 0.12em; }
-}
-
-/* HERO ART — OFFICIAL KEY VISUAL */
+/* HERO ART — OFFICIAL KEY VISUAL (COMPACT FOR OPTIMAL SCROLL) */
 .hero-art {
   position: relative;
-  margin: 10px -2px 6px;
-  border-radius: var(--r-lg);
+  margin: 6px 0 8px;
+  border-radius: var(--r-md);
   overflow: hidden;
+  max-height: 220px;
   aspect-ratio: 1024 / 722;
   box-shadow:
     0 1px 0 rgba(167, 128, 97, 0.4),
-    0 18px 36px -18px rgba(27, 33, 28, 0.3);
+    0 14px 28px -14px rgba(27, 33, 28, 0.28);
   border: 1px solid var(--line-strong);
+}
+
+@media (min-width: 600px) {
+  .hero-art {
+    max-height: 320px;
+    margin: 8px 0 12px;
+  }
 }
 
 .hero-art::before {
@@ -500,11 +336,11 @@ input, select {
 .event-strip {
   display: grid;
   grid-template-columns: auto 1px 1fr;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  padding: 10px 14px;
-  margin: 10px 0 6px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(243, 236, 224, 0.65));
+  padding: 8px 12px;
+  margin: 6px 0 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(243, 236, 224, 0.7));
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
@@ -572,7 +408,7 @@ input, select {
 
 /* FORM CARD */
 .form-card {
-  margin-top: 14px;
+  margin-top: 4px;
   background: #FFFDF9;
   border-radius: var(--r-lg);
   padding: 22px 18px 20px;
@@ -1273,24 +1109,27 @@ input, select {
 .footer-brands {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 14px;
-  flex-wrap: wrap;
   padding-bottom: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   border-bottom: 1px solid var(--line);
 }
 
 .footer-gamuda {
   height: 22px;
   width: auto;
+  max-width: 110px;
   display: block;
+  object-fit: contain;
 }
 
 .footer-norton {
-  height: 22px;
+  height: 20px;
   width: auto;
+  max-width: 120px;
   display: block;
+  object-fit: contain;
 }
 
 .footer-legal {
@@ -1719,30 +1558,16 @@ input, select {
 
   <!-- MAIN HEADER -->
   <header class="header">
-    <div class="header-brand-group">
-      <img class="logo-gamuda" src="assets/logo-gamuda-land.svg" alt="Gamuda Land" width="130" height="31">
-      <span class="header-divider" aria-hidden="true"></span>
-      <span class="header-proposal-tag">THE SYNC SHOW</span>
-    </div>
-    <img class="header-motif-icon" src="assets/hoa-dau-motif.svg" alt="Biểu tượng Hoa Dầu" width="22" height="26">
+    <img class="logo-gamuda" src="assets/logo-gamuda-land.svg" alt="Gamuda Land" width="124" height="27">
+    <img class="logo-norton" src="assets/logo-norton-park-hires.png" alt="Norton Park" width="130" height="26">
   </header>
 
   <!-- FORM STATE -->
   <div id="formState">
-    <!-- Editorial Title Block -->
-    <div class="title-block">
-      <div class="hero-eyebrow">NORTON PARK · GAMUDA LAND</div>
-      
-      <!-- Brand Ribbon Bar with Norton Park White Logo -->
-      <div class="brand-ribbon-bar">
-        <img class="logo-norton-white" src="assets/logo-norton-park-white.png" alt="Norton Park" width="280" height="32" fetchpriority="high">
-      </div>
+    <!-- Accessible Heading for SEO & Screen Readers -->
+    <h1 class="sr-only">The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại | Norton Park Gamuda Land</h1>
 
-      <!-- Accessible Heading for SEO & Screen Readers -->
-      <h1 class="sr-only">The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại | Norton Park Gamuda Land</h1>
-    </div>
-
-    <!-- Official Key Visual Artwork (Replaces The Glen building & simulated text) -->
+    <!-- Official Key Visual Artwork (The SYNC Show) -->
     <div class="hero-art hero-kv-art">
       <img src="assets/kv-the-sync-show.png" alt="The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại" width="1024" height="722" fetchpriority="high">
     </div>
@@ -1759,9 +1584,6 @@ input, select {
         <div class="addr">Số 03 đường Lữ Gia, phường Phú Thọ, TP. Hồ Chí Minh</div>
       </div>
     </div>
-
-    <!-- Biophilic Hoa Dầu Pattern Strip -->
-    <div class="pattern-strip" aria-hidden="true"></div>
 
     <!-- Registration Form -->
     <section class="form-card" aria-labelledby="regTitle">
@@ -1958,10 +1780,8 @@ input, select {
   <footer class="footer">
     <div class="footer-brands">
       <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" class="footer-gamuda" width="110" height="24">
-      <img src="assets/logo-norton-park.png" alt="Norton Park" class="footer-norton" width="110" height="24">
+      <img src="assets/logo-norton-park-hires.png" alt="Norton Park" class="footer-norton" width="115" height="22">
     </div>
-    
-    <div class="pattern-strip" style="opacity:0.4; height:18px; margin:4px auto 10px;" aria-hidden="true"></div>
 
     <div class="footer-legal">
       <a href="#terms" class="legal-trigger" data-modal="terms">Điều khoản &amp; Thể lệ</a>
