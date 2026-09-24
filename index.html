@@ -460,26 +460,33 @@ input, select {
   .hero-h1 .serif-biophilic { letter-spacing: 0.12em; text-indent: 0.12em; }
 }
 
-/* HERO ART */
+/* HERO ART — OFFICIAL KEY VISUAL */
 .hero-art {
   position: relative;
   margin: 10px -2px 6px;
   border-radius: var(--r-lg);
   overflow: hidden;
-  aspect-ratio: 819 / 524;
+  aspect-ratio: 1024 / 722;
   box-shadow:
     0 1px 0 rgba(167, 128, 97, 0.4),
-    0 22px 40px -20px rgba(27, 33, 28, 0.35);
+    0 18px 36px -18px rgba(27, 33, 28, 0.3);
   border: 1px solid var(--line-strong);
 }
 
 .hero-art::before {
-  content: "";
+  display: none; /* Disable overlay so the KV tagline at the bottom stays 100% crisp */
+}
+
+.sr-only {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 65%, rgba(250, 247, 240, 0.2) 85%, rgba(250, 247, 240, 0.55) 100%);
-  z-index: 2;
-  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .hero-art img {
@@ -1731,21 +1738,14 @@ input, select {
         <img class="logo-norton-white" src="assets/logo-norton-park-white.png" alt="Norton Park" width="280" height="32" fetchpriority="high">
       </div>
 
-      <h1 class="hero-h1">
-        <span class="line-danhthuc" style="font-style:italic; font-weight:400; letter-spacing:0.04em; color:var(--hoa-dau-brown);">The</span>
-        <span class="line-tuyettac" style="display:block; margin-top:-2px;">
-          <span class="serif-biophilic" style="font-family:var(--font-subheading); font-size:clamp(52px,14vw,82px); letter-spacing:0.08em; color:var(--pine-600); line-height:0.95;">SYNC</span>
-        </span>
-        <span style="display:block; font-family:var(--font-headline); font-size:clamp(36px,9vw,56px); font-weight:400; color:var(--bronze-500); letter-spacing:0.06em; margin-top:-4px; text-align:center;">Show</span>
-      </h1>
-      <p style="text-align:center; font-family:var(--font-headline); font-style:italic; font-size:clamp(13px,3.5vw,16px); color:var(--ink-soft); margin:8px 0 4px; letter-spacing:0.02em;">Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại</p>
+      <!-- Accessible Heading for SEO & Screen Readers -->
+      <h1 class="sr-only">The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại | Norton Park Gamuda Land</h1>
     </div>
 
-    <!-- Hero Visual: Phối cảnh hoàng hôn tháp đôi Skybridge -->
-    <picture class="hero-art">
-      <source srcset="assets/hero-norton-park.webp" type="image/webp">
-      <img src="assets/hero-norton-park.jpg" alt="Phối cảnh hoàng hôn tháp đôi Skybridge — Norton Park Gamuda Land" width="819" height="524" fetchpriority="high">
-    </picture>
+    <!-- Official Key Visual Artwork (Replaces The Glen building & simulated text) -->
+    <div class="hero-art hero-kv-art">
+      <img src="assets/kv-the-sync-show.png" alt="The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại" width="1024" height="722" fetchpriority="high">
+    </div>
 
     <!-- Event Strip -->
     <div class="event-strip" aria-label="Thông tin sự kiện">
