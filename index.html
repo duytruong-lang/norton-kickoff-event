@@ -288,13 +288,13 @@ input, select {
   object-fit: contain;
 }
 
-/* HERO ART — OFFICIAL KEY VISUAL (COMPACT FOR OPTIMAL SCROLL) */
+/* HERO ART — OFFICIAL KEY VISUAL (FULL-WIDTH BALANCED) */
 .hero-art {
   position: relative;
-  margin: 6px 0 8px;
+  width: 100%;
+  margin: 6px auto 8px;
   border-radius: var(--r-md);
   overflow: hidden;
-  max-height: 220px;
   aspect-ratio: 1024 / 722;
   box-shadow:
     0 1px 0 rgba(167, 128, 97, 0.4),
@@ -304,8 +304,7 @@ input, select {
 
 @media (min-width: 600px) {
   .hero-art {
-    max-height: 320px;
-    margin: 8px 0 12px;
+    margin: 8px auto 12px;
   }
 }
 
