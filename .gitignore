@@ -22,3 +22,9 @@ logs/
 
 # Local Redis state
 .redis-local-state.json
+
+# Design sources & Archives
+KV/
+DESIGN_KIT_THE_SYNC_SHOW/
+*.zip
+Norton_Park_Brand_Identity.pdf

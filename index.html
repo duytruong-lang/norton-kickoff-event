@@ -288,14 +288,14 @@ input, select {
   object-fit: contain;
 }
 
-/* HERO ART — OFFICIAL KEY VISUAL (FULL-WIDTH BALANCED) */
+/* HERO ART — OFFICIAL KEY VISUAL (16:9 MASTER KV) */
 .hero-art {
   position: relative;
   width: 100%;
-  margin: 6px auto 8px;
+  margin: 6px auto 10px;
   border-radius: var(--r-md);
   overflow: hidden;
-  aspect-ratio: 1024 / 722;
+  aspect-ratio: 16 / 9;
   box-shadow:
     0 1px 0 rgba(167, 128, 97, 0.4),
     0 14px 28px -14px rgba(27, 33, 28, 0.28);
@@ -304,7 +304,8 @@ input, select {
 
 @media (min-width: 600px) {
   .hero-art {
-    margin: 8px auto 12px;
+    margin: 8px auto 14px;
+    border-radius: var(--r-lg);
   }
 }
 
@@ -1563,10 +1564,10 @@ input, select {
 
 <div class="shell" data-screen-label="The SYNC Show — Norton Park Check-in">
 
-  <!-- MAIN HEADER -->
+  <!-- MAIN HEADER (ALIGNED WITH OFFICIAL KV) -->
   <header class="header">
-    <img class="logo-gamuda" src="assets/logo-gamuda-land.svg" alt="Gamuda Land" width="124" height="27">
     <img class="logo-norton" src="assets/logo-norton-park-hires.png" alt="Norton Park" width="130" height="26">
+    <img class="logo-gamuda" src="assets/logo-gamuda-land.svg" alt="Gamuda Land" width="124" height="27">
   </header>
 
   <!-- FORM STATE -->
@@ -1574,15 +1575,15 @@ input, select {
     <!-- Accessible Heading for SEO & Screen Readers -->
     <h1 class="sr-only">The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại | Norton Park Gamuda Land</h1>
 
-    <!-- Official Key Visual Artwork (The SYNC Show) -->
+    <!-- Official Key Visual Artwork (Master Landscape 16:9) -->
     <div class="hero-art hero-kv-art">
-      <img src="assets/kv-the-sync-show.png" alt="The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại" width="1024" height="722" fetchpriority="high">
+      <img src="assets/kv-the-sync-show-landscape.png" alt="The SYNC Show — Một hành trình kiến tạo mới được kể bởi Nghệ Thuật Đương Đại | Norton Park Gamuda Land" width="1024" height="576" fetchpriority="high">
     </div>
 
     <!-- Event Strip -->
     <div class="event-strip" aria-label="Thông tin sự kiện">
       <div class="time">
-        <span class="h">9:00 - 11:00</span>
+        <span class="h">8:00 - 11:30</span>
         <span class="d">08 · 10 · 2026</span>
       </div>
       <div class="sep" aria-hidden="true"></div>
@@ -1758,7 +1759,7 @@ input, select {
           </div>
           <div class="ticket-qr-info">
             <div class="ticket-qr-code-txt" id="luckyCodeDisplay">NP-2026-088</div>
-            <div class="ticket-qr-time" id="luckyTimeDisplay">Check-in: 09:00 · 08.10.2026</div>
+            <div class="ticket-qr-time" id="luckyTimeDisplay">Check-in: 08:00 · 08.10.2026</div>
             <div class="ticket-qr-hint">📷 Quét QR đối soát vé hợp lệ</div>
           </div>
         </div>
@@ -1783,11 +1784,11 @@ input, select {
     <p class="ticket-hint">Chụp màn hình hoặc tải ảnh lá vé để xuất trình khi quay số may mắn trong ngày sự kiện 08.10.2026 tại Rạp Xiếc Phú Thọ.</p>
   </div>
 
-  <!-- FOOTER -->
+  <!-- FOOTER (ALIGNED WITH OFFICIAL KV) -->
   <footer class="footer">
     <div class="footer-brands">
-      <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" class="footer-gamuda" width="110" height="24">
       <img src="assets/logo-norton-park-hires.png" alt="Norton Park" class="footer-norton" width="115" height="22">
+      <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" class="footer-gamuda" width="110" height="24">
     </div>
 
     <div class="footer-legal">
@@ -2555,7 +2556,7 @@ input, select {
     const phone = ticketData.phone || '0908 168 286';
     const cccd = ticketData.cccd || '079092008888';
     const agency = ticketData.agency || 'Đại lý F1 Gamuda Land';
-    const time = ticketData.timestamp || '09:00 · 08.10.2026';
+    const time = ticketData.timestamp || '08:00 · 08.10.2026';
     const code = 'NP-2026-' + num.replace('#', '');
 
     // Canvas Dimensions (2x Retina high quality: 900x1200)
