@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+/**
+ * Redesign Builder for admin.html
+ * Converts admin.html into a Minimal Mobile-First Cockpit for BTC Norton Park
+ * Adheres strictly to Brand Guidelines: Dark Forest Pine, Champagne Bronze Gold, SVN-The Seasons, JetBrains Mono
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const adminHtml = `<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -1764,8 +1773,7 @@ body::after {
   hotGateBtn?.addEventListener('click', async () => {
     const nextVal = currentGateStatus === 'open' ? 'closed' : 'open';
     if (nextVal === 'closed') {
-      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:
-Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
+      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
     }
     hotGateBtn.disabled = true;
     try {
@@ -1790,8 +1798,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
   manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
 
   btnQuickResetCounter?.addEventListener('click', async () => {
-    if (!window.confirm('⚠️ XÁC NHẬN:
-Đặt lại số đếm check-in (stats:total) về 0?')) return;
+    if (!window.confirm('⚠️ XÁC NHẬN:\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
     btnQuickResetCounter.disabled = true;
     try {
       const res = await apiFetch('/api/admin/config', {
@@ -1893,7 +1900,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
     verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
     verdictPill.textContent = isReplay ? 'CẢNH BÁO REPLAY' : 'HỢP LỆ';
     verdictStatusText.textContent = isReplay 
-      ? `Phát hiện ${records.length} hồ sơ trùng lặp!` 
+      ? \`Phát hiện \${records.length} hồ sơ trùng lặp!\` 
       : 'Lá vé chính chủ được bảo chứng bởi Gamuda Land';
 
     verdictTicketNumber.textContent = records.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
@@ -1943,26 +1950,26 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
       if (feed) {
         const card = document.createElement('div');
         card.className = 'feed-card';
-        card.innerHTML = `
+        card.innerHTML = \`
           <div class="feed-card-header">
-            <span class="feed-time mono">${item.timeStr || item.timestamp || ''}</span>
-            <span class="feed-badge ${badgeClass}">${item.resultCode || '200 OK'}</span>
+            <span class="feed-time mono">\${item.timeStr || item.timestamp || ''}</span>
+            <span class="feed-badge \${badgeClass}">\${item.resultCode || '200 OK'}</span>
           </div>
-          <div class="feed-action">${item.action || ''}</div>
-          <div class="feed-detail">${item.detail || ''} · <span class="mono">${item.ip || ''}</span></div>
-        `;
+          <div class="feed-action">\${item.action || ''}</div>
+          <div class="feed-detail">\${item.detail || ''} · <span class="mono">\${item.ip || ''}</span></div>
+        \`;
         feed.appendChild(card);
       }
       // Table row (desktop)
       if (tbody) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="mono" style="color:var(--bronze-300);">${item.timeStr || item.timestamp || ''}</td>
-          <td><strong>${item.action || ''}</strong></td>
-          <td><span class="feed-badge ${badgeClass}">${item.resultCode || '200 OK'}</span></td>
-          <td class="mono">${item.ip || ''}</td>
-          <td>${item.detail || ''}</td>
-        `;
+        tr.innerHTML = \`
+          <td class="mono" style="color:var(--bronze-300);">\${item.timeStr || item.timestamp || ''}</td>
+          <td><strong>\${item.action || ''}</strong></td>
+          <td><span class="feed-badge \${badgeClass}">\${item.resultCode || '200 OK'}</span></td>
+          <td class="mono">\${item.ip || ''}</td>
+          <td>\${item.detail || ''}</td>
+        \`;
         tbody.appendChild(tr);
       }
     });
@@ -2210,3 +2217,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
 </script>
 </body>
 </html>
+`;
+
+fs.writeFileSync(path.join(__dirname, '..', 'admin.html'), adminHtml, 'utf8');
+console.log('✅ Generated minimal mobile-friendly admin.html successfully!');
