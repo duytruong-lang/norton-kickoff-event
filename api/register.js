@@ -159,6 +159,30 @@ module.exports = async function handler(req, res) {
         responseTimeMs,
       }).catch(() => {});
 
+      // Sync replayed registration to Google Sheets ERP (fire-and-forget with 2s cap)
+      const replaySheetSync = Promise.race([
+        appendLeadToSheet({
+          leadId: replayLeadId,
+          receiptId: existing.receiptId,
+          ticketNumber: existing.ticketNumber,
+          fullName: existing.fullName,
+          phone: existing.phone || phoneInfo.raw,
+          cccdLast4: clean4Id,
+          agency: existing.agency || agency,
+          email: existing.email || email,
+          role: existing.role || role,
+          replayed: true,
+          clientIp,
+          city,
+          country,
+          userAgent,
+          utmSource,
+          responseTimeMs,
+        }).catch((err) => console.error('[Register:ReplaySheetSync]:', err.message)),
+        new Promise((resolve) => setTimeout(resolve, 2000)),
+      ]);
+      await replaySheetSync;
+
       return res.status(200).json({
         success: true,
         leadId: existing.leadId,
