@@ -44,7 +44,15 @@ async function reconcile() {
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    const data = await redis.hgetall(key);
+    
+    let data;
+    try {
+      data = await redis.hgetall(key);
+    } catch (e) {
+      // Key is not a hash type (string, set, etc.) — skip
+      skipped++;
+      continue;
+    }
     
     if (!data || !data.ticketNumber) {
       skipped++;

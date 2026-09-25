@@ -239,6 +239,7 @@ module.exports = async function handler(req, res) {
       }
 
       // 2.4 Action: Nuclear Reset
+      // 2.4 Action: Nuclear Reset (Clean All Data & Re-seed Pool)
       if (action === 'reset') {
         if (body.confirm !== 'XÓA HẾT') {
           return res.status(400).json({
@@ -248,11 +249,33 @@ module.exports = async function handler(req, res) {
           });
         }
 
-        const cccdKeys = (await redis.keys('reg:cccd4:*')) || [];
-        const phoneKeys = (await redis.keys('reg:phone:*')) || [];
-        const receiptKeys = (await redis.keys('receipt:*')) || [];
-        const keysToDelete = [...cccdKeys, ...phoneKeys, ...receiptKeys];
+        // Clean all registration, receipt, and audit keys
+        const scanPatterns = ['reg:*', 'receipt:*', 'rcpt:*', 'audit:*', 'stats:*', 'lock:*'];
+        const allKeysToDelete = new Set();
 
+        for (const pat of scanPatterns) {
+          try {
+            if (typeof redis.keys === 'function') {
+              const matched = await redis.keys(pat);
+              if (Array.isArray(matched)) {
+                matched.forEach(k => allKeysToDelete.add(k));
+              }
+            } else if (typeof redis.scan === 'function') {
+              let cursor = 0;
+              do {
+                const [nextCursor, batch] = await redis.scan(cursor, { match: pat, count: 200 });
+                cursor = Number(nextCursor);
+                if (batch && batch.length > 0) {
+                  batch.forEach(k => allKeysToDelete.add(k));
+                }
+              } while (cursor !== 0);
+            }
+          } catch (scanErr) {
+            console.warn(`[Reset Scan Warning for ${pat}]:`, scanErr.message);
+          }
+        }
+
+        const keysToDelete = Array.from(allKeysToDelete);
         const CHUNK_SIZE = 100;
         for (let i = 0; i < keysToDelete.length; i += CHUNK_SIZE) {
           const chunk = keysToDelete.slice(i, i + CHUNK_SIZE);
@@ -261,11 +284,10 @@ module.exports = async function handler(req, res) {
           await p.exec();
         }
 
+        // Reset counters and gate
         await redis.del('lucky:pool');
         await redis.set('stats:total', 0);
         await redis.set('stats:overflow_counter', 0);
-        await redis.del('audit:log');
-        await redis.del('audit:admin');
         await redis.set('config:gate', 'closed');
 
         const poolMaxRaw = body.poolMax || await redis.get('config:pool_max') || 1000;
@@ -304,14 +326,47 @@ module.exports = async function handler(req, res) {
 
         return res.status(200).json({
           success: true,
-          message: `Đã xóa toàn bộ dữ liệu và reset hệ thống (xóa ${keysToDelete.length} keys), khởi tạo lại ${poolMax} vé.`,
+          message: `Đã dọn dẹp sạch toàn bộ database (xóa ${keysToDelete.length} keys), khởi tạo lại kho ${poolMax} vé và đặt số đếm về 0.`,
           gateStatus: 'closed',
           gate: 'closed',
           poolMax,
           poolRemaining: poolMax,
           totalCheckin: 0,
+          total: 0,
           overflowCount: 0,
           mode,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      // 2.5 Action: Reset Counter Only (stats:total & overflow)
+      if (action === 'reset_counter') {
+        await Promise.all([
+          redis.set('stats:total', 0),
+          redis.set('stats:overflow_counter', 0),
+        ]);
+
+        const poolRemaining = await redis.llen('lucky:pool');
+        const currentGate = (await redis.get('config:gate')) || 'closed';
+        const poolMax = (await redis.get('config:pool_max')) || 1000;
+
+        await logAdminAction({
+          action: 'reset_counter',
+          adminUser: 'admin',
+          ip: clientIp,
+          details: { resetAt: new Date().toISOString() },
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: 'Đã đặt lại số đếm check-in về 0 thành công.',
+          gateStatus: currentGate,
+          gate: currentGate,
+          poolMax: parseInt(poolMax, 10),
+          poolRemaining: Number(poolRemaining),
+          totalCheckin: 0,
+          total: 0,
+          overflowCount: 0,
           updatedAt: new Date().toISOString(),
         });
       }

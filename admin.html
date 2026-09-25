@@ -1808,12 +1808,24 @@ input, select {
        SECTION 2: REALTIME LIVE STATS COUNTER (4 KPI CARDS)
        ==================================================================== -->
   <section class="stats-section">
-    <div class="section-label-bar">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <span>Chỉ Số Vận Hành Thời Gian Thực (Live KPI Counter)</span>
+    <div class="section-label-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="section-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Chỉ Số Vận Hành Thời Gian Thực (Live KPI Counter)</span>
+        </div>
+        <div style="font-size:12px; color:var(--sand-200);">Đồng bộ Redis Stream &amp; Memory Pool</div>
       </div>
-      <div style="font-size:12px; color:var(--sand-200);">Đồng bộ Redis Stream &amp; Memory Pool</div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" id="btnQuickResetCounter" style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); color: #FCD34D; padding: 6px 12px; border-radius: var(--r-md); font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;" title="Chỉ đặt lại biến đếm check-in về 0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span>Reset Số Đếm (0)</span>
+        </button>
+        <button type="button" id="btnQuickNuclearReset" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 6px 14px; border-radius: var(--r-md); font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;" title="Xóa toàn bộ dữ liệu check-in và khởi tạo lại pool 1.000 vé">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          <span>Xóa Toàn Bộ &amp; Làm Sạch DB</span>
+        </button>
+      </div>
     </div>
 
     <div class="stats-grid">
@@ -3287,73 +3299,103 @@ input, select {
     }, 3000);
   }
 
-  // === NUCLEAR RESET HANDLER ===
-const triggerResetBtn = document.getElementById('triggerResetBtn');
-const confirmResetModal = document.getElementById('confirmResetModal');
-const resetConfirmInput = document.getElementById('resetConfirmInput');
-const resetConfirmCheckbox = document.getElementById('resetConfirmCheckbox');
-const executeResetBtn = document.getElementById('executeResetBtn');
-const cancelResetBtn = document.getElementById('cancelResetBtn');
+  // === RESET & CLEAN DATABASE HANDLERS ===
+  const triggerResetBtn = document.getElementById('triggerResetBtn');
+  const btnQuickNuclearReset = document.getElementById('btnQuickNuclearReset');
+  const btnQuickResetCounter = document.getElementById('btnQuickResetCounter');
+  const confirmResetModal = document.getElementById('confirmResetModal');
+  const resetConfirmInput = document.getElementById('resetConfirmInput');
+  const resetConfirmCheckbox = document.getElementById('resetConfirmCheckbox');
+  const executeResetBtn = document.getElementById('executeResetBtn');
+  const cancelResetBtn = document.getElementById('cancelResetBtn');
 
-function checkResetReady() {
-  const textOk = resetConfirmInput && resetConfirmInput.value.trim() === 'XÓA HẾT';
-  const checkOk = resetConfirmCheckbox && resetConfirmCheckbox.checked;
-  if (executeResetBtn) {
-    executeResetBtn.disabled = !(textOk && checkOk);
-    executeResetBtn.style.background = (textOk && checkOk) ? '#EF4444' : '#4B5563';
-    executeResetBtn.style.color = (textOk && checkOk) ? 'white' : '#9CA3AF';
-    executeResetBtn.style.cursor = (textOk && checkOk) ? 'pointer' : 'not-allowed';
-  }
-}
+  // Quick Reset Counter Only (0)
+  btnQuickResetCounter?.addEventListener('click', async () => {
+    const ok = window.confirm('⚠️ XÁC NHẬN RESET SỐ ĐẾM:\nBạn có chắc chắn muốn đặt lại số đếm check-in (stats:total) về 0 không?');
+    if (!ok) return;
 
-if (triggerResetBtn) {
-  triggerResetBtn.addEventListener('click', () => {
+    btnQuickResetCounter.disabled = true;
+    try {
+      const data = await apiFetch('/api/admin/config', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'reset_counter' }),
+      });
+      if (data && data.success) {
+        showToast('Đã Reset Số Đếm', data.message || 'Số đếm check-in đã về 0.', 'success');
+        playTone('success');
+        fetchConfig(true);
+      } else {
+        showToast('Lỗi Thao Tác', data?.message || 'Không thể reset số đếm.', 'error');
+      }
+    } catch (err) {
+      showToast('Lỗi Kết Nối', err.message, 'error');
+    } finally {
+      btnQuickResetCounter.disabled = false;
+    }
+  });
+
+  function openNuclearResetModal() {
     if (resetConfirmInput) resetConfirmInput.value = '';
     if (resetConfirmCheckbox) resetConfirmCheckbox.checked = false;
     checkResetReady();
     if (confirmResetModal) confirmResetModal.style.display = 'flex';
-  });
-}
+  }
 
-if (resetConfirmInput) resetConfirmInput.addEventListener('input', checkResetReady);
-if (resetConfirmCheckbox) resetConfirmCheckbox.addEventListener('change', checkResetReady);
+  triggerResetBtn?.addEventListener('click', openNuclearResetModal);
+  btnQuickNuclearReset?.addEventListener('click', openNuclearResetModal);
 
-if (cancelResetBtn) {
-  cancelResetBtn.addEventListener('click', () => {
-    if (confirmResetModal) confirmResetModal.style.display = 'none';
-  });
-}
-
-if (executeResetBtn) {
-  executeResetBtn.addEventListener('click', async () => {
-    if (executeResetBtn.disabled) return;
-    executeResetBtn.disabled = true;
-    executeResetBtn.textContent = '⏳ Đang xóa...';
-    try {
-      const poolMaxVal = document.getElementById('inputPoolMax') ? parseInt(document.getElementById('inputPoolMax').value, 10) || 1000 : 1000;
-      const modeVal = document.querySelector('input[name="seedMode"]:checked') ? document.querySelector('input[name="seedMode"]:checked').value : 'SHUFFLE';
-      
-      const resp = await fetch('/api/admin/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
-        body: JSON.stringify({ action: 'reset', confirm: 'XÓA HẾT', poolMax: poolMaxVal, mode: modeVal }),
-      });
-      const data = await resp.json();
-      if (data.success) {
-        if (typeof showToast === 'function') showToast('✅ ' + data.message, 'success');
-        if (typeof playTone === 'function') playTone('success');
-        if (typeof fetchAdminConfig === 'function') fetchAdminConfig();
-      } else {
-        if (typeof showToast === 'function') showToast('❌ ' + (data.message || 'Reset thất bại'), 'error');
-      }
-    } catch (err) {
-      if (typeof showToast === 'function') showToast('❌ Lỗi kết nối: ' + err.message, 'error');
+  function checkResetReady() {
+    const val = resetConfirmInput ? resetConfirmInput.value.trim().toUpperCase() : '';
+    const textOk = val === 'XÓA HẾT' || val === 'XOA HET';
+    const checkOk = resetConfirmCheckbox && resetConfirmCheckbox.checked;
+    const ready = textOk && checkOk;
+    if (executeResetBtn) {
+      executeResetBtn.disabled = !ready;
+      executeResetBtn.style.background = ready ? '#EF4444' : '#4B5563';
+      executeResetBtn.style.color = ready ? 'white' : '#9CA3AF';
+      executeResetBtn.style.cursor = ready ? 'pointer' : 'not-allowed';
     }
-    if (confirmResetModal) confirmResetModal.style.display = 'none';
-    executeResetBtn.disabled = false;
-    executeResetBtn.textContent = '🗑️ XÓA TOÀN BỘ';
-  });
-}
+  }
+
+  if (resetConfirmInput) resetConfirmInput.addEventListener('input', checkResetReady);
+  if (resetConfirmCheckbox) resetConfirmCheckbox.addEventListener('change', checkResetReady);
+
+  if (cancelResetBtn) {
+    cancelResetBtn.addEventListener('click', () => {
+      if (confirmResetModal) confirmResetModal.style.display = 'none';
+    });
+  }
+
+  if (executeResetBtn) {
+    executeResetBtn.addEventListener('click', async () => {
+      if (executeResetBtn.disabled) return;
+      executeResetBtn.disabled = true;
+      executeResetBtn.textContent = '⏳ Đang xóa toàn bộ...';
+      try {
+        const poolMaxVal = document.getElementById('inputPoolMax') ? parseInt(document.getElementById('inputPoolMax').value, 10) || 1000 : 1000;
+        const modeVal = document.querySelector('input[name="seedMode"]:checked') ? document.querySelector('input[name="seedMode"]:checked').value : 'SHUFFLE';
+        
+        const data = await apiFetch('/api/admin/config', {
+          method: 'POST',
+          body: JSON.stringify({ action: 'reset', confirm: 'XÓA HẾT', poolMax: poolMaxVal, mode: modeVal }),
+        });
+
+        if (data && data.success) {
+          showToast('Đã Làm Sạch Database', data.message || 'Database đã được dọn sạch và khởi tạo lại.', 'success');
+          playTone('success');
+          fetchConfig(true);
+        } else {
+          showToast('Lỗi Thao Tác', data?.message || 'Không thể xóa dữ liệu.', 'error');
+        }
+      } catch (err) {
+        showToast('Lỗi Kết Nối', err.message, 'error');
+      } finally {
+        if (confirmResetModal) confirmResetModal.style.display = 'none';
+        executeResetBtn.disabled = false;
+        executeResetBtn.textContent = '🗑️ XÓA TOÀN BỘ';
+      }
+    });
+  }
 
 // 9. Initial Load & Setup
   function initApp() {
