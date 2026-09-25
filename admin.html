@@ -1764,8 +1764,7 @@ body::after {
   hotGateBtn?.addEventListener('click', async () => {
     const nextVal = currentGateStatus === 'open' ? 'closed' : 'open';
     if (nextVal === 'closed') {
-      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:
-Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
+      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
     }
     hotGateBtn.disabled = true;
     try {
@@ -1790,8 +1789,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
   manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
 
   btnQuickResetCounter?.addEventListener('click', async () => {
-    if (!window.confirm('⚠️ XÁC NHẬN:
-Đặt lại số đếm check-in (stats:total) về 0?')) return;
+    if (!window.confirm('⚠️ XÁC NHẬN:\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
     btnQuickResetCounter.disabled = true;
     try {
       const res = await apiFetch('/api/admin/config', {
@@ -1868,8 +1866,8 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
     lookupSubmitBtn.textContent = '...';
 
     try {
-      const res = await apiFetch('/api/admin/lookup?q=' + encodeURIComponent(query));
-      if (res && res.success && (res.verdict === 'MATCH_FOUND' || res.verdict === 'REPLAY_DETECTED')) {
+      const res = await apiFetch('/api/admin/lookup?query=' + encodeURIComponent(query));
+      if (res && res.success && res.matched) {
         renderFoundVerdict(res);
         playTone('success');
       } else {
@@ -1885,42 +1883,42 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
   }
 
   function renderFoundVerdict(res) {
-    const records = Array.isArray(res.records) ? res.records : (res.record ? [res.record] : [{}]);
-    const rec = records[0];
+    const matches = Array.isArray(res.matched) ? res.matched : [res.matched || {}];
+    const rec = matches[0];
     const rcpt = res.receipt || {};
-    const isReplay = res.verdict === 'REPLAY_DETECTED' || records.length > 1;
+    const isReplay = rec.isReplay || matches.length > 1;
 
     verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
     verdictPill.textContent = isReplay ? 'CẢNH BÁO REPLAY' : 'HỢP LỆ';
     verdictStatusText.textContent = isReplay 
-      ? `Phát hiện ${records.length} hồ sơ trùng lặp!` 
+      ? `Phát hiện ${matches.length} hồ sơ trùng lặp!` 
       : 'Lá vé chính chủ được bảo chứng bởi Gamuda Land';
 
-    verdictTicketNumber.textContent = records.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
+    verdictTicketNumber.textContent = matches.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
     verdictName.textContent = rec.name || rec.fullName || '--';
     verdictPhone.textContent = rec.phone || '--';
 
     const cccdStr = rec.cccd || rec.cccdLast4 || '--';
     verdictCccd.textContent = cccdStr.length >= 4 ? ('•••• ' + cccdStr.slice(-4)) : cccdStr;
-    verdictAgency.textContent = records.map(r => r.agency || '--').join(', ');
+    verdictAgency.textContent = matches.map(r => r.agency || '--').join(', ');
 
-    receiptIdText.textContent = rcpt.receiptId || '--';
-    receiptRespondedAt.textContent = rcpt.respondedAt ? new Date(rcpt.respondedAt).toLocaleString('vi-VN') : '--';
-    receiptClientIp.textContent = rcpt.clientIp || rcpt.ip || '--';
-    receiptUserAgent.textContent = rcpt.userAgent || rcpt.ua || '--';
-    receiptReplayFlag.textContent = rcpt.isReplay ? 'YES (Cảnh báo trùng lặp)' : 'NO (Lần đầu)';
-    receiptHash.textContent = rcpt.integrityHash || 'HMAC-SHA256 Master Key';
+    receiptIdText.textContent = rcpt.receiptId || rec.receiptId || '--';
+    receiptRespondedAt.textContent = rcpt.respondedAt || (rec.checkedInAt ? new Date(rec.checkedInAt).toLocaleString('vi-VN') : '--');
+    receiptClientIp.textContent = rcpt.clientIp || rec.clientIp || '--';
+    receiptUserAgent.textContent = rcpt.userAgent || rec.userAgent || '--';
+    receiptReplayFlag.textContent = rec.isReplay ? 'YES (Cảnh báo trùng lặp)' : 'NO (Lần đầu)';
+    receiptHash.textContent = rcpt.signature || rec.integrityHash || 'HMAC-SHA256 Master Key';
 
-    renderAuditTable(res.auditLogs || []);
+    renderAuditTable(res.timeline || []);
   }
 
   function renderNotFoundVerdict(res) {
     verdictCard.className = 'verdict-card not-found';
     verdictPill.textContent = 'KHÔNG TÌM THẤY';
-    verdictStatusText.textContent = 'Chưa có thông tin cấp vé cho dữ liệu này';
+    verdictStatusText.textContent = res.message || 'Chưa có thông tin cấp vé cho dữ liệu này';
     verdictTicketNumber.textContent = 'N/A';
     verdictName.textContent = '--';
-    verdictPhone.textContent = res.query || '--';
+    verdictPhone.textContent = '--';
     verdictCccd.textContent = '--';
     verdictAgency.textContent = '--';
   }
@@ -1938,7 +1936,8 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
     }
 
     logs.forEach(item => {
-      const badgeClass = (item.resultCode && (item.resultCode.includes('CONFLICT') || item.resultCode.includes('403'))) ? 'code-err' : 'code-ok';
+      const statusText = item.resultCode || item.status || '200 OK';
+      const badgeClass = (statusText.includes('CONFLICT') || statusText.includes('403') || statusText.includes('ERROR') || statusText.includes('FAIL')) ? 'code-err' : 'code-ok';
       // Feed card (mobile)
       if (feed) {
         const card = document.createElement('div');
@@ -1946,7 +1945,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
         card.innerHTML = `
           <div class="feed-card-header">
             <span class="feed-time mono">${item.timeStr || item.timestamp || ''}</span>
-            <span class="feed-badge ${badgeClass}">${item.resultCode || '200 OK'}</span>
+            <span class="feed-badge ${badgeClass}">${statusText}</span>
           </div>
           <div class="feed-action">${item.action || ''}</div>
           <div class="feed-detail">${item.detail || ''} · <span class="mono">${item.ip || ''}</span></div>
@@ -1959,7 +1958,7 @@ Bạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?'))
         tr.innerHTML = `
           <td class="mono" style="color:var(--bronze-300);">${item.timeStr || item.timestamp || ''}</td>
           <td><strong>${item.action || ''}</strong></td>
-          <td><span class="feed-badge ${badgeClass}">${item.resultCode || '200 OK'}</span></td>
+          <td><span class="feed-badge ${badgeClass}">${statusText}</span></td>
           <td class="mono">${item.ip || ''}</td>
           <td>${item.detail || ''}</td>
         `;

@@ -322,6 +322,8 @@ module.exports = async function handler(req, res) {
           userAgent,
           fbp: body._fbp || (body.telemetry && body.telemetry._fbp),
           fbc: body._fbc || (body.telemetry && body.telemetry._fbc),
+          city,
+          country,
         }),
         appendLeadToSheet({
           leadId,
