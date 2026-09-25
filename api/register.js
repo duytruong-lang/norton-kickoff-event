@@ -282,46 +282,48 @@ module.exports = async function handler(req, res) {
       responseTimeMs,
     };
 
-    res.status(200).json(responsePayload);
-
-    // 2.8 Non-blocking background sync: Meta Conversions API (CAPI) & Google Sheets ERP
-    const bgSyncPromise = Promise.allSettled([
-      sendMetaLeadEvent({
-        leadId,
-        receiptId,
-        ticketNumber,
-        fullName,
-        phone: phoneInfo.e164Plain,
-        email,
-        agency: registrationRecord.agency,
-        clientIp,
-        userAgent,
+    // 2.8 Sync CAPI + Sheets with 2s timeout BEFORE res.json() (Vercel Serverless Lifecycle Rule)
+    const syncTimeout = new Promise((resolve) => setTimeout(resolve, 2000));
+    await Promise.race([
+      Promise.allSettled([
+        sendMetaLeadEvent({
+          leadId,
+          receiptId,
+          ticketNumber,
+          fullName,
+          phone: phoneInfo.e164Plain,
+          email,
+          agency: registrationRecord.agency,
+          clientIp,
+          userAgent,
+          fbp: body._fbp || (body.telemetry && body.telemetry._fbp),
+          fbc: body._fbc || (body.telemetry && body.telemetry._fbc),
+        }),
+        appendLeadToSheet({
+          leadId,
+          receiptId,
+          ticketNumber,
+          fullName,
+          phone: phoneInfo.raw,
+          cccdLast4: clean4Id,
+          agency: registrationRecord.agency,
+          email,
+          role,
+          replayed: false,
+          clientIp,
+          city,
+          country,
+          userAgent,
+          utmSource,
+          responseTimeMs,
+        }),
+      ]).catch((err) => {
+        console.error('[Register:BackgroundSync Error]:', err.message);
       }),
-      appendLeadToSheet({
-        leadId,
-        receiptId,
-        ticketNumber,
-        fullName,
-        phone: phoneInfo.raw,
-        cccdLast4: clean4Id,
-        agency: registrationRecord.agency,
-        email,
-        role,
-        replayed: false,
-        clientIp,
-        city,
-        country,
-        userAgent,
-        utmSource,
-        responseTimeMs,
-      }),
-    ]).catch((err) => {
-      console.error('[Register:BackgroundSync Error]:', err.message);
-    });
+      syncTimeout,
+    ]);
 
-    if (req.context && typeof req.context.waitUntil === 'function') {
-      req.context.waitUntil(bgSyncPromise);
-    }
+    return res.status(200).json(responsePayload);
   } catch (error) {
     const responseTimeMs = Date.now() - startTime;
     console.error('[Register Error]:', error);

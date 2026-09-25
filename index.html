@@ -23,10 +23,10 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1183578326620584');
+fbq('init', '2534126040456364');
 fbq('track', 'PageView');
 </script>
-<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1183578326620584&ev=PageView&noscript=1"/></noscript>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=2534126040456364&ev=PageView&noscript=1"/></noscript>
 
 <style>
 /* ==========================================================================
@@ -2016,8 +2016,8 @@ input, select {
     };
   }
 
-  // 3. Meta Pixel Dual-Tracking (Synchronized 100% with Meta CAPI via eventID = leadId)
-  function trackMetaLead(eventLeadId, extra = {}) {
+  // 3. Meta Pixel Dual-Tracking (Synchronized 100% with Meta CAPI via eventID = receiptId)
+  function trackMetaLead(receiptId, extra = {}) {
     try {
       if (typeof window.fbq === 'function') {
         window.fbq('track', 'Lead', {
@@ -2027,7 +2027,7 @@ input, select {
           value: 0,
           agency: extra.agency || '',
           status: extra.replayed ? 'replayed' : 'registered'
-        }, { eventID: eventLeadId });
+        }, { eventID: receiptId });
       }
     } catch (err) {
       console.warn('Meta Pixel tracking error:', err);
@@ -2500,8 +2500,8 @@ input, select {
     }
 
     // Fire Meta Pixel Dual-Tracking
-    const finalLeadId = data.leadId || data.eventId || leadId;
-    trackMetaLead(finalLeadId, {
+    const finalReceiptId = data.receiptId || receiptId;
+    trackMetaLead(finalReceiptId, {
       agency: ticketData.agency,
       luckyNumber: ticketData.luckyNumber,
       replayed: isReplay
