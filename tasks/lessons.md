@@ -33,3 +33,9 @@
 - **Mistake**: The Google Sheets ERP was bloated with 26 columns, including 12 redundant/boilerplate fields (hardcoded venue/event/project/developer text, split first/last names, duplicate E.164 phone, duplicate replay status, server latencies) that forced MCs and on-site check-in staff to horizontally scroll through clutter on iPads/mobile devices.
 - **Root Cause**: Over-engineering by dumping all internal telemetry and static metadata into the spreadsheet without distinguishing between on-site human operational needs and backend technical tracking.
 - **Rule**: On-site event ERP sheets must be strictly divided into 2 visual zones: Zone A (Operations: Time, Ticket #, Name, Phone, CCCD, Agency, Email, Status) visible immediately on 1 screen without scrolling, and Zone B (Tech/Audit: Lead ID, Receipt ID, CAPI Event ID, IP, UA) placed to the right. Never dump hardcoded static metadata (project name, developer name) across thousands of rows.
+
+## Pattern: Unverified Asset Paths in HTML Templates
+- **Date**: 2026-09-26
+- **Mistake**: `admin.html` referenced `assets/logo-norton-park-official.png` which did not exist on disk, causing a broken image icon with alt text to render in the cockpit top bar.
+- **Root Cause**: Builder script referenced a fictional asset filename instead of inspecting `assets/` to find the existing official file (`logo-norton-park-white.png`).
+- **Rule**: NEVER hardcode image asset filenames without checking `ls assets/` first. Ensure all image tags have an existing source file and provide explicit `height`, `width: auto`, and `max-width` CSS constraints to prevent layout shifts.
