@@ -39,3 +39,10 @@
 - **Mistake**: `admin.html` referenced `assets/logo-norton-park-official.png` which did not exist on disk, causing a broken image icon with alt text to render in the cockpit top bar.
 - **Root Cause**: Builder script referenced a fictional asset filename instead of inspecting `assets/` to find the existing official file (`logo-norton-park-white.png`).
 - **Rule**: NEVER hardcode image asset filenames without checking `ls assets/` first. Ensure all image tags have an existing source file and provide explicit `height`, `width: auto`, and `max-width` CSS constraints to prevent layout shifts.
+
+## Pattern: Mobile-Friendly Cockpit & Prevent Deformed Pill Badges on Narrow Screens (<430px)
+- **Date**: 2026-09-27
+- **Mistake**: Flexible horizontal containers (Hero Gate Card row, Top Bar, Action Pills) squeezed status badges into deformed circles and broke short text into 2-3 single-word lines on 360px-430px mobile screens.
+- **Root Cause**: Reliance on horizontal flex without media query breakpoints; missing `white-space: nowrap` and `flex-shrink: 0` on badges and button pills; multi-word labels inside small grid cells.
+- **Rule**: For mobile admin cockpits (<640px), convert high-importance action cards to stacked column layouts with full-width (100%) touch buttons (thumb-friendly >=44px height). Always add `white-space: nowrap` to status badges, pills, and tab buttons. Keep micro-copy ultra-concise (1-2 words) to prevent text clipping.
+
