@@ -4,8 +4,8 @@
  * Adheres strictly to Brand Guidelines: Dark Forest Pine, Champagne Bronze Gold, SVN-The Seasons, JetBrains Mono
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 const adminHtml = `<!DOCTYPE html>
 <html lang="vi">
@@ -186,6 +186,7 @@ body::after {
   border: 1px solid rgba(197, 168, 128, 0.3);
   padding: 2px 8px;
   border-radius: var(--r-full);
+  white-space: nowrap;
 }
 
 .bar-actions {
@@ -271,6 +272,8 @@ body::after {
   padding: 4px 6px;
   font-size: 12px;
   color: var(--ink-soft);
+  flex-wrap: wrap;
+  gap: 4px 10px;
 }
 .event-meta-strip strong {
   color: var(--bronze-300);
@@ -326,6 +329,8 @@ body::after {
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .gate-status-pill.open {
   background: var(--emerald);
@@ -498,6 +503,7 @@ body::after {
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s var(--ease);
+  white-space: nowrap;
 }
 .btn-action-pill:active {
   transform: scale(0.97);
@@ -555,6 +561,7 @@ body::after {
   justify-content: center;
   gap: 6px;
   transition: all 0.2s var(--ease);
+  white-space: nowrap;
 }
 .nav-tab-btn.active {
   background: var(--card-bg-elevated);
@@ -1028,6 +1035,237 @@ body::after {
     right: 16px;
     max-width: none;
   }
+
+  /* 1. Cockpit Top Bar Mobile */
+  .cockpit-bar {
+    height: 52px;
+    padding: 0 10px;
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
+    gap: 8px;
+  }
+  .bar-brand {
+    gap: 6px;
+    min-width: 0;
+  }
+  .brand-monogram img {
+    height: 18px !important;
+    max-width: 105px !important;
+  }
+  .brand-badge {
+    font-size: 9.5px;
+    padding: 2px 6px;
+    letter-spacing: 0.02em;
+  }
+  .bar-actions {
+    gap: 5px;
+  }
+  .engine-status-pill {
+    padding: 4px 7px;
+    font-size: 10.5px;
+    gap: 4px;
+  }
+  .icon-btn {
+    height: 32px;
+    padding: 0 7px;
+    font-size: 11px;
+  }
+  #authKeyDisplay {
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* 2. Event Meta Strip Mobile */
+  .event-meta-strip {
+    font-size: 11px;
+    gap: 3px 8px;
+  }
+  .event-meta-strip span {
+    white-space: nowrap;
+  }
+
+  /* 3. Hero Gate Card — Stacked Layout for 1-Thumb Operation */
+  .gate-hero-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    gap: 12px;
+  }
+  .gate-info-col {
+    gap: 6px;
+    width: 100%;
+  }
+  .gate-badge-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .gate-status-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+  .gate-time-text {
+    font-size: 11px;
+  }
+  .gate-title {
+    font-size: 18px;
+    line-height: 1.25;
+    margin-top: 2px;
+  }
+  .hot-button {
+    width: 100%;
+    height: 48px;
+    justify-content: center;
+    font-size: 13.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  }
+
+  /* 4. KPI Matrix Mobile */
+  .stats-grid {
+    gap: 8px;
+  }
+  .kpi-card {
+    padding: 10px 12px;
+    gap: 6px;
+    min-width: 0;
+  }
+  .kpi-name {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kpi-number {
+    font-size: 24px;
+  }
+  .kpi-unit {
+    font-size: 10px;
+  }
+  .kpi-sub-label {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .kpi-sub-label > span:first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .kpi-sub-label .mono {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 9px;
+    opacity: 0.75;
+  }
+
+  /* 5. Quick Actions Toolbar Mobile */
+  .quick-action-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .btn-action-pill {
+    min-width: 0;
+    height: 36px;
+    padding: 0 4px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .btn-action-pill svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+
+  /* 6. Navigation Tabs Mobile */
+  .tab-navigation-bar {
+    padding: 3px;
+    gap: 3px;
+  }
+  .nav-tab-btn {
+    height: 36px;
+    font-size: 11.5px;
+    padding: 0 4px;
+    gap: 4px;
+  }
+  .nav-tab-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  /* 7. Search Form Mobile */
+  .lookup-card {
+    padding: 12px;
+  }
+  .card-section-title {
+    font-size: 15px;
+  }
+  .search-input-wrap {
+    gap: 6px;
+  }
+  .search-input {
+    height: 44px;
+    padding: 0 10px;
+    font-size: 13.5px;
+  }
+  .search-btn {
+    height: 44px;
+    padding: 0 14px;
+    font-size: 12px;
+    gap: 4px;
+  }
+  .quick-chips-row {
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .quick-sample-chip {
+    font-size: 10.5px;
+    padding: 2px 7px;
+  }
+
+  /* 8. Verdict Card Mobile */
+  .verdict-card {
+    padding: 12px;
+  }
+  .verdict-ticket-hero {
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .verdict-meta-grid {
+    gap: 8px;
+    font-size: 12px;
+  }
+  .receipt-details-body {
+    padding: 10px;
+    font-size: 11px;
+    word-break: break-all;
+  }
+
+  /* 9. Settings Card Mobile */
+  .config-card {
+    padding: 12px;
+  }
+  .preset-pill {
+    font-size: 11px;
+    height: 34px;
+  }
+  .mode-pill-label {
+    padding: 8px;
+    font-size: 11px;
+  }
+  .btn-seed-pool {
+    height: 42px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  #engineStatusText {
+    display: none;
+  }
 }
 .toast-item {
   background: #14271E;
@@ -1142,7 +1380,7 @@ body::after {
         <span class="kpi-unit">vé</span>
       </div>
       <div class="kpi-sub-label">
-        <span id="statPoolAvailableStatus">Sẵn sàng cấp phát</span>
+        <span id="statPoolAvailableStatus">Sẵn sàng</span>
         <span class="mono">lucky:pool</span>
       </div>
     </div>
@@ -1176,7 +1414,7 @@ body::after {
         <span class="kpi-number" id="statGateKpiText" style="color: var(--rose); font-size: 22px;">CLOSED</span>
       </div>
       <div class="kpi-sub-label">
-        <span>Kiểm soát trực tiếp</span>
+        <span>Trực tiếp</span>
         <span class="mono">config:gate</span>
       </div>
     </div>
@@ -1190,7 +1428,7 @@ body::after {
     </button>
     <button type="button" class="btn-action-pill btn-reset-counter" id="btnQuickResetCounter" title="Đặt lại số đếm check-in về 0">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-      <span>Reset Số Đếm (0)</span>
+      <span>Reset Đếm</span>
     </button>
     <button type="button" class="btn-action-pill btn-nuclear-reset" id="btnQuickNuclearReset" title="Xóa toàn bộ dữ liệu & làm sạch database">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -1206,11 +1444,11 @@ body::after {
     </button>
     <button type="button" class="nav-tab-btn" data-target="tabSettings">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      <span>Cài Đặt &amp; Pool</span>
+      <span>Cài Đặt</span>
     </button>
     <button type="button" class="nav-tab-btn" data-target="tabAudit">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      <span>Nhật Ký Stream</span>
+      <span>Nhật Ký</span>
     </button>
   </nav>
 
@@ -1226,7 +1464,7 @@ body::after {
 
       <form id="lookupForm">
         <div class="search-input-wrap">
-          <input type="text" id="lookupQuery" class="search-input" placeholder="Nhập Số ĐT, 4 số CCCD hoặc Số vé (#088)..." autocomplete="off">
+          <input type="text" id="lookupQuery" class="search-input" placeholder="Nhập SĐT, CCCD hoặc Số vé (#088)..." autocomplete="off">
           <button type="submit" class="search-btn" id="lookupSubmitBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
             <span>Tra cứu</span>
@@ -1742,13 +1980,13 @@ body::after {
 
     if (remaining < 50) {
       statPoolRemaining.style.color = 'var(--rose)';
-      statPoolAvailableStatus.textContent = '⚠️ Sắp cạn pool!';
+      statPoolAvailableStatus.textContent = '⚠️ Sắp cạn!';
     } else if (remaining < 200) {
       statPoolRemaining.style.color = 'var(--amber)';
-      statPoolAvailableStatus.textContent = 'Còn dưới 20% quota';
+      statPoolAvailableStatus.textContent = '< 20% quota';
     } else {
       statPoolRemaining.style.color = '#fff';
-      statPoolAvailableStatus.textContent = 'Sẵn sàng cấp phát';
+      statPoolAvailableStatus.textContent = 'Sẵn sàng';
     }
   }
 
@@ -1773,7 +2011,7 @@ body::after {
   hotGateBtn?.addEventListener('click', async () => {
     const nextVal = currentGateStatus === 'open' ? 'closed' : 'open';
     if (nextVal === 'closed') {
-      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
+      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
     }
     hotGateBtn.disabled = true;
     try {
@@ -1798,7 +2036,7 @@ body::after {
   manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
 
   btnQuickResetCounter?.addEventListener('click', async () => {
-    if (!window.confirm('⚠️ XÁC NHẬN:\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
+    if (!window.confirm('⚠️ XÁC NHẬN:\\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
     btnQuickResetCounter.disabled = true;
     try {
       const res = await apiFetch('/api/admin/config', {
@@ -1875,8 +2113,8 @@ body::after {
     lookupSubmitBtn.textContent = '...';
 
     try {
-      const res = await apiFetch('/api/admin/lookup?q=' + encodeURIComponent(query));
-      if (res && res.success && (res.verdict === 'MATCH_FOUND' || res.verdict === 'REPLAY_DETECTED')) {
+      const res = await apiFetch('/api/admin/lookup?query=' + encodeURIComponent(query));
+      if (res && res.success && res.matched) {
         renderFoundVerdict(res);
         playTone('success');
       } else {
@@ -1892,42 +2130,42 @@ body::after {
   }
 
   function renderFoundVerdict(res) {
-    const records = Array.isArray(res.records) ? res.records : (res.record ? [res.record] : [{}]);
-    const rec = records[0];
+    const matches = Array.isArray(res.matched) ? res.matched : [res.matched || {}];
+    const rec = matches[0];
     const rcpt = res.receipt || {};
-    const isReplay = res.verdict === 'REPLAY_DETECTED' || records.length > 1;
+    const isReplay = rec.isReplay || matches.length > 1;
 
     verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
     verdictPill.textContent = isReplay ? 'CẢNH BÁO REPLAY' : 'HỢP LỆ';
     verdictStatusText.textContent = isReplay 
-      ? \`Phát hiện \${records.length} hồ sơ trùng lặp!\` 
+      ? \`Phát hiện \${matches.length} hồ sơ trùng lặp!\` 
       : 'Lá vé chính chủ được bảo chứng bởi Gamuda Land';
 
-    verdictTicketNumber.textContent = records.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
+    verdictTicketNumber.textContent = matches.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
     verdictName.textContent = rec.name || rec.fullName || '--';
     verdictPhone.textContent = rec.phone || '--';
 
     const cccdStr = rec.cccd || rec.cccdLast4 || '--';
     verdictCccd.textContent = cccdStr.length >= 4 ? ('•••• ' + cccdStr.slice(-4)) : cccdStr;
-    verdictAgency.textContent = records.map(r => r.agency || '--').join(', ');
+    verdictAgency.textContent = matches.map(r => r.agency || '--').join(', ');
 
-    receiptIdText.textContent = rcpt.receiptId || '--';
-    receiptRespondedAt.textContent = rcpt.respondedAt ? new Date(rcpt.respondedAt).toLocaleString('vi-VN') : '--';
-    receiptClientIp.textContent = rcpt.clientIp || rcpt.ip || '--';
-    receiptUserAgent.textContent = rcpt.userAgent || rcpt.ua || '--';
-    receiptReplayFlag.textContent = rcpt.isReplay ? 'YES (Cảnh báo trùng lặp)' : 'NO (Lần đầu)';
-    receiptHash.textContent = rcpt.integrityHash || 'HMAC-SHA256 Master Key';
+    receiptIdText.textContent = rcpt.receiptId || rec.receiptId || '--';
+    receiptRespondedAt.textContent = rcpt.respondedAt || (rec.checkedInAt ? new Date(rec.checkedInAt).toLocaleString('vi-VN') : '--');
+    receiptClientIp.textContent = rcpt.clientIp || rec.clientIp || '--';
+    receiptUserAgent.textContent = rcpt.userAgent || rec.userAgent || '--';
+    receiptReplayFlag.textContent = rec.isReplay ? 'YES (Cảnh báo trùng lặp)' : 'NO (Lần đầu)';
+    receiptHash.textContent = rcpt.signature || rec.integrityHash || 'HMAC-SHA256 Master Key';
 
-    renderAuditTable(res.auditLogs || []);
+    renderAuditTable(res.timeline || []);
   }
 
   function renderNotFoundVerdict(res) {
     verdictCard.className = 'verdict-card not-found';
     verdictPill.textContent = 'KHÔNG TÌM THẤY';
-    verdictStatusText.textContent = 'Chưa có thông tin cấp vé cho dữ liệu này';
+    verdictStatusText.textContent = res.message || 'Chưa có thông tin cấp vé cho dữ liệu này';
     verdictTicketNumber.textContent = 'N/A';
     verdictName.textContent = '--';
-    verdictPhone.textContent = res.query || '--';
+    verdictPhone.textContent = '--';
     verdictCccd.textContent = '--';
     verdictAgency.textContent = '--';
   }
@@ -1945,7 +2183,8 @@ body::after {
     }
 
     logs.forEach(item => {
-      const badgeClass = (item.resultCode && (item.resultCode.includes('CONFLICT') || item.resultCode.includes('403'))) ? 'code-err' : 'code-ok';
+      const statusText = item.resultCode || item.status || '200 OK';
+      const badgeClass = (statusText.includes('CONFLICT') || statusText.includes('403') || statusText.includes('ERROR') || statusText.includes('FAIL')) ? 'code-err' : 'code-ok';
       // Feed card (mobile)
       if (feed) {
         const card = document.createElement('div');
@@ -1953,7 +2192,7 @@ body::after {
         card.innerHTML = \`
           <div class="feed-card-header">
             <span class="feed-time mono">\${item.timeStr || item.timestamp || ''}</span>
-            <span class="feed-badge \${badgeClass}">\${item.resultCode || '200 OK'}</span>
+            <span class="feed-badge \${badgeClass}">\${statusText}</span>
           </div>
           <div class="feed-action">\${item.action || ''}</div>
           <div class="feed-detail">\${item.detail || ''} · <span class="mono">\${item.ip || ''}</span></div>
@@ -1966,7 +2205,7 @@ body::after {
         tr.innerHTML = \`
           <td class="mono" style="color:var(--bronze-300);">\${item.timeStr || item.timestamp || ''}</td>
           <td><strong>\${item.action || ''}</strong></td>
-          <td><span class="feed-badge \${badgeClass}">\${item.resultCode || '200 OK'}</span></td>
+          <td><span class="feed-badge \${badgeClass}">\${statusText}</span></td>
           <td class="mono">\${item.ip || ''}</td>
           <td>\${item.detail || ''}</td>
         \`;
@@ -2219,5 +2458,5 @@ body::after {
 </html>
 `;
 
-fs.writeFileSync(path.join(__dirname, '..', 'admin.html'), adminHtml, 'utf8');
-console.log('✅ Generated minimal mobile-friendly admin.html successfully!');
+fs.writeFileSync(path.join(__dirname, "..", "admin.html"), adminHtml, "utf8");
+console.log("✅ Generated minimal mobile-friendly admin.html successfully!");
