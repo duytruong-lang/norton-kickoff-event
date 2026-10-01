@@ -250,7 +250,7 @@ module.exports = async function handler(req, res) {
         }
 
         // Clean all registration, receipt, and audit keys
-        const scanPatterns = ['reg:*', 'receipt:*', 'rcpt:*', 'audit:*', 'stats:*', 'lock:*'];
+        const scanPatterns = ['reg:*', 'idx:*', 'receipt:*', 'rcpt:*', 'audit:*', 'stats:*', 'lock:*'];
         const allKeysToDelete = new Set();
 
         for (const pat of scanPatterns) {

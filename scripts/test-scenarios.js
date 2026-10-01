@@ -157,7 +157,7 @@ async function runAllScenarios() {
       body: JSON.stringify({
         fullName: 'Nguyễn Văn Test Closed',
         phone: '0901112222',
-        cccd: '079198000001',
+        cccd: '000001',
         agency: 'ERA Vietnam',
       }),
     });
@@ -225,14 +225,14 @@ async function runAllScenarios() {
     await redis.set('config:gate', 'open');
 
     // Ensure test isolation for userA
-    await redis.del('reg:cccd:079198001111');
-    await redis.del('reg:phone:0901234567');
+    await redis.del('reg:cccd6:001111');
+    await redis.del('idx:phone:0901234567');
 
     // Register 1 user
     const userA = {
       fullName: 'Nguyễn Văn An',
       phone: '0901234567',
-      cccd: '079198001111',
+      cccd: '001111',
       agency: 'ERA Vietnam',
       email: 'an.nguyen@eravn.vn',
     };
@@ -275,7 +275,7 @@ async function runAllScenarios() {
       body: JSON.stringify({
         fullName: 'Nguyễn Văn An (Cố tình đăng ký lại)',
         phone: '0901234567',
-        cccd: '079198001111', // Exact same CCCD
+        cccd: '001111', // Exact same CCCD
         agency: 'Đông Tây Land', // Attempt to switch agency
       }),
     });
@@ -330,10 +330,10 @@ async function runAllScenarios() {
     let allSub500 = true;
 
     for (let i = 1; i <= 10; i++) {
-      const cccd = `0792000000${padZero(i, 2)}`;
+      const cccd = `0000${padZero(i, 2)}`;
       const phone = `09123456${padZero(i, 2)}`;
-      await redis.del(`reg:cccd:${cccd}`);
-      await redis.del(`reg:phone:${phone}`);
+      await redis.del(`reg:cccd6:${cccd}`);
+      await redis.del(`idx:phone:${phone}`);
       const res = await request('/api/register', {
         method: 'POST',
         body: JSON.stringify({
@@ -405,7 +405,7 @@ async function runAllScenarios() {
     const disputeUser = {
       fullName: 'Trương Hoàng Nam',
       phone: '0988777666',
-      cccd: '079199887766',
+      cccd: '887766',
       agency: 'Đông Tây Land',
     };
     const disputeRegRes = await request('/api/register', {

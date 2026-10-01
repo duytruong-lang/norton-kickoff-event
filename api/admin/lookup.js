@@ -75,21 +75,35 @@ module.exports = async function handler(req, res) {
     const cleanDigits = rawQuery.replace(/\D/g, '');
     let registrations = [];
 
-    if (cleanDigits.length === 4) {
-      const phones = await redis.smembers(`reg:cccd4:${cleanDigits}`);
-      if (phones && phones.length > 0) {
-        const pipeline = redis.pipeline();
-        phones.forEach(phone => pipeline.hgetall(`reg:phone:${phone}`));
-        const results = await pipeline.exec();
-        registrations = results.filter(r => r && r.ticketNumber);
+    if (cleanDigits.length === 6) {
+      // Direct CCCD6 primary key lookup
+      const reg = await redis.hgetall(`reg:cccd6:${cleanDigits}`);
+      if (reg && reg.ticketNumber) {
+        registrations = [reg];
       }
     } else {
+      // Phone-based lookup via reverse index
       const phoneInfo = normalizePhoneVN(rawQuery);
-      let targetPhone = phoneInfo.isValid ? phoneInfo.local : cleanDigits;
+      const targetPhone = phoneInfo.isValid ? phoneInfo.local : '';
       if (targetPhone) {
-        const reg = await redis.hgetall(`reg:phone:${targetPhone}`);
-        if (reg && reg.ticketNumber) {
-          registrations = [reg];
+        const cccd6 = await redis.get(`idx:phone:${targetPhone}`);
+        if (cccd6) {
+          const reg = await redis.hgetall(`reg:cccd6:${cccd6}`);
+          if (reg && reg.ticketNumber) {
+            registrations = [reg];
+          }
+        }
+      }
+      // Ticket number lookup (#xxx)
+      if (registrations.length === 0 && (rawQuery.startsWith('#') || rawQuery.startsWith('NP-'))) {
+        const ticketSearch = rawQuery.startsWith('#') ? 'NP-2026-' + rawQuery.replace('#', '') : rawQuery;
+        const keys = await redis.keys('reg:cccd6:*');
+        for (const key of keys) {
+          const rec = await redis.hgetall(key);
+          if (rec && rec.ticketNumber === ticketSearch) {
+            registrations.push(rec);
+            break;
+          }
         }
       }
     }
@@ -113,7 +127,7 @@ module.exports = async function handler(req, res) {
       try {
         const streamEntries = await redis.xrange('audit:log', '-', '+', 100);
         if (Array.isArray(streamEntries)) {
-          const cccdHashed = sha256Hex(registration.cccdLast4 || registration.cccd);
+          const cccdHashed = sha256Hex(registration.cccdLast6 || registration.cccd);
           const phoneLocal = registration.phone;
           timeline = streamEntries
             .map(([msgId, fields]) => {
@@ -152,7 +166,7 @@ module.exports = async function handler(req, res) {
       const matched = {
         name: registration.fullName,
         phone: registration.phone,
-        cccd: registration.cccdLast4 || registration.cccd,
+        cccd: registration.cccdLast6 || registration.cccd,
         agency: registration.agency || 'Khách mời tự do',
         email: registration.email || 'sales@gamudaland.vn',
         luckyNumber: luckyNum,

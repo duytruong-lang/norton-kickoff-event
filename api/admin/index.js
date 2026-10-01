@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+'use strict';
+const adminHTML = `<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
@@ -2002,7 +2003,7 @@ body::after {
   hotGateBtn?.addEventListener('click', async () => {
     const nextVal = currentGateStatus === 'open' ? 'closed' : 'open';
     if (nextVal === 'closed') {
-      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
+      if (!window.confirm('⚠️ XÁC NHẬN ĐÓNG CỔNG:\\nBạn có chắc chắn muốn ngắt tiếp nhận check-in ngay bây giờ?')) return;
     }
     hotGateBtn.disabled = true;
     try {
@@ -2027,7 +2028,7 @@ body::after {
   manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
 
   btnQuickResetCounter?.addEventListener('click', async () => {
-    if (!window.confirm('⚠️ XÁC NHẬN:\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
+    if (!window.confirm('⚠️ XÁC NHẬN:\\nĐặt lại số đếm check-in (stats:total) về 0?')) return;
     btnQuickResetCounter.disabled = true;
     try {
       const res = await apiFetch('/api/admin/config', {
@@ -2129,7 +2130,7 @@ body::after {
     verdictCard.className = 'verdict-card ' + (isReplay ? 'dispute' : 'valid');
     verdictPill.textContent = isReplay ? 'CẢNH BÁO REPLAY' : 'HỢP LỆ';
     verdictStatusText.textContent = isReplay 
-      ? `Phát hiện ${matches.length} hồ sơ trùng lặp!` 
+      ? \`Phát hiện \${matches.length} hồ sơ trùng lặp!\` 
       : 'Lá vé chính chủ được bảo chứng bởi Gamuda Land';
 
     verdictTicketNumber.textContent = matches.map(r => r.luckyNumber || r.ticketCode || '#---').join(', ');
@@ -2180,26 +2181,26 @@ body::after {
       if (feed) {
         const card = document.createElement('div');
         card.className = 'feed-card';
-        card.innerHTML = `
+        card.innerHTML = \`
           <div class="feed-card-header">
-            <span class="feed-time mono">${item.timeStr || item.timestamp || ''}</span>
-            <span class="feed-badge ${badgeClass}">${statusText}</span>
+            <span class="feed-time mono">\${item.timeStr || item.timestamp || ''}</span>
+            <span class="feed-badge \${badgeClass}">\${statusText}</span>
           </div>
-          <div class="feed-action">${item.action || ''}</div>
-          <div class="feed-detail">${item.detail || ''} · <span class="mono">${item.ip || ''}</span></div>
-        `;
+          <div class="feed-action">\${item.action || ''}</div>
+          <div class="feed-detail">\${item.detail || ''} · <span class="mono">\${item.ip || ''}</span></div>
+        \`;
         feed.appendChild(card);
       }
       // Table row (desktop)
       if (tbody) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="mono" style="color:var(--bronze-300);">${item.timeStr || item.timestamp || ''}</td>
-          <td><strong>${item.action || ''}</strong></td>
-          <td><span class="feed-badge ${badgeClass}">${statusText}</span></td>
-          <td class="mono">${item.ip || ''}</td>
-          <td>${item.detail || ''}</td>
-        `;
+        tr.innerHTML = \`
+          <td class="mono" style="color:var(--bronze-300);">\${item.timeStr || item.timestamp || ''}</td>
+          <td><strong>\${item.action || ''}</strong></td>
+          <td><span class="feed-badge \${badgeClass}">\${statusText}</span></td>
+          <td class="mono">\${item.ip || ''}</td>
+          <td>\${item.detail || ''}</td>
+        \`;
         tbody.appendChild(tr);
       }
     });
@@ -2447,3 +2448,18 @@ body::after {
 </script>
 </body>
 </html>
+`;
+
+module.exports = function handler(req, res) {
+  const secretKey = process.env.ADMIN_SECRET || 'norton_admin_secret_2026';
+  const url = new URL(req.url, 'http://localhost');
+  const querySecret = url.searchParams.get('secret') || url.searchParams.get('adminSecret');
+  if (!querySecret || querySecret !== secretKey) {
+    return res.status(401).send('Unauthorized: Invalid admin secret.');
+  }
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store');
+  return res.status(200).send(adminHTML);
+};
+
+module.exports.adminHTML = adminHTML;

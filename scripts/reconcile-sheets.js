@@ -20,13 +20,13 @@ const redis = new Redis({
 });
 
 async function reconcile() {
-  console.log('🔍 Scanning Redis for all registrations (reg:phone:*)...\n');
+  console.log('🔍 Scanning Redis for all registrations (reg:cccd6:*)...\n');
 
   // Scan all phone registration keys
   const keys = [];
   let cursor = 0;
   do {
-    const [nextCursor, batch] = await redis.scan(cursor, { match: 'reg:phone:*', count: 100 });
+    const [nextCursor, batch] = await redis.scan(cursor, { match: 'reg:cccd6:*', count: 100 });
     cursor = Number(nextCursor);
     keys.push(...batch);
   } while (cursor !== 0);
@@ -59,7 +59,8 @@ async function reconcile() {
       continue;
     }
 
-    const phone = key.replace('reg:phone:', '');
+    const cccd6 = key.replace('reg:cccd6:', '');
+    const phone = data.phone || cccd6;
 
     try {
       const result = await appendLeadToSheet({
@@ -68,7 +69,7 @@ async function reconcile() {
         ticketNumber: data.ticketNumber,
         fullName: data.fullName || '',
         phone: data.phone || phone,
-        cccdLast4: data.cccdLast4 || '',
+        cccdLast6: data.cccdLast6 || '',
         agency: data.agency || '',
         email: data.email || '',
         role: data.role || '',

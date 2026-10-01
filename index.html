@@ -1586,14 +1586,14 @@ input, select {
           <div class="form-error" data-for="phone">Số điện thoại chưa hợp lệ (gồm 10 chữ số).</div>
         </div>
 
-        <!-- Field 3: 4 số cuối CCCD / CMND -->
+        <!-- Field 3: 6 số cuối CCCD -->
         <div class="form-group">
-          <label for="cccd">4 số cuối CCCD / CMND <span class="req">*</span></label>
+          <label for="cccd">6 số cuối CCCD <span class="req">*</span></label>
           <div class="input-wrap">
             <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2"/><path d="M15 12h2"/><path d="M7 16h10"/></svg>
-            <input id="cccd" name="cccd" type="tel" inputmode="numeric" autocomplete="off" placeholder="VD: 8877" maxlength="4" pattern="[0-9]{4}" required>
+            <input id="cccd" name="cccd" type="tel" inputmode="numeric" autocomplete="off" placeholder="VD: 008877" maxlength="6" pattern="[0-9]{6}" required>
           </div>
-          <div class="form-error" data-for="cccd">Vui lòng nhập đúng 4 chữ số cuối CCCD.</div>
+          <div class="form-error" data-for="cccd">Vui lòng nhập đúng 6 chữ số cuối CCCD.</div>
         </div>
 
         <!-- Field 4: Sàn phân phối F1 Gamuda Land -->
@@ -1691,7 +1691,7 @@ input, select {
         <div class="name" id="luckyName">Nguyễn Thành Nam</div>
         <div class="phone" id="luckyPhone">0908 168 286</div>
         <div class="ticket-meta">
-          <span id="luckyCccd">CCCD: •••• •••• 8877</span> · <span id="luckyAgency">ERA Vietnam</span>
+          <span id="luckyCccd">CCCD: •••••• 008877</span> · <span id="luckyAgency">ERA Vietnam</span>
         </div>
 
         <!-- Ticket QR code strip (REAL SCANNABLE DYNAMIC QR) -->
@@ -1784,7 +1784,7 @@ input, select {
             <ul>
               <li>Họ và tên đầy đủ theo CCCD;</li>
               <li>Số điện thoại cá nhân (10 số đang hoạt động);</li>
-              <li>Số CCCD (9 hoặc 12 số);</li>
+              <li>6 số cuối CCCD;</li>
               <li>Chọn đúng Đại lý / Sàn phân phối F1 chủ quản;</li>
               <li>Địa chỉ Email cá nhân (tùy chọn nhận tài liệu dự án).</li>
             </ul>
@@ -1796,7 +1796,7 @@ input, select {
         <h3>3. QUY ĐỊNH VỀ MÃ DỰ THƯỞNG</h3>
         <ul>
           <li>Mỗi chuyên viên kinh doanh chỉ được cấp duy nhất <strong>01 mã dự thưởng hợp lệ</strong> trong suốt chương trình.</li>
-          <li>Mã dự thưởng gắn liền với số điện thoại và số CCCD của người tham dự. Hệ thống sẽ tự động phát hiện và loại bỏ các lượt đăng ký trùng lặp thông tin.</li>
+          <li>Mã dự thưởng gắn liền với 6 số cuối CCCD của người tham dự. Hệ thống sẽ tự động phát hiện và loại bỏ các lượt đăng ký trùng lặp thông tin.</li>
           <li>Các trường hợp cố tình khai báo sai thông tin, sử dụng thông tin của người khác, hoặc có hành vi gian lận kỹ thuật sẽ bị CĐT Gamuda Land hủy bỏ quyền tham gia mà không cần thông báo trước.</li>
         </ul>
 
@@ -2167,8 +2167,8 @@ input, select {
       showError('phone', false);
     }
 
-    // 3. CCCD validation (4 digits)
-    if (!/^\d{4}$/.test(cccd)) {
+    // 3. CCCD validation (6 digits)
+    if (!/^\d{6}$/.test(cccd)) {
       showError('cccd', true);
       isValid = false;
     } else {
@@ -2248,8 +2248,8 @@ input, select {
     luckyNumberEl.textContent = data.luckyNumber;
     luckyNameEl.textContent = data.name;
     luckyPhoneEl.textContent = data.phone;
-    const cccdDisplay = data.cccdLast4 || data.cccd || '';
-    luckyCccdEl.textContent = 'CCCD: •••• •••• ' + cccdDisplay;
+    const cccdDisplay = data.cccdLast6 || data.cccd || '';
+    luckyCccdEl.textContent = 'CCCD: •••••• ' + cccdDisplay;
     luckyAgencyEl.textContent = data.agency;
     const ticketCode = data.ticketCode || ('NP-2026-' + (data.luckyNumber || '088').replace('#', ''));
     if (luckyCodeDisplay) luckyCodeDisplay.textContent = ticketCode;
@@ -2457,7 +2457,7 @@ input, select {
       receiptId: receiptId,
       name: data.name || name,
       phone: data.phone || phone,
-      cccdLast4: data.cccd || cccd,
+      cccdLast6: data.cccd || cccd,
       agency: data.agency || agency,
       email: data.email || email,
       timestamp: fullTimeStr,
@@ -2496,7 +2496,7 @@ input, select {
     const num = ticketData.luckyNumber || '#088';
     const name = ticketData.name || 'Chuyên viên kinh doanh';
     const phone = ticketData.phone || '0908 168 286';
-    const cccd = ticketData.cccd || '079092008888';
+    const cccd = ticketData.cccd || '008888';
     const agency = ticketData.agency || 'Đại lý F1 Gamuda Land';
     const time = ticketData.timestamp || '08:00 · 08.10.2026';
     const code = 'NP-2026-' + num.replace('#', '');

@@ -9,7 +9,7 @@
  */
 
 const { redis } = require('../lib/redis');
-const { padZero, normalizePhoneVN, cleanCCCDLast4 } = require('../lib/helpers');
+const { padZero, normalizePhoneVN, cleanCCCDLast6 } = require('../lib/helpers');
 const { logRequest, writeReceipt } = require('../lib/audit');
 const { sendMetaLeadEvent } = require('../lib/capi');
 const { appendLeadToSheet } = require('../lib/sheets');
@@ -101,7 +101,7 @@ module.exports = async function handler(req, res) {
     const role = String(body.role || 'Chiến binh kinh doanh').trim();
     const utmSource = String(body.utmSource || body.source || 'LDP').trim();
 
-    const clean4Id = cleanCCCDLast4(rawCCCD);
+    const clean6Id = cleanCCCDLast6(rawCCCD);
     const phoneInfo = normalizePhoneVN(rawPhone);
 
     if (!fullName) {
@@ -112,11 +112,11 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    if (!clean4Id || clean4Id.length !== 4) {
+    if (!clean6Id || clean6Id.length !== 6) {
       return res.status(400).json({
         success: false,
         error: 'INVALID_CCCD',
-        message: 'Vui lòng nhập đúng 4 chữ số cuối CCCD / CMND.',
+        message: 'Vui lòng nhập đúng 6 chữ số cuối CCCD.',
       });
     }
 
@@ -128,9 +128,9 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // 2.2 Absolute Phone Idempotency Check (reg:phone:{phoneLocal})
-    const phoneKey = `reg:phone:${phoneInfo.local}`;
-    const existing = await redis.hgetall(phoneKey);
+    // 2.2 Absolute CCCD Idempotency Check (reg:cccd6:{cccd6digits})
+    const cccdKey = `reg:cccd6:${clean6Id}`;
+    const existing = await redis.hgetall(cccdKey);
 
     if (existing && existing.ticketNumber) {
       const responseTimeMs = Date.now() - startTime;
@@ -149,7 +149,7 @@ module.exports = async function handler(req, res) {
         leadId: replayLeadId,
         receiptId: existing.receiptId,
         ticketNumber: existing.ticketNumber,
-        cccdLast4: clean4Id,
+        cccdLast6: clean6Id,
         phone: phoneInfo.local,
         ip: clientIp,
         geo: { city, country, region },
@@ -167,7 +167,7 @@ module.exports = async function handler(req, res) {
           ticketNumber: existing.ticketNumber,
           fullName: existing.fullName,
           phone: existing.phone || phoneInfo.raw,
-          cccdLast4: clean4Id,
+          cccdLast6: clean6Id,
           agency: existing.agency || agency,
           email: existing.email || email,
           role: existing.role || role,
@@ -192,7 +192,7 @@ module.exports = async function handler(req, res) {
         fullName: existing.fullName,
         phone: existing.phone,
         agency: existing.agency || agency,
-        cccdLast4: clean4Id,
+        cccdLast6: clean6Id,
         issuedAt: existing.issuedAt,
         replayed: true,
         responseTimeMs,
@@ -249,7 +249,7 @@ module.exports = async function handler(req, res) {
       fullName,
       phone: phoneInfo.local,
       phoneE164: phoneInfo.e164Plain,
-      cccdLast4: clean4Id,
+      cccdLast6: clean6Id,
       agency: agency || 'Khách mời tự do',
       email: email || '',
       role,
@@ -264,8 +264,8 @@ module.exports = async function handler(req, res) {
 
     // 2.6 Persistence: Redis Hash, phone index, counter, receipt, audit stream
     await Promise.all([
-      redis.hset(phoneKey, registrationRecord),
-      redis.sadd('reg:cccd4:' + clean4Id, phoneInfo.local),
+      redis.hset(cccdKey, registrationRecord),
+      redis.set('idx:phone:' + phoneInfo.local, clean6Id),
       redis.incr('stats:total'),
       writeReceipt(leadId, {
         ...registrationRecord,
@@ -277,7 +277,7 @@ module.exports = async function handler(req, res) {
         leadId,
         receiptId,
         ticketNumber,
-        cccdLast4: clean4Id,
+        cccdLast6: clean6Id,
         phone: phoneInfo.local,
         ip: clientIp,
         geo: { city, country, region },
@@ -300,7 +300,7 @@ module.exports = async function handler(req, res) {
       fullName,
       phone: phoneInfo.local,
       agency: registrationRecord.agency,
-      cccdLast4: clean4Id,
+      cccdLast6: clean6Id,
       issuedAt,
       replayed: false,
       responseTimeMs,
@@ -331,7 +331,7 @@ module.exports = async function handler(req, res) {
           ticketNumber,
           fullName,
           phone: phoneInfo.raw,
-          cccdLast4: clean4Id,
+          cccdLast6: clean6Id,
           agency: registrationRecord.agency,
           email,
           role,

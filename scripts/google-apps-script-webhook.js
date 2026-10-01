@@ -28,7 +28,7 @@ var HEADERS_14 = [
   'Số Vé May Mắn',        // Col 2 (B) - Mã bốc thăm (#088, NP-2026-xxx)
   'Họ Và Tên',            // Col 3 (C)
   'Số Điện Thoại',        // Col 4 (D)
-  'CCCD (4 số cuối)',     // Col 5 (E)
+  'CCCD (6 số cuối)',     // Col 5 (E)
   'Đại Lý / Sàn F1',      // Col 6 (F)
   'Email',                // Col 7 (G)
   'Trạng Thái',           // Col 8 (H) - CONFIRMED / REPLAYED
@@ -239,7 +239,7 @@ function applyColumnWidths(sheet) {
     130, // Col 2: Số Vé May Mắn
     180, // Col 3: Họ Và Tên
     130, // Col 4: Số Điện Thoại
-    130, // Col 5: CCCD (4 số cuối)
+    150, // Col 5: CCCD (6 số cuối)
     180, // Col 6: Đại Lý / Sàn F1
     190, // Col 7: Email
     120, // Col 8: Trạng Thái
