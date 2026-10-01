@@ -46,3 +46,21 @@
 - **Root Cause**: Reliance on horizontal flex without media query breakpoints; missing `white-space: nowrap` and `flex-shrink: 0` on badges and button pills; multi-word labels inside small grid cells.
 - **Rule**: For mobile admin cockpits (<640px), convert high-importance action cards to stacked column layouts with full-width (100%) touch buttons (thumb-friendly >=44px height). Always add `white-space: nowrap` to status badges, pills, and tab buttons. Keep micro-copy ultra-concise (1-2 words) to prevent text clipping.
 
+## Pattern: Primary Deduplication Key Shift (CCCD 6-Digit vs Phone Number)
+- **Date**: 2026-10-01
+- **Mistake**: Relying on phone number as the primary idempotency key allowed an attendee with multiple SIM cards to claim multiple lucky tickets, violating the Gamuda Land 1 person = 1 ticket rule.
+- **Root Cause**: Phone was used as the natural primary key early on due to easy validation, while CCCD was merely a secondary indexed set (`reg:cccd4:*`).
+- **Rule**: In high-stakes lucky draw events, the legal unique identifier (CCCD/CMND) MUST be the primary Redis key (`reg:cccd6:{clean6Id}`). Phone numbers must only exist as a reverse lookup pointer (`idx:phone:{phoneLocal}` -> `clean6Id`). When changing idempotency keys, update all automated test suites, sheet reconciliation scripts, and add pattern `idx:*` to nuclear reset routines.
+
+## Pattern: Clean URL Client-Side Password Gate vs URL Query Secrets for Admin
+- **Date**: 2026-10-01
+- **Mistake**: Enforcing URL query parameters (`?secret=...`) for server-side HTML rendering exposed credentials in browser history, bookmarks, and screen shares, while preventing clean bookmarking of `/admin`.
+- **Root Cause**: Coupling the admin HTML page delivery with backend API authentication secrets.
+- **Rule**: Serve the admin HTML shell cleanly on `/admin` without query secrets, gate the view client-side with a password modal (`sessionStorage` session lifecycle), and strictly enforce API tokens (`ADMIN_SECRET` in `Authorization` / `x-admin-secret` headers) on backend serverless API routes.
+
+## Pattern: Print-Ready QR Codes for Event Standees & Collaterals
+- **Date**: 2026-10-01
+- **Mistake**: AI image generation models generate non-functional/unscannable QR art that cannot be read by smartphone cameras.
+- **Root Cause**: Diffusion models treat QR codes as pixel textures rather than mathematical Reed-Solomon error correction matrices.
+- **Rule**: NEVER rely on AI-generated QR codes for physical event collateral. Always use deterministic QR code libraries (`qrcode` npm) with Error Correction Level H (30% damage tolerance), dark high-contrast branding colors, export both 1024x1024 PNG and scalable SVG vector formats, and test camera scanning before sending to print.
+

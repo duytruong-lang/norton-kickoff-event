@@ -16,5 +16,8 @@
     "node": ">=18.0.0"
   },
   "author": "1990 Agency",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  }
 }
