@@ -64,3 +64,9 @@
 - **Root Cause**: Diffusion models treat QR codes as pixel textures rather than mathematical Reed-Solomon error correction matrices.
 - **Rule**: NEVER rely on AI-generated QR codes for physical event collateral. Always use deterministic QR code libraries (`qrcode` npm) with Error Correction Level H (30% damage tolerance), dark high-contrast branding colors, export both 1024x1024 PNG and scalable SVG vector formats, and test camera scanning before sending to print.
 
+## Pattern: Google Sheets Number Type Coercion Stripping Leading Zeros on Phone Numbers
+- **Date**: 2026-10-01
+- **Mistake**: Google Apps Script `appendRow` auto-coerced phone strings (e.g. `"0909008810"`) into JavaScript numbers (`909008810`), causing Google Sheets to display phone numbers without the leading zero.
+- **Root Cause**: Default cell format in Google Sheets is "Automatic", which drops leading zeros from digit-only strings when appended.
+- **Rule**: In Google Sheets ERPs, always enforce Plain Text (`@`) or a fixed 10-digit number pattern (`0000000000`) on phone number columns across the entire column. In Apps Script webhook handlers, explicitly call `cell.setNumberFormat('@').setValue(phone)` and provide a self-repairing `setupSheetStyle()` routine that checks and restores the leading `0` on existing rows.
+
