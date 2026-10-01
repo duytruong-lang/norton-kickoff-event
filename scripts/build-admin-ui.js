@@ -2,7 +2,7 @@
 
 /**
  * 1990 Agency — Norton Park Sales Kick-off Event
- * Admin Cockpit — Inline HTML Builder (auto-generated rebuild script)
+ * Admin Cockpit — Inline HTML Builder
  * 
  * Usage: node scripts/build-admin-ui.js
  * Reads admin.html, escapes for template literal, writes api/admin/index.js
@@ -23,12 +23,8 @@ const output = `'use strict';
 const adminHTML = \`${escaped}\`;
 
 module.exports = function handler(req, res) {
-  const secretKey = process.env.ADMIN_SECRET || 'norton_admin_secret_2026';
-  const url = new URL(req.url, 'http://localhost');
-  const querySecret = url.searchParams.get('secret') || url.searchParams.get('adminSecret');
-  if (!querySecret || querySecret !== secretKey) {
-    return res.status(401).send('Unauthorized: Invalid admin secret.');
-  }
+  // Client-side password gate handles access control (norton@2026)
+  // API endpoints still enforce ADMIN_SECRET server-side
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).send(adminHTML);

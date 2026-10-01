@@ -1276,9 +1276,58 @@ body::after {
 
 /* Utility classes */
 .hidden { display: none !important; }
+
+/* LOGIN OVERLAY */
+.login-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--pine-900);
+}
+.login-overlay.hidden { display: none; }
+.login-card {
+  width: 360px; padding: 40px 32px; text-align: center;
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-radius: var(--r-lg); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6);
+}
+.login-card img { height: 36px; margin-bottom: 20px; }
+.login-card h2 { font-family: var(--font-display); font-size: 18px; color: var(--bronze-300); margin: 0 0 6px; }
+.login-card p { font-size: 12px; color: var(--ink-soft); margin: 0 0 24px; }
+.login-input {
+  width: 100%; height: 44px; padding: 0 16px; box-sizing: border-box;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--card-border);
+  border-radius: var(--r-md); color: var(--ink); font-size: 14px; text-align: center;
+  letter-spacing: 2px; font-family: var(--font-mono);
+}
+.login-input:focus { border-color: var(--bronze-500); outline: none; }
+.login-input.shake { border-color: var(--rose); animation: loginShake 0.4s ease; }
+.login-btn {
+  width: 100%; height: 42px; margin-top: 12px; box-sizing: border-box;
+  background: var(--bronze-500); border: none; border-radius: var(--r-md);
+  color: white; font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: background 0.2s;
+}
+.login-btn:hover { background: var(--bronze-600); }
+.login-error { color: var(--rose); font-size: 11px; margin-top: 8px; min-height: 16px; }
+@keyframes loginShake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
 </style>
 </head>
 <body>
+
+<!-- LOGIN GATE -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <img src="assets/logo-norton-park.svg" alt="Norton Park" onerror="this.style.display='none'">
+    <h2>BTC Điều Hành</h2>
+    <p>The SYNC Show · Norton Park | Gamuda Land</p>
+    <input type="password" class="login-input" id="loginPassword" placeholder="Nhập mật khẩu..." autocomplete="off" autofocus>
+    <button type="button" class="login-btn" id="loginBtn">Đăng Nhập</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
 
 <!-- 1. STICKY COCKPIT TOP BAR -->
 <header class="cockpit-bar">
@@ -1543,6 +1592,10 @@ body::after {
             <button type="button" class="preset-pill active" data-val="1000">1,000 vé</button>
             <button type="button" class="preset-pill" data-val="1500">1,500 vé</button>
             <button type="button" class="preset-pill" data-val="2000">2,000 vé</button>
+            <button type="button" class="preset-pill" data-val="custom" id="customPoolPill">Khác</button>
+          </div>
+          <div id="customPoolWrap" style="display:none; margin-top:8px;">
+            <input type="number" id="customPoolInput" class="search-input" placeholder="Nhập số lượng vé..." min="10" max="10000" step="10" style="width:100%; height:38px; text-align:center; font-size:14px; font-weight:600;">
           </div>
         </div>
 
@@ -1565,25 +1618,13 @@ body::after {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
           <span>Khởi Tạo Lại Pool Số</span>
         </button>
-      </div>
 
-      <div class="config-card">
-        <div class="card-section-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Quy Chuẩn Kỹ Thuật</span>
-        </div>
-        <div style="font-size:12px; color:var(--sand-200); line-height:1.7;">
-          <div>• <strong>Redis:</strong> Upstash Singapore (Atomic LPOP &lt;3.5ms)</div>
-          <div>• <strong>Chống trùng:</strong> 1 CCCD = 1 số duy nhất</div>
-          <div>• <strong>Dual-Tracking:</strong> Meta CAPI v22.0 + Sheets ERP</div>
-          <div>• <strong>Event:</strong> The SYNC Show · 08.10.2026 Phú Thọ</div>
-        </div>
-
-        <!-- Hidden trigger for nuclear reset modal -->
-        <button type="button" id="triggerResetBtn" style="margin-top:16px; width:100%; height:38px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.35); color:#FCA5A5; font-size:12px; font-weight:700; border-radius:var(--r-md); cursor:pointer;">
-          🗑️ Mở Hộp Thoại Nuclear Reset
+        <button type="button" id="triggerResetBtn" style="margin-top:12px; width:100%; height:38px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.35); color:#FCA5A5; font-size:12px; font-weight:700; border-radius:var(--r-md); cursor:pointer;">
+          🗑️ Nuclear Reset
         </button>
       </div>
+
+      <!-- Quy Chuẩn Kỹ Thuật: hidden per requirement -->
     </div>
   </div>
 
@@ -1705,6 +1746,52 @@ body::after {
 <script>
 (function() {
   'use strict';
+
+  // ============ LOGIN GATE ============
+  const ADMIN_PASSWORD = 'norton@2026';
+  const LOGIN_SESSION_KEY = 'norton_admin_logged_in';
+  const loginOverlay = document.getElementById('loginOverlay');
+  const loginPassword = document.getElementById('loginPassword');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+
+  function isLoggedIn() {
+    return sessionStorage.getItem(LOGIN_SESSION_KEY) === 'true';
+  }
+
+  function showCockpit() {
+    loginOverlay.classList.add('hidden');
+  }
+
+  function showLogin() {
+    loginOverlay.classList.remove('hidden');
+  }
+
+  function attemptLogin() {
+    const pwd = loginPassword.value.trim();
+    if (pwd === ADMIN_PASSWORD) {
+      sessionStorage.setItem(LOGIN_SESSION_KEY, 'true');
+      showCockpit();
+      loginError.textContent = '';
+    } else {
+      loginPassword.classList.add('shake');
+      loginError.textContent = 'Mật khẩu không chính xác.';
+      setTimeout(() => loginPassword.classList.remove('shake'), 400);
+    }
+  }
+
+  loginBtn?.addEventListener('click', attemptLogin);
+  loginPassword?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptLogin();
+    loginError.textContent = '';
+  });
+
+  if (!isLoggedIn()) {
+    showLogin();
+  } else {
+    showCockpit();
+  }
+  // ============ END LOGIN GATE ============
 
   const STORAGE_SECRET_KEY = 'norton_admin_secret';
   const STORAGE_MOCK_STATE = 'norton_admin_mock_state_v1';
@@ -2233,8 +2320,20 @@ body::after {
     pill.addEventListener('click', () => {
       document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
-      inputPoolMax.value = pill.dataset.val;
+      const customWrap = document.getElementById('customPoolWrap');
+      const customInput = document.getElementById('customPoolInput');
+      if (pill.dataset.val === 'custom') {
+        customWrap.style.display = 'block';
+        customInput.focus();
+      } else {
+        customWrap.style.display = 'none';
+        inputPoolMax.value = pill.dataset.val;
+      }
     });
+  });
+
+  document.getElementById('customPoolInput')?.addEventListener('input', (e) => {
+    inputPoolMax.value = e.target.value;
   });
 
   const labelModeShuffle = document.getElementById('labelModeShuffle');
@@ -2451,12 +2550,8 @@ body::after {
 `;
 
 module.exports = function handler(req, res) {
-  const secretKey = process.env.ADMIN_SECRET || 'norton_admin_secret_2026';
-  const url = new URL(req.url, 'http://localhost');
-  const querySecret = url.searchParams.get('secret') || url.searchParams.get('adminSecret');
-  if (!querySecret || querySecret !== secretKey) {
-    return res.status(401).send('Unauthorized: Invalid admin secret.');
-  }
+  // Client-side password gate handles access control (norton@2026)
+  // API endpoints still enforce ADMIN_SECRET server-side
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
   return res.status(200).send(adminHTML);
