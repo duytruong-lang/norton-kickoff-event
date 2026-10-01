@@ -164,7 +164,13 @@ function doPost(e) {
       .setFontColor('#0A140F')
       .setBackground('#FBF5E8');
 
-    sheet.getRange(newRowIndex, 4).setHorizontalAlignment('center'); // SĐT
+    // Cột 4: Số Điện Thoại — Bảo toàn số 0 ở đầu (Ép kiểu Plain Text @)
+    var phoneCell = sheet.getRange(newRowIndex, 4);
+    var phoneVal = String(rowData[3] || '').trim();
+    if (phoneVal && !phoneVal.startsWith('0') && phoneVal.length === 9 && /^\d+$/.test(phoneVal)) {
+      phoneVal = '0' + phoneVal;
+    }
+    phoneCell.setNumberFormat('@').setValue(phoneVal).setHorizontalAlignment('center');
     sheet.getRange(newRowIndex, 5).setHorizontalAlignment('center'); // CCCD
     
     // Cột 8: Trạng Thái Check-in
@@ -274,5 +280,29 @@ function setupSheetStyle() {
     sheet.deleteColumns(15, maxCols - 14);
   }
 
-  Logger.log('✅ Đã cập nhật thành công Google Sheet sang 14 cột chuẩn!');
+  // Khóa định dạng Plain Text (@) cho toàn bộ Cột 4 (Số Điện Thoại) & tự động bù số 0 cho dòng cũ
+  var totalRows = sheet.getMaxRows();
+  if (totalRows > 1) {
+    var phoneColRange = sheet.getRange(2, 4, totalRows - 1, 1);
+    phoneColRange.setNumberFormat('@').setHorizontalAlignment('center');
+    
+    var lastRowWithData = sheet.getLastRow();
+    if (lastRowWithData > 1) {
+      var dataPhoneRange = sheet.getRange(2, 4, lastRowWithData - 1, 1);
+      var phoneValues = dataPhoneRange.getValues();
+      var hasFix = false;
+      for (var r = 0; r < phoneValues.length; r++) {
+        var val = String(phoneValues[r][0] || '').trim();
+        if (val && !val.startsWith('0') && val.length === 9 && /^\d+$/.test(val)) {
+          phoneValues[r][0] = '0' + val;
+          hasFix = true;
+        }
+      }
+      if (hasFix) {
+        dataPhoneRange.setValues(phoneValues);
+      }
+    }
+  }
+
+  Logger.log('✅ Đã cập nhật thành công Google Sheet sang 14 cột chuẩn & bảo toàn số 0 điện thoại!');
 }
