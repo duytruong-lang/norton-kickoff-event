@@ -18,6 +18,8 @@
   "author": "1990 Agency",
   "license": "UNLICENSED",
   "devDependencies": {
-    "qrcode": "^1.5.4"
+    "jsqr": "^1.4.0",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.35.5"
   }
 }
