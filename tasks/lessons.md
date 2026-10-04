@@ -70,3 +70,9 @@
 - **Root Cause**: Default cell format in Google Sheets is "Automatic", which drops leading zeros from digit-only strings when appended.
 - **Rule**: In Google Sheets ERPs, always enforce Plain Text (`@`) or a fixed 10-digit number pattern (`0000000000`) on phone number columns across the entire column. In Apps Script webhook handlers, explicitly call `cell.setNumberFormat('@').setValue(phone)` and provide a self-repairing `setupSheetStyle()` routine that checks and restores the leading `0` on existing rows.
 
+
+## Pattern: Agency list needs single source of truth
+- **Date**: 2026-10-04
+- **Mistake**: Agency dropdown was free-form; backend accepted any string, fragmenting per-agency stats. User-pasted list had stray quotes/trailing spaces.
+- **Root Cause**: No canonical list or server-side normalization.
+- **Rule**: Keep lib/agencies.js as source of truth with normalizeAgency(); run scripts/test-agencies.js (syncs index.html dropdown, A-Z order, no F1) before shipping. Clean pasted lists first.

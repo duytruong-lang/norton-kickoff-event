@@ -3,7 +3,7 @@
 > **Đơn vị tổ chức & triển khai kỹ thuật**: 1990 Agency  
 > **Thời gian sự kiện**: 08.10.2026  
 > **Địa điểm**: Rạp Xiếc Và Biểu Diễn Đa Năng Phú Thọ (Quận 11, TP.HCM)  
-> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối F1  
+> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối  
 > **Hệ thống**: [Landing Page Check-in](https://norton-kickoff-event.vercel.app) | [Admin Cockpit](https://norton-kickoff-event.vercel.app/admin?secret=norton_admin_secret_2026) | [Google Sheet ERP](https://docs.google.com/spreadsheets/d/1IpfahCoOnvE5dc9JES9upMiBvW6l__Cx8X4aD2i3A28/edit)
 
 ---
@@ -96,7 +96,7 @@
 Khi có tranh chấp vé hoặc kiểm tra đối soát nhận giải thưởng giá trị lớn:
 1. Nhập **Số Điện Thoại**, **4 số cuối CCCD**, hoặc **Số Vé (#088)** vào ô tìm kiếm.
 2. Bấm **Tra Cứu**:
-   - **HỢP LỆ (Màu Xanh)**: Hiển thị đầy đủ Họ tên, SĐT, 4 số CCCD, Tên sàn F1, Mã biên lai (`Receipt ID`), Giờ cấp vé GMT+7, IP và chữ ký số HMAC-SHA256 chứng thực bởi Gamuda Land.
+   - **HỢP LỆ (Màu Xanh)**: Hiển thị đầy đủ Họ tên, SĐT, 4 số CCCD, Tên sàn, Mã biên lai (`Receipt ID`), Giờ cấp vé GMT+7, IP và chữ ký số HMAC-SHA256 chứng thực bởi Gamuda Land.
    - **CẢNH BÁO REPLAY (Màu Đỏ)**: Phát hiện khách quét lại nhiều lần. Hiển thị danh sách tất cả các lần quét và thời gian cụ thể.
    - **KHÔNG TÌM THẤY (Màu Cam)**: Thông tin chưa từng tồn tại trên hệ thống.
 
@@ -113,7 +113,7 @@ Bảng tính Google Sheet được chia làm **2 phân khu trực quan**:
 - **Cột C (Họ Và Tên)**: Tên khách mời.
 - **Cột D (Số Điện Thoại)**: Định dạng chuẩn `0908xxxxxx`.
 - **Cột E (CCCD)**: Đã mask bảo mật `•••• •••• 8888` để đối chiếu thẻ căn cước công dân khi trao giải hiện vật giá trị lớn (xe hơi, xe máy, vàng).
-- **Cột F (Đại Lý / Sàn F1)**: Tên đại lý để CĐT Gamuda Land kiểm quân và xếp hạng đại lý tham gia tích cực nhất.
+- **Cột F (Sàn Phân Phối)**: Tên đại lý để CĐT Gamuda Land kiểm quân và xếp hạng đại lý tham gia tích cực nhất.
 - **Cột G (Email)**: Email của sales.
 - **Cột H (Trạng Thái)**: `CONFIRMED` (Xanh lá) hoặc `REPLAYED` (Đỏ).
 

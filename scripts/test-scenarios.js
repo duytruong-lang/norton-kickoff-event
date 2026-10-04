@@ -158,7 +158,7 @@ async function runAllScenarios() {
         fullName: 'Nguyễn Văn Test Closed',
         phone: '0901112222',
         cccd: '000001',
-        agency: 'ERA Vietnam',
+        agency: 'ERA',
       }),
     });
     const isGateClosed403 = regClosedRes.status === 403 && regClosedRes.data.error === 'GATE_CLOSED';
@@ -233,7 +233,7 @@ async function runAllScenarios() {
       fullName: 'Nguyễn Văn An',
       phone: '0901234567',
       cccd: '001111',
-      agency: 'ERA Vietnam',
+      agency: 'ERA',
       email: 'an.nguyen@eravn.vn',
     };
 
@@ -276,7 +276,7 @@ async function runAllScenarios() {
         fullName: 'Nguyễn Văn An (Cố tình đăng ký lại)',
         phone: '0901234567',
         cccd: '001111', // Exact same CCCD
-        agency: 'Đông Tây Land', // Attempt to switch agency
+        agency: 'ĐÔNG TÂY LAND', // Attempt to switch agency
       }),
     });
 
@@ -340,7 +340,7 @@ async function runAllScenarios() {
           fullName: `Chiến Binh Sale ${i}`,
           phone,
           cccd,
-          agency: i % 2 === 0 ? 'Southern Homes' : 'Khải Hoàn Land',
+          agency: i % 2 === 0 ? 'SGROUP' : 'KHẢI MINH LAND',
         }),
       });
 
@@ -406,7 +406,7 @@ async function runAllScenarios() {
       fullName: 'Trương Hoàng Nam',
       phone: '0988777666',
       cccd: '887766',
-      agency: 'Đông Tây Land',
+      agency: 'ĐÔNG TÂY LAND',
     };
     const disputeRegRes = await request('/api/register', {
       method: 'POST',

@@ -5,7 +5,7 @@
 > **Đơn vị phát triển & bảo chứng công nghệ**: 1990 Agency  
 > **Địa điểm sự kiện**: Rạp Xiếc & Biểu Diễn Đa Năng Phú Thọ (03 Lữ Gia, P. Phú Thọ, Q.11, TP.HCM)  
 > **Thời gian**: 08:30 – 11:30 | Thứ Năm | Ngày 08.10.2026  
-> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối F1  
+> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối  
 > **Trạng thái**: Production Ready (Auto-deploy Vercel, Upstash Redis SG, Google Sheets ERP v2.0)
 
 ---
@@ -156,7 +156,7 @@ Khi quay số trúng thưởng, nếu cần xác minh người trúng giải:
    - **6 số cuối CCCD**: Tra cứu trực tiếp $O(1)$.
    - **Số điện thoại**: Tra cứu qua reverse index.
    - **Số vé (VD: `#088` hoặc `NP-2026-088`)**: Quét tìm vé trúng.
-3. Hệ thống hiển thị đầy đủ: Họ tên, Đại lý F1, SĐT, CCCD đã mask, Biên lai HMAC SHA-256 đối chiếu không thể làm giả.
+3. Hệ thống hiển thị đầy đủ: Họ tên, Sàn phân phối, SĐT, CCCD đã mask, Biên lai HMAC SHA-256 đối chiếu không thể làm giả.
 
 ---
 
@@ -171,7 +171,7 @@ Bảng tính được phân chia rõ ràng làm 2 phân khu phục vụ MC/Admin
 | **C** | Họ Và Tên | 🟢 Vận hành | Tên khách đăng ký (In hoa) |
 | **D** | Số Điện Thoại | 🟢 Vận hành | SĐT liên hệ nhận giải |
 | **E** | CCCD (6 số cuối) | 🟢 Vận hành | Định dạng bảo mật: `•••••• 008877` |
-| **F** | Đại Lý / Sàn F1 | 🟢 Vận hành | Tên đơn vị phân phối |
+| **F** | Sàn Phân Phối | 🟢 Vận hành | Tên đơn vị phân phối |
 | **G** | Email | 🟢 Vận hành | Email nhận vé điện tử |
 | **H** | Trạng Thái | 🟢 Vận hành | `CONFIRMED` (Xanh) hoặc `REPLAYED` (Đỏ) |
 | **I** | Nguồn Đăng Ký | ⚙️ Kỹ thuật | UTM Source (QR_STANDEE, ZALO, v.v.) |

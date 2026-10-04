@@ -13,6 +13,7 @@ const { padZero, normalizePhoneVN, cleanCCCDLast6 } = require('../lib/helpers');
 const { logRequest, writeReceipt } = require('../lib/audit');
 const { sendMetaLeadEvent } = require('../lib/capi');
 const { appendLeadToSheet } = require('../lib/sheets');
+const { normalizeAgency } = require('../lib/agencies');
 
 function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -96,7 +97,7 @@ module.exports = async function handler(req, res) {
     const fullName = String(body.fullName || body.name || '').trim();
     const rawPhone = String(body.phone || '').trim();
     const rawCCCD = String(body.cccd || body.idCard || '').trim();
-    const agency = String(body.agency || '').trim();
+    const agency = normalizeAgency(body.agency);
     const email = String(body.email || '').trim();
     const role = String(body.role || 'Chiến binh kinh doanh').trim();
     const utmSource = String(body.utmSource || body.source || 'LDP').trim();

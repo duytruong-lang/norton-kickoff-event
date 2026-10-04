@@ -29,7 +29,7 @@ var HEADERS_14 = [
   'Họ Và Tên',            // Col 3 (C)
   'Số Điện Thoại',        // Col 4 (D)
   'CCCD (6 số cuối)',     // Col 5 (E)
-  'Đại Lý / Sàn F1',      // Col 6 (F)
+  'Sàn Phân Phối',        // Col 6 (F)
   'Email',                // Col 7 (G)
   'Trạng Thái',           // Col 8 (H) - CONFIRMED / REPLAYED
   'Nguồn Đăng Ký',        // Col 9 (I) - UTM Source
@@ -246,7 +246,7 @@ function applyColumnWidths(sheet) {
     180, // Col 3: Họ Và Tên
     130, // Col 4: Số Điện Thoại
     150, // Col 5: CCCD (6 số cuối)
-    180, // Col 6: Đại Lý / Sàn F1
+    180, // Col 6: Sàn Phân Phối
     190, // Col 7: Email
     120, // Col 8: Trạng Thái
     130, // Col 9: Nguồn Đăng Ký

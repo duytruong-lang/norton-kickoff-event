@@ -89,7 +89,7 @@ Bảng tính Google Sheet được chia làm **2 phân khu trực quan**:
 | **C** | `Họ Và Tên` | Vận Hành | Họ tên người tham dự để xướng tên trao giải |
 | **D** | `Số Điện Thoại` | Vận Hành | Chuẩn hóa `0908xxxxxx` để liên hệ |
 | **E** | `CCCD (4 số cuối)` | Vận Hành | Mask `•••• •••• 8888` đối chiếu căn cước |
-| **F** | `Đại Lý / Sàn F1` | Vận Hành | Tên sàn F1 (ERA, CBRE, Southern Homes...) |
+| **F** | `Sàn Phân Phối` | Vận Hành | Tên sàn (ERA, CBRE, SGROUP...) |
 | **G** | `Email` | Vận Hành | Email liên hệ |
 | **H** | `Trạng Thái` | Vận Hành | `CONFIRMED` (Xanh) hoặc `REPLAYED` (Đỏ) |
 | **I** | `Nguồn Đăng Ký` | Kỹ Thuật | UTM Source (`QR_STAND`, `ZALO`...) |

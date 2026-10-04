@@ -1500,7 +1500,7 @@ body::after {
     <div class="lookup-card">
       <div class="card-section-title">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Tra Cứu Hồ Sơ Check-in Đại Lý F1</span>
+        <span>Tra Cứu Hồ Sơ Check-in</span>
       </div>
 
       <form id="lookupForm">
@@ -1546,7 +1546,7 @@ body::after {
               <div class="val mono" id="verdictCccd">--</div>
             </div>
             <div class="verdict-meta-item">
-              <div class="label">Đại Lý F1</div>
+              <div class="label">Sàn Phân Phối</div>
               <div class="val" id="verdictAgency" style="color:var(--bronze-300);">--</div>
             </div>
           </div>
@@ -1877,7 +1877,7 @@ body::after {
               name: 'Nguyễn Thành Nam',
               phone: '0908168286',
               cccd: '079092008888',
-              agency: 'ERA Vietnam',
+              agency: 'ERA',
               luckyNumber: '#088',
               checkedInAt: '2026-09-25T14:47:22.335Z',
               receiptId: 'rcpt_np2026_demo_088',

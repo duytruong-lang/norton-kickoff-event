@@ -4,7 +4,7 @@
 > **Đơn vị phát triển & bảo chứng công nghệ**: 1990 Agency  
 > **Thời gian sự kiện**: 08:30 – 11:30 | Thứ Năm | Ngày 08.10.2026  
 > **Địa điểm**: Rạp Xiếc & Biểu Diễn Đa Năng Phú Thọ (03 Lữ Gia, P. Phú Thọ, Q.11, TP.HCM)  
-> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối F1  
+> **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối  
 > **Hệ thống điều hành**: [Landing Page Check-in](https://norton-kickoff-event.vercel.app) | [Admin Cockpit](https://norton-kickoff-event.vercel.app/admin?secret=norton_admin_secret_2026) | [Google Sheet ERP](https://docs.google.com/spreadsheets/d/1IpfahCoOnvE5dc9JES9upMiBvW6l__Cx8X4aD2i3A28/edit)
 
 ---
@@ -65,28 +65,40 @@
 ---
 
 <!-- SLIDE 3: TERMS & CONDITIONS & DANH SÁCH SÀN (MỤC TIÊU 1) -->
-# ⚖️ SLIDE 3: ĐIỀU KHOẢN PHÁP LÝ (T&C) & DANH SÁCH SÀN F1
+# ⚖️ SLIDE 3: ĐIỀU KHOẢN PHÁP LÝ (T&C) & DANH SÁCH SÀN
 ### *Quy chế loại trừ rủi ro & giải quyết tranh chấp pháp lý trước khi bốc thăm*
 
 > [!IMPORTANT]
 > **QUY CHẾ PHÁP LÝ BẢO VỆ CHỦ ĐẦU TƯ GAMUDA LAND & BTC**
 > 1. **Quyền quyết định tối cao**: Quyết định của CĐT Gamuda Land Việt Nam là quyết định cuối cùng và có hiệu lực thi hành ngay trong mọi trường hợp khiếu nại phát sinh.
-> 2. **Điều kiện hợp lệ của nhân sự nhận giải**: Người trúng giải **bắt buộc phải là nhân sự chính thức** trực thuộc các Đại lý phân phối F1 đã được Gamuda Land phê duyệt.
+> 2. **Điều kiện hợp lệ của nhân sự nhận giải**: Người trúng giải **bắt buộc phải là nhân sự chính thức** trực thuộc các Đại lý phân phối đã được Gamuda Land phê duyệt.
 > 3. **Quy tắc 3 lần gọi (60 giây)**: Khi xướng tên trúng thưởng, nếu sau 3 lần gọi của MC (tối đa 60 giây) mà người trúng không bước lên sân khấu, kết quả bị **HỦY BỎ NGAY LẬP TỨC** và tiến hành quay lại cho người khác.
 > 4. **Tính chính chủ của mã vé**: Mã số may mắn không có giá trị chuyển nhượng, cho tặng, ủy quyền hoặc bán lại dưới bất kỳ hình thức nào.
 
-### 🏢 Danh Sách Đại Lý Phân Phối F1 (TBC — Đang Cập Nhật & Chờ Phê Duyệt Cuối Cùng Từ CĐT)
-*Danh sách dưới đây là các đối tác phân phối dự kiến. Danh mục chính thức sẽ được khóa cứng theo văn bản phê duyệt cuối cùng từ Ban Lãnh Đạo Gamuda Land:*
+### 🏢 Danh Sách 49 Sàn Phân Phối Chính Thức (sắp xếp A → Z)
+Danh sách dưới đây là các sàn tham gia ngày kick-off, đúng thứ tự hiển thị trong dropdown trên trang check-in.
 
-```
-  ┌────────────────────────────────────────────────────────────────────────────────────────┐
-  │ [TBC] DANH SÁCH SÀN DỰ KIẾN (CHỜ CHỐT TỪ CĐT):                                        │
-  │ [1] Đông Tây Land     [2] Southern Homes    [3] ERA Vietnam       [4] CBRE Vietnam     │
-  │ [5] Savills Vietnam   [6] IQI Vietnam       [7] Rever             [8] DKRA Vietnam     │
-  │ [9] Smartland         [10] Khải Hoàn Land   [11] CenLand          [12] Mai Viet Land   │
-  │ [13] The One Land     [14] Huttons Vietnam  [15] Khác (Cần đối soát thẻ nhân viên)    │
-  └────────────────────────────────────────────────────────────────────────────────────────┘
-```
+| STT | Sàn Phân Phối | STT | Sàn Phân Phối | STT | Sàn Phân Phối |
+|:---:|:---|:---:|:---|:---:|:---|
+| 1 | AKA PROPERTY | 18 | GLOBAL HOLDING | 35 | RED GROUP |
+| 2 | AN KHANG HOMES | 19 | GLOBAL HOMES | 36 | REDCA |
+| 3 | ANPHAHOUSE | 20 | GPT LAND | 37 | REVER |
+| 4 | AVI REALTY | 21 | HOMEDAY | 38 | SALEREAL |
+| 5 | AZHOMES | 22 | INDOCHINE | 39 | SAVILLS |
+| 6 | BAM LAND | 23 | IQI | 40 | SGI |
+| 7 | CBC | 24 | KHẢI MINH LAND | 41 | SGROUP |
+| 8 | CBRE | 25 | KZEN | 42 | SI PROPERTY |
+| 9 | CHÂU ĐẠI DƯƠNG | 26 | LIÊN GIA LAND | 43 | SMARTLAND |
+| 10 | DIAMOND LINKS | 27 | LT LUXURY | 44 | T&A |
+| 11 | ĐẤT XANH | 28 | MAINLAND | 45 | TICA GROUP |
+| 12 | ĐÔNG TÂY LAND | 29 | MEGA REALTY | 46 | TNP HOLDINGS |
+| 13 | ELINK | 30 | NEWSTARHOMES | 47 | UNITY LAND |
+| 14 | EMG | 31 | NOVAZON | 48 | VIET NAM PROPERTY |
+| 15 | EMPIRE REALTY | 32 | PEGASUS | 49 | VIỆT NAM LAND |
+| 16 | ERA | 33 | PITALAND | | |
+| 17 | GEMS LAND | 34 | PQR | | |
+
++ Mục "Đại lý khác..." (nhập tay, cần đối soát thẻ nhân viên)
 
 ---
 
@@ -135,7 +147,7 @@ flowchart LR
 | Bước | Hành động | Chi tiết thao tác của Sales |
 |:---:|:---|:---|
 | **BƯỚC 1** | **Quét Mã QR** | Mở Zalo hoặc Camera điện thoại, quét mã QR trên Standee / Màn hình LED |
-| **BƯỚC 2** | **Nhập Thông Tin** | Điền **Họ Tên**, **SĐT**, **6 số cuối CCCD**, chọn **Sàn F1** và bấm *Nhận Vé* |
+| **BƯỚC 2** | **Nhập Thông Tin** | Điền **Họ Tên**, **SĐT**, **6 số cuối CCCD**, chọn **Sàn** và bấm *Nhận Vé* |
 | **BƯỚC 3** | **Lưu Vé May Mắn** | Bấm nút **"TẢI VÉ (PNG)"** hoặc chụp màn hình giữ vé để đối chiếu nhận giải |
 
 ---
@@ -171,7 +183,7 @@ sequenceDiagram
 
 ### 🚨 4 Chế Tài Xử Lý Gian Lận Tại Bàn Đối Soát
 1. **Sai lệch số CCCD**: Nếu số CCCD thực tế trên thẻ cứng/VNeID không trùng khớp với số đã đăng ký trên hệ thống $\rightarrow$ **HỦY KẾT QUẢ TỨC THÌ**.
-2. **Không thuộc danh sách sàn F1**: Nếu nhân sự trúng giải không chứng minh được mình là nhân sự chính thức của sàn phân phối $\rightarrow$ **LOẠI BỎ TƯ CÁCH THAM DỰ**.
+2. **Không thuộc danh sách sàn**: Nếu nhân sự trúng giải không chứng minh được mình là nhân sự chính thức của sàn phân phối $\rightarrow$ **LOẠI BỎ TƯ CÁCH THAM DỰ**.
 3. **Trùng lặp thiết bị (Spam Replay)**: Hệ thống ghi lại toàn bộ IP máy khách và chuỗi User Agent. Trường hợp 1 thiết bị cố tình spam thông tin người khác để lấy nhiều số $\rightarrow$ **VÔ HIỆU HÓA TOÀN BỘ CÁC VÉ LIÊN QUAN**.
 4. **Vắng mặt khi gọi tên**: Quá 3 lần công bố (60 giây) không xuất hiện trên sân khấu $\rightarrow$ **MẶC ĐỊNH MẤT QUYỀN LỢI**.
 
