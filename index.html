@@ -443,6 +443,33 @@ input, select {
   line-height: 1.45;
 }
 
+.form-notice-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: rgba(167, 128, 97, 0.08);
+  border: 1px solid rgba(167, 128, 97, 0.25);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--bronze-800);
+  text-align: left;
+}
+.form-notice-box .notice-ico {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--bronze-600);
+}
+.form-notice-box a {
+  color: var(--bronze-700);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
 /* FORM FIELDS */
 .form-group {
   margin-bottom: 13px;
@@ -1066,9 +1093,9 @@ input, select {
 }
 
 .footer-gamuda {
-  height: 22px;
+  height: 18px;
   width: auto;
-  max-width: 110px;
+  max-width: 140px;
   display: block;
   object-fit: contain;
 }
@@ -1541,6 +1568,10 @@ input, select {
       <header class="form-header">
         <h2 id="regTitle">Nhận con số may mắn</h2>
         <p>Điền thông tin để nhận mã dự thưởng bốc thăm may mắn tại The SYNC Show.</p>
+        <div class="form-notice-box">
+          <svg class="notice-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span><strong>Lưu ý đối soát:</strong> Các trường thông tin bắt buộc được sử dụng để đối chiếu trúng thưởng tại The SYNC Show (xem chi tiết <a href="#terms" class="legal-trigger" data-modal="terms">Thể lệ</a>). Chương trình <strong>không áp dụng</strong> cho Khách VIP và Ban Lãnh Đạo Gamuda Land.</span>
+        </div>
       </header>
 
       <!-- Dynamic Gate Probe Status Banner (Default Closed) -->
@@ -1619,6 +1650,7 @@ input, select {
               <option value="EMG">EMG</option>
               <option value="EMPIRE REALTY">EMPIRE REALTY</option>
               <option value="ERA">ERA</option>
+              <option value="GAMUDA LAND SALES">GAMUDA LAND SALES</option>
               <option value="GEMS LAND">GEMS LAND</option>
               <option value="GLOBAL HOLDING">GLOBAL HOLDING</option>
               <option value="GLOBAL HOMES">GLOBAL HOMES</option>
@@ -1760,7 +1792,7 @@ input, select {
   <footer class="footer">
     <div class="footer-brands">
       <img src="assets/logo-norton-park-hires.png" alt="Norton Park" class="footer-norton" width="115" height="22">
-      <img src="assets/logo-gamuda-land.svg" alt="Gamuda Land" class="footer-gamuda" width="110" height="24">
+      <img src="assets/logo-gamuda-land-red.png" alt="Gamuda Land" class="footer-gamuda" width="140" height="18">
     </div>
 
     <div class="footer-legal">
@@ -1831,7 +1863,7 @@ input, select {
 
         <h3>4. CÁCH THỨC QUAY SỐ VÀ XÁC ĐỊNH NGƯỜI TRÚNG THƯỞNG</h3>
         <ul>
-          <li>Chương trình bốc thăm may mắn được tổ chức công khai, minh bạch trực tiếp trên màn hình LED sân khấu chính tại Rạp Xiếc Và Biểu Diễn Đa Năng Phú Thọ vào cuối The SYNC Show.</li>
+          <li>Chương trình được tổ chức công khai tại Rạp xiếc và biểu diễn đa năng Phú Thọ.</li>
           <li>Hệ thống quay số ngẫu nhiên của BTC sẽ lựa chọn các con số may mắn trúng giải theo cơ cấu giải thưởng đã công bố.</li>
           <li>Mã quay trúng chỉ được công nhận khi người sở hữu đáp ứng trọn vẹn các điều kiện tại Thể lệ này.</li>
         </ul>

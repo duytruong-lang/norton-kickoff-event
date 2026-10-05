@@ -75,28 +75,28 @@
 > 3. **Quy tắc 3 lần gọi (60 giây)**: Khi xướng tên trúng thưởng, nếu sau 3 lần gọi của MC (tối đa 60 giây) mà người trúng không bước lên sân khấu, kết quả bị **HỦY BỎ NGAY LẬP TỨC** và tiến hành quay lại cho người khác.
 > 4. **Tính chính chủ của mã vé**: Mã số may mắn không có giá trị chuyển nhượng, cho tặng, ủy quyền hoặc bán lại dưới bất kỳ hình thức nào.
 
-### 🏢 Danh Sách 49 Sàn Phân Phối Chính Thức (sắp xếp A → Z)
+### 🏢 Danh Sách 50 Sàn Phân Phối Chính Thức (sắp xếp A → Z)
 Danh sách dưới đây là các sàn tham gia ngày kick-off, đúng thứ tự hiển thị trong dropdown trên trang check-in.
 
 | STT | Sàn Phân Phối | STT | Sàn Phân Phối | STT | Sàn Phân Phối |
 |:---:|:---|:---:|:---|:---:|:---|
-| 1 | AKA PROPERTY | 18 | GLOBAL HOLDING | 35 | RED GROUP |
-| 2 | AN KHANG HOMES | 19 | GLOBAL HOMES | 36 | REDCA |
-| 3 | ANPHAHOUSE | 20 | GPT LAND | 37 | REVER |
-| 4 | AVI REALTY | 21 | HOMEDAY | 38 | SALEREAL |
-| 5 | AZHOMES | 22 | INDOCHINE | 39 | SAVILLS |
-| 6 | BAM LAND | 23 | IQI | 40 | SGI |
-| 7 | CBC | 24 | KHẢI MINH LAND | 41 | SGROUP |
-| 8 | CBRE | 25 | KZEN | 42 | SI PROPERTY |
-| 9 | CHÂU ĐẠI DƯƠNG | 26 | LIÊN GIA LAND | 43 | SMARTLAND |
-| 10 | DIAMOND LINKS | 27 | LT LUXURY | 44 | T&A |
-| 11 | ĐẤT XANH | 28 | MAINLAND | 45 | TICA GROUP |
-| 12 | ĐÔNG TÂY LAND | 29 | MEGA REALTY | 46 | TNP HOLDINGS |
-| 13 | ELINK | 30 | NEWSTARHOMES | 47 | UNITY LAND |
-| 14 | EMG | 31 | NOVAZON | 48 | VIET NAM PROPERTY |
-| 15 | EMPIRE REALTY | 32 | PEGASUS | 49 | VIỆT NAM LAND |
-| 16 | ERA | 33 | PITALAND | | |
-| 17 | GEMS LAND | 34 | PQR | | |
+| 1 | AKA PROPERTY | 18 | GEMS LAND | 35 | PQR |
+| 2 | AN KHANG HOMES | 19 | GLOBAL HOLDING | 36 | RED GROUP |
+| 3 | ANPHAHOUSE | 20 | GLOBAL HOMES | 37 | REDCA |
+| 4 | AVI REALTY | 21 | GPT LAND | 38 | REVER |
+| 5 | AZHOMES | 22 | HOMEDAY | 39 | SALEREAL |
+| 6 | BAM LAND | 23 | INDOCHINE | 40 | SAVILLS |
+| 7 | CBC | 24 | IQI | 41 | SGI |
+| 8 | CBRE | 25 | KHẢI MINH LAND | 42 | SGROUP |
+| 9 | CHÂU ĐẠI DƯƠNG | 26 | KZEN | 43 | SI PROPERTY |
+| 10 | DIAMOND LINKS | 27 | LIÊN GIA LAND | 44 | SMARTLAND |
+| 11 | ĐẤT XANH | 28 | LT LUXURY | 45 | T&A |
+| 12 | ĐÔNG TÂY LAND | 29 | MAINLAND | 46 | TICA GROUP |
+| 13 | ELINK | 30 | MEGA REALTY | 47 | TNP HOLDINGS |
+| 14 | EMG | 31 | NEWSTARHOMES | 48 | UNITY LAND |
+| 15 | EMPIRE REALTY | 32 | NOVAZON | 49 | VIET NAM PROPERTY |
+| 16 | ERA | 33 | PEGASUS | 50 | VIỆT NAM LAND |
+| 17 | GAMUDA LAND SALES | 34 | PITALAND | | |
 
 ---
 

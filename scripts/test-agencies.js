@@ -2,7 +2,7 @@
 
 /**
  * 1990 Agency — Norton Park Sales Kick-off Event
- * Test suite: 49 Official Agencies & F1 Removal Verification
+ * Test suite: 50 Official Agencies & F1 Removal Verification
  *
  * Usage: node scripts/test-agencies.js
  * Exit code 0 if all pass, 1 on any failure.
@@ -36,15 +36,15 @@ try {
   const { AGENCIES, normalizeAgency } = require('../lib/agencies');
 
   assert(Array.isArray(AGENCIES), 'AGENCIES must be an array');
-  assert.strictEqual(AGENCIES.length, 49, `Expected exactly 49 agencies, found ${AGENCIES.length}`);
+  assert.strictEqual(AGENCIES.length, 50, `Expected exactly 50 agencies, found ${AGENCIES.length}`);
 
   const uniqueSet = new Set(AGENCIES);
-  assert.strictEqual(uniqueSet.size, 49, `Expected 49 unique agencies, found duplicate entries`);
+  assert.strictEqual(uniqueSet.size, 50, `Expected 50 unique agencies, found duplicate entries`);
 
   const expectedSorted = [...AGENCIES].sort((a, b) => a.localeCompare(b, 'vi'));
   assert.deepStrictEqual(AGENCIES, expectedSorted, 'AGENCIES array must be sorted A-Z according to Vietnamese locale (localeCompare vi)');
 
-  pass('Check A: lib/agencies.js', '49 unique agencies, sorted A-Z Vietnamese collation');
+  pass('Check A: lib/agencies.js', '50 unique agencies, sorted A-Z Vietnamese collation');
 } catch (err) {
   fail('Check A: lib/agencies.js', err);
 }
@@ -80,16 +80,16 @@ try {
     options.push({ value, isDisabled, raw: m[0] });
   }
 
-  assert.strictEqual(options.length, 50, `Expected exactly 50 options (1 placeholder + 49 agencies), found ${options.length}`);
+  assert.strictEqual(options.length, 51, `Expected exactly 51 options (1 placeholder + 50 agencies), found ${options.length}`);
 
   // Assert first option is empty disabled placeholder
   const firstOption = options[0];
   assert.strictEqual(firstOption.value, '', 'First option must have an empty value ("")');
   assert(firstOption.isDisabled, 'First option must have the "disabled" attribute');
 
-  // Assert last option is AGENCIES[48] (no value="Khác")
+  // Assert last option is AGENCIES[49] (no value="Khác")
   const lastOption = options[options.length - 1];
-  assert.strictEqual(lastOption.value, AGENCIES[48], `Last option must have value="${AGENCIES[48]}"`);
+  assert.strictEqual(lastOption.value, AGENCIES[49], `Last option must have value="${AGENCIES[49]}"`);
 
   // Decode &amp; -> &, drop empty placeholder
   const decodedAgencies = options
@@ -102,7 +102,7 @@ try {
     'Dropdown options do not match AGENCIES array in order and content'
   );
 
-  pass('Check B: index.html dropdown', '50 options total, placeholder + 49 agencies match exact order');
+  pass('Check B: index.html dropdown', '51 options total, placeholder + 50 agencies match exact order');
 } catch (err) {
   fail('Check B: index.html dropdown', err);
 }
@@ -120,6 +120,8 @@ try {
     { input: 't&a', expected: 'T&A' },
     { input: 'Việt Nam Land', expected: 'VIỆT NAM LAND' },
     { input: 'viet nam property', expected: 'VIET NAM PROPERTY' },
+    { input: 'gamuda land sales', expected: 'GAMUDA LAND SALES' },
+    { input: 'Gamuda Land Sales', expected: 'GAMUDA LAND SALES' },
     { input: 'Công ty ABC', expected: '' },
     { input: '', expected: '' },
   ];
@@ -128,6 +130,9 @@ try {
     const actual = normalizeAgency(input);
     assert.strictEqual(actual, expected, `normalizeAgency(${JSON.stringify(input)}) should be ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
   }
+
+  assert.strictEqual(normalizeAgency('gamuda land sales'), 'GAMUDA LAND SALES');
+  assert.strictEqual(normalizeAgency('Gamuda Land Sales'), 'GAMUDA LAND SALES');
 
   // Unrecognized string returns empty string
   const longInput = 'A'.repeat(200);
