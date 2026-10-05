@@ -2,7 +2,7 @@
 ## SLIDE HANDOVER & RUNBOOK KỸ THUẬT VẬN HÀNH TRƯỚC GIỜ G
 > **Chủ đầu tư**: Gamuda Land Việt Nam  
 > **Đơn vị phát triển & bảo chứng công nghệ**: 1990 Agency  
-> **Thời gian sự kiện**: 08:30 – 11:30 | Thứ Năm | Ngày 08.10.2026  
+> **Thời gian sự kiện**: 08:00 – 11:30 | Thứ Năm | Ngày 08.10.2026  
 > **Địa điểm**: Rạp Xiếc & Biểu Diễn Đa Năng Phú Thọ (03 Lữ Gia, P. Phú Thọ, Q.11, TP.HCM)  
 > **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối  
 > **Hệ thống điều hành**: [Landing Page Check-in](https://norton-kickoff-event.vercel.app) | [Admin Cockpit](https://norton-kickoff-event.vercel.app/admin?secret=norton_admin_secret_2026) | [Google Sheet ERP](https://docs.google.com/spreadsheets/d/1IpfahCoOnvE5dc9JES9upMiBvW6l__Cx8X4aD2i3A28/edit)
@@ -71,7 +71,7 @@
 > [!IMPORTANT]
 > **QUY CHẾ PHÁP LÝ BẢO VỆ CHỦ ĐẦU TƯ GAMUDA LAND & BTC**
 > 1. **Quyền quyết định tối cao**: Quyết định của CĐT Gamuda Land Việt Nam là quyết định cuối cùng và có hiệu lực thi hành ngay trong mọi trường hợp khiếu nại phát sinh.
-> 2. **Điều kiện hợp lệ của nhân sự nhận giải**: Người trúng giải **bắt buộc phải là nhân sự chính thức** trực thuộc các Đại lý phân phối đã được Gamuda Land phê duyệt.
+> 2. **Điều kiện hợp lệ của nhân sự nhận giải**: Người trúng giải **bắt buộc phải là nhân sự chính thức** thuộc một trong các Đại lý / Sàn nằm trong danh sách sàn tham gia chương trình.
 > 3. **Quy tắc 3 lần gọi (60 giây)**: Khi xướng tên trúng thưởng, nếu sau 3 lần gọi của MC (tối đa 60 giây) mà người trúng không bước lên sân khấu, kết quả bị **HỦY BỎ NGAY LẬP TỨC** và tiến hành quay lại cho người khác.
 > 4. **Tính chính chủ của mã vé**: Mã số may mắn không có giá trị chuyển nhượng, cho tặng, ủy quyền hoặc bán lại dưới bất kỳ hình thức nào.
 
@@ -139,7 +139,7 @@ flowchart LR
 > [!TIP]
 > **LƯU Ý THỰC ĐỊA DÀNH CHO TEAM EVENT**:
 > - **Phân bổ QR ở nhiều vị trí**: Bố trí QR Standee tại Cổng an ninh đón khách, dọc sảnh chờ Foyer/Khu vực Tea-break, Backdrop chụp hình và in kèm mặt sau thẻ đeo/leaflet phát tay. Tránh dồn tất cả Standee tại một cửa ra vào.
-> - **Chiếu màn hình LED hội trường**: Chiếu mã QR kích thước lớn toàn màn hình LED trong hội trường chính từ 08:30 đến khi khai mạc để các Sales đã ổn định chỗ ngồi vẫn có thể quét check-in thuận tiện mà không phải di chuyển.
+> - **Chiếu màn hình LED hội trường**: Chiếu mã QR kích thước lớn toàn màn hình LED trong hội trường chính từ 08:00 đến khi khai mạc để các Sales đã ổn định chỗ ngồi vẫn có thể quét check-in thuận tiện mà không phải di chuyển.
 
 ### ⚡ 3 Bước Check-in Siêu Tốc Cho Sales (Chỉ 15 Giây)
 *(Nội dung ngắn gọn in trực tiếp lên Standee và Leaflet phát tay)*
@@ -194,4 +194,4 @@ sequenceDiagram
 
 ### ⚡ Hotline Kỹ Thuật Trực Chiến 1990 Agency:
 - **Đầu mối phụ trách kỹ thuật**: **Duy - 1990 Agency - 0794258254**
-- **Nhiệm vụ trực chiến**: Giám sát hiệu năng Edge Serverless, xử lý đối soát tranh chấp thời gian thực và hỗ trợ Ban Tổ Chức tại hiện trường sự kiện Rạp Xiếc Phú Thọ từ 07:30 ngày 08.10.2026.
+- **Nhiệm vụ trực chiến**: Giám sát hiệu năng Edge Serverless, xử lý đối soát tranh chấp thời gian thực và hỗ trợ Ban Tổ Chức tại hiện trường sự kiện Rạp Xiếc & Biểu Diễn Đa Năng Phú Thọ từ 07:30 ngày 08.10.2026.

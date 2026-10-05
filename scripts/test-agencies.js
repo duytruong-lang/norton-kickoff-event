@@ -191,6 +191,87 @@ try {
 }
 
 // =============================================================================
+// CHECK E: Forbidden stale phrases
+// =============================================================================
+try {
+  const targetFiles = [
+    'index.html',
+    'admin.html',
+    'api/admin/index.js',
+    'README.md',
+    'HANDOFF.md',
+    'docs/EVENT_DAY_RUNBOOK.md',
+    'docs/HANDOVER_SLIDE_THE_SYNC_SHOW.md',
+  ];
+
+  const forbiddenPhrases = [
+    'danh sách đăng ký nhân sự',
+    'danh sách xác nhận',
+    'trung tâm hội nghị',
+    'Rạp Xiếc Phú Thọ',
+  ];
+
+  const hits = [];
+
+  // 1. Scan target files for forbidden stale phrases
+  for (const relPath of targetFiles) {
+    const absPath = path.join(ROOT_DIR, relPath);
+    if (!fs.existsSync(absPath)) {
+      continue;
+    }
+
+    const content = fs.readFileSync(absPath, 'utf8');
+    for (const phrase of forbiddenPhrases) {
+      if (content.includes(phrase)) {
+        hits.push(`${relPath}:${phrase}`);
+      }
+    }
+  }
+
+  // 2. Scan HANDOFF.md and docs/HANDOVER_SLIDE_THE_SYNC_SHOW.md for '08:30'
+  const timeCheckFiles = [
+    'HANDOFF.md',
+    'docs/HANDOVER_SLIDE_THE_SYNC_SHOW.md',
+  ];
+
+  for (const relPath of timeCheckFiles) {
+    const absPath = path.join(ROOT_DIR, relPath);
+    if (!fs.existsSync(absPath)) {
+      continue;
+    }
+
+    const content = fs.readFileSync(absPath, 'utf8');
+    if (content.includes('08:30')) {
+      hits.push(`${relPath}:08:30`);
+    }
+  }
+
+  // 3. Scan privacy pane in index.html for 'Số CCCD'
+  const indexHtmlPath = path.join(ROOT_DIR, 'index.html');
+  if (fs.existsSync(indexHtmlPath)) {
+    const html = fs.readFileSync(indexHtmlPath, 'utf8');
+    const paneStart = html.indexOf('id="panePrivacy"');
+    if (paneStart !== -1) {
+      const paneEnd = html.indexOf('class="modal-bottom"', paneStart);
+      if (paneEnd !== -1) {
+        const privacySubstring = html.substring(paneStart, paneEnd);
+        if (privacySubstring.includes('Số CCCD')) {
+          hits.push('index.html:Số CCCD');
+        }
+      }
+    }
+  }
+
+  if (hits.length > 0) {
+    throw new Error(`Found ${hits.length} forbidden stale phrase hit(s):\n${hits.map(h => `   ${h}`).join('\n')}`);
+  }
+
+  pass('Check E: Forbidden stale phrases', 'No stale phrases, outdated event times, or CCCD privacy leaks found');
+} catch (err) {
+  fail('Check E: Forbidden stale phrases', err);
+}
+
+// =============================================================================
 // SUMMARY & EXIT
 // =============================================================================
 console.log('\n----------------------------------------');

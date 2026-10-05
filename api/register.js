@@ -197,7 +197,7 @@ module.exports = async function handler(req, res) {
         issuedAt: existing.issuedAt,
         replayed: true,
         responseTimeMs,
-        message: 'Số CCCD này đã được cấp vé trước đó. Thông tin vé cũ được bảo lưu an toàn.',
+        message: '6 số cuối CCCD này đã được cấp vé trước đó. Thông tin vé cũ được bảo lưu an toàn.',
       });
     }
 

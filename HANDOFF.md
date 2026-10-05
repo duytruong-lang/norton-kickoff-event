@@ -4,7 +4,7 @@
 > **Dự án**: The SYNC Show — Norton Park | Gamuda Land  
 > **Đơn vị phát triển & bảo chứng công nghệ**: 1990 Agency  
 > **Địa điểm sự kiện**: Rạp Xiếc & Biểu Diễn Đa Năng Phú Thọ (03 Lữ Gia, P. Phú Thọ, Q.11, TP.HCM)  
-> **Thời gian**: 08:30 – 11:30 | Thứ Năm | Ngày 08.10.2026  
+> **Thời gian**: 08:00 – 11:30 | Thứ Năm | Ngày 08.10.2026  
 > **Quy mô**: 1.000 – 1.500 Chiến binh kinh doanh đại lý phân phối  
 > **Trạng thái**: Production Ready (Auto-deploy Vercel, Upstash Redis SG, Google Sheets ERP v2.0)
 
