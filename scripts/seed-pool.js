@@ -6,11 +6,11 @@
  * 
  * Usage:
  *   node scripts/seed-pool.js
- *   node scripts/seed-pool.js --max=4500 --mode=SHUFFLE
- *   node scripts/seed-pool.js --max=500 --mode=SEQUENTIAL
+ *   node scripts/seed-pool.js --max=4500 --mode=SEQUENTIAL
+ *   node scripts/seed-pool.js --max=500 --mode=SHUFFLE
  * 
  * Specifications:
- *   - Default: --max=4500 --mode=SHUFFLE
+ *   - Default: --max=4500 --mode=SEQUENTIAL
  *   - Atomic RPUSH in chunks of 100 to prevent packet overflow
  *   - Enforce config:pool_max = 4500
  *   - Enforce config:gate = 'closed' (Theo đúng chỉ đạo của Sếp Di)
@@ -27,7 +27,7 @@ const { padZero } = require('../lib/helpers');
 function parseArgs() {
   const args = process.argv.slice(2);
   let max = 4500;
-  let mode = 'SHUFFLE';
+  let mode = 'SEQUENTIAL';
 
   for (const arg of args) {
     if (arg.startsWith('--max=')) {

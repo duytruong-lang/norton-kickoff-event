@@ -282,7 +282,7 @@ module.exports = async function handler(req, res) {
       const remaining = Number(poolRemaining || 0);
       const total = parseInt(totalCheckin, 10) || 0;
       const overflow = parseInt(overflowCount, 10) || 0;
-      const mode = poolMode || 'SHUFFLE';
+      const mode = poolMode || 'SEQUENTIAL';
 
       return res.status(200).json({
         success: true,
@@ -345,7 +345,7 @@ module.exports = async function handler(req, res) {
           poolMax: parseInt(poolMax, 10) || 1000,
           poolRemaining: Number(poolRemaining || 0),
           totalCheckin: parseInt(totalCheckin, 10) || 0,
-          mode: poolMode || 'SHUFFLE',
+          mode: poolMode || 'SEQUENTIAL',
           updatedAt: new Date().toISOString(),
         });
       }
@@ -353,7 +353,7 @@ module.exports = async function handler(req, res) {
       // 2.2 Action: Seed Lucky Pool
       if (action === 'seed') {
         const poolMax = Math.max(1, parseInt(body.poolMax || body.max, 10) || 1000);
-        const mode = (String(body.mode || 'SHUFFLE').toUpperCase() === 'SEQUENTIAL') ? 'SEQUENTIAL' : 'SHUFFLE';
+        const mode = (String(body.mode || 'SEQUENTIAL').toUpperCase() === 'SHUFFLE') ? 'SHUFFLE' : 'SEQUENTIAL';
 
         // Generate pool tickets array [1, 2, ..., poolMax]
         const padSize = Math.max(3, String(poolMax).length);
@@ -493,8 +493,8 @@ module.exports = async function handler(req, res) {
 
         const poolMaxRaw = body.poolMax || await redis.get('config:pool_max') || 1000;
         const poolMax = Math.max(1, parseInt(poolMaxRaw, 10));
-        const modeRaw = body.mode || await redis.get('config:pool_mode') || 'SHUFFLE';
-        const mode = (String(modeRaw).toUpperCase() === 'SEQUENTIAL') ? 'SEQUENTIAL' : 'SHUFFLE';
+        const modeRaw = body.mode || await redis.get('config:pool_mode') || 'SEQUENTIAL';
+        const mode = (String(modeRaw).toUpperCase() === 'SHUFFLE') ? 'SHUFFLE' : 'SEQUENTIAL';
 
         const padSize = Math.max(3, String(poolMax).length);
         const poolItems = [];

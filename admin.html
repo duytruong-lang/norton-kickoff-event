@@ -1468,7 +1468,7 @@ body::after {
         <span class="kpi-unit">vé tổng</span>
       </div>
       <div class="kpi-sub-label">
-        <span id="statPoolModeTag">Chế độ: SHUFFLE</span>
+        <span id="statPoolModeTag">Chế độ: SEQUENTIAL</span>
       </div>
     </div>
 
@@ -1633,13 +1633,13 @@ body::after {
         <div style="margin-top:12px;">
           <label style="font-size:11px; font-weight:700; color:var(--bronze-300);">CHẾ ĐỘ CẤP PHÁT</label>
           <div class="mode-pills-row">
-            <label class="mode-pill-label checked" id="labelModeShuffle">
-              <input type="radio" name="seedMode" value="SHUFFLE" checked style="display:none;">
-              <span>🎲 SHUFFLE (Ngẫu nhiên)</span>
-            </label>
-            <label class="mode-pill-label" id="labelModeSequential">
-              <input type="radio" name="seedMode" value="SEQUENTIAL" style="display:none;">
+            <label class="mode-pill-label checked" id="labelModeSequential">
+              <input type="radio" name="seedMode" value="SEQUENTIAL" checked style="display:none;">
               <span>🔢 SEQUENTIAL (Tuần tự)</span>
+            </label>
+            <label class="mode-pill-label" id="labelModeShuffle">
+              <input type="radio" name="seedMode" value="SHUFFLE" style="display:none;">
+              <span>🎲 SHUFFLE (Ngẫu nhiên)</span>
             </label>
           </div>
         </div>
@@ -1731,7 +1731,7 @@ body::after {
   <div class="modal-card">
     <h3 class="modal-title" id="seedModalTitle" style="color:var(--amber);">⚠️ Khởi Tạo Lại Pool Số!</h3>
     <p class="modal-body-text">
-      Thao tác này sẽ xóa toàn bộ số hiện tại trong <code>lucky:pool</code> và tạo mới <strong id="modalSeedCountPreview">4,500</strong> vé theo chế độ <strong id="modalSeedModePreview">SHUFFLE</strong>.
+      Thao tác này sẽ xóa toàn bộ số hiện tại trong <code>lucky:pool</code> và tạo mới <strong id="modalSeedCountPreview">4,500</strong> vé theo chế độ <strong id="modalSeedModePreview">SEQUENTIAL</strong>.
     </p>
 
     <div style="margin-bottom:12px;">
@@ -1900,7 +1900,7 @@ body::after {
           poolMax: 1000,
           poolRemaining: 1000,
           totalCheckin: 0,
-          mode: 'SHUFFLE',
+          mode: 'SEQUENTIAL',
           updatedAt: new Date().toISOString(),
           database: [
             {
@@ -2008,7 +2008,7 @@ body::after {
   // DOM Elements
   let currentGateStatus = 'closed';
   let currentPoolMax = 1000;
-  let currentMode = 'SHUFFLE';
+  let currentMode = 'SEQUENTIAL';
   let pollIntervalId = null;
 
   const gateHeroCard = document.getElementById('gateHeroCard');
@@ -2073,7 +2073,7 @@ body::after {
     const total = data.totalCheckin || 0;
     const poolMax = data.poolMax || 1000;
     const remaining = data.poolRemaining !== undefined ? data.poolRemaining : (poolMax - total);
-    const mode = data.mode || 'SHUFFLE';
+    const mode = data.mode || 'SEQUENTIAL';
 
     currentPoolMax = poolMax;
     currentMode = mode;
@@ -2459,7 +2459,7 @@ body::after {
 
   triggerSeedBtn?.addEventListener('click', () => {
     const maxVal = inputPoolMax.value || 1000;
-    const modeVal = document.querySelector('input[name="seedMode"]:checked')?.value || 'SHUFFLE';
+    const modeVal = document.querySelector('input[name="seedMode"]:checked')?.value || 'SEQUENTIAL';
     modalSeedCountPreview.textContent = Number(maxVal).toLocaleString('vi-VN');
     modalSeedModePreview.textContent = modeVal;
     confirmSeedInput.value = '';
@@ -2483,7 +2483,7 @@ body::after {
     executeSeedBtn.textContent = 'Đang seed...';
     try {
       const poolMax = parseInt(inputPoolMax.value, 10) || 1000;
-      const mode = document.querySelector('input[name="seedMode"]:checked')?.value || 'SHUFFLE';
+      const mode = document.querySelector('input[name="seedMode"]:checked')?.value || 'SEQUENTIAL';
       const res = await apiFetch('/api/admin/config', {
         method: 'POST',
         body: JSON.stringify({ action: 'seed', poolMax, mode })
@@ -2541,7 +2541,7 @@ body::after {
     executeResetBtn.textContent = '⏳ Đang xóa...';
     try {
       const poolMaxVal = parseInt(inputPoolMax.value, 10) || 1000;
-      const modeVal = document.querySelector('input[name="seedMode"]:checked')?.value || 'SHUFFLE';
+      const modeVal = document.querySelector('input[name="seedMode"]:checked')?.value || 'SEQUENTIAL';
       const data = await apiFetch('/api/admin/config', {
         method: 'POST',
         body: JSON.stringify({ action: 'reset', confirm: 'XÓA HẾT', poolMax: poolMaxVal, mode: modeVal }),
