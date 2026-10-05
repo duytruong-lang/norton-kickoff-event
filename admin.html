@@ -1616,12 +1616,12 @@ body::after {
         <!-- Quota presets -->
         <div style="margin-top:10px;">
           <label style="font-size:11px; font-weight:700; color:var(--bronze-300);">DUNG LƯỢNG VÉ PHÁT HÀNH</label>
-          <input type="number" id="inputPoolMax" value="1000" min="10" max="10000" step="10" style="display:none;">
+          <input type="number" id="inputPoolMax" value="4500" min="10" max="10000" step="10" style="display:none;">
           <div class="quota-pills-row">
-            <button type="button" class="preset-pill" data-val="500">500 vé</button>
-            <button type="button" class="preset-pill active" data-val="1000">1,000 vé</button>
-            <button type="button" class="preset-pill" data-val="1500">1,500 vé</button>
+            <button type="button" class="preset-pill" data-val="1000">1,000 vé</button>
             <button type="button" class="preset-pill" data-val="2000">2,000 vé</button>
+            <button type="button" class="preset-pill" data-val="4000">4,000 vé</button>
+            <button type="button" class="preset-pill active" data-val="4500">4,500 vé</button>
             <button type="button" class="preset-pill" data-val="custom" id="customPoolPill">Khác</button>
           </div>
           <div id="customPoolWrap" style="display:none; margin-top:8px;">
@@ -1731,7 +1731,7 @@ body::after {
   <div class="modal-card">
     <h3 class="modal-title" id="seedModalTitle" style="color:var(--amber);">⚠️ Khởi Tạo Lại Pool Số!</h3>
     <p class="modal-body-text">
-      Thao tác này sẽ xóa toàn bộ số hiện tại trong <code>lucky:pool</code> và tạo mới <strong id="modalSeedCountPreview">1,000</strong> vé theo chế độ <strong id="modalSeedModePreview">SHUFFLE</strong>.
+      Thao tác này sẽ xóa toàn bộ số hiện tại trong <code>lucky:pool</code> và tạo mới <strong id="modalSeedCountPreview">4,500</strong> vé theo chế độ <strong id="modalSeedModePreview">SHUFFLE</strong>.
     </p>
 
     <div style="margin-bottom:12px;">

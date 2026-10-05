@@ -356,9 +356,10 @@ module.exports = async function handler(req, res) {
         const mode = (String(body.mode || 'SHUFFLE').toUpperCase() === 'SEQUENTIAL') ? 'SEQUENTIAL' : 'SHUFFLE';
 
         // Generate pool tickets array [1, 2, ..., poolMax]
+        const padSize = Math.max(3, String(poolMax).length);
         const poolItems = [];
         for (let i = 1; i <= poolMax; i++) {
-          poolItems.push(`NP-2026-${padZero(i, 3)}`);
+          poolItems.push(`NP-2026-${padZero(i, padSize)}`);
         }
 
         // Shuffle if in SHUFFLE mode (Fisher-Yates Shuffle)
@@ -369,12 +370,21 @@ module.exports = async function handler(req, res) {
           }
         }
 
-        // Reset and populate lucky:pool using chunks of 100
+        // Reset and populate lucky:pool using chunks of 250 with pipeline
         await redis.del('lucky:pool');
-        const CHUNK_SIZE = 100;
-        for (let i = 0; i < poolItems.length; i += CHUNK_SIZE) {
-          const chunk = poolItems.slice(i, i + CHUNK_SIZE);
-          await redis.rpush('lucky:pool', ...chunk);
+        const POOL_CHUNK_SIZE = 250;
+        if (typeof redis.pipeline === 'function') {
+          const pipe = redis.pipeline();
+          for (let i = 0; i < poolItems.length; i += POOL_CHUNK_SIZE) {
+            const chunk = poolItems.slice(i, i + POOL_CHUNK_SIZE);
+            pipe.rpush('lucky:pool', ...chunk);
+          }
+          await pipe.exec();
+        } else {
+          for (let i = 0; i < poolItems.length; i += POOL_CHUNK_SIZE) {
+            const chunk = poolItems.slice(i, i + POOL_CHUNK_SIZE);
+            await redis.rpush('lucky:pool', ...chunk);
+          }
         }
 
         await Promise.all([
@@ -486,9 +496,10 @@ module.exports = async function handler(req, res) {
         const modeRaw = body.mode || await redis.get('config:pool_mode') || 'SHUFFLE';
         const mode = (String(modeRaw).toUpperCase() === 'SEQUENTIAL') ? 'SEQUENTIAL' : 'SHUFFLE';
 
+        const padSize = Math.max(3, String(poolMax).length);
         const poolItems = [];
         for (let i = 1; i <= poolMax; i++) {
-          poolItems.push(`NP-2026-${padZero(i, 3)}`);
+          poolItems.push(`NP-2026-${padZero(i, padSize)}`);
         }
 
         if (mode === 'SHUFFLE') {
@@ -498,9 +509,19 @@ module.exports = async function handler(req, res) {
           }
         }
 
-        for (let i = 0; i < poolItems.length; i += CHUNK_SIZE) {
-          const chunk = poolItems.slice(i, i + CHUNK_SIZE);
-          await redis.rpush('lucky:pool', ...chunk);
+        const POOL_CHUNK_SIZE = 250;
+        if (typeof redis.pipeline === 'function') {
+          const pipe = redis.pipeline();
+          for (let i = 0; i < poolItems.length; i += POOL_CHUNK_SIZE) {
+            const chunk = poolItems.slice(i, i + POOL_CHUNK_SIZE);
+            pipe.rpush('lucky:pool', ...chunk);
+          }
+          await pipe.exec();
+        } else {
+          for (let i = 0; i < poolItems.length; i += POOL_CHUNK_SIZE) {
+            const chunk = poolItems.slice(i, i + POOL_CHUNK_SIZE);
+            await redis.rpush('lucky:pool', ...chunk);
+          }
         }
 
         await Promise.all([
