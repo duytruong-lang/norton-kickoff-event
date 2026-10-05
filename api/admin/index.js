@@ -524,6 +524,36 @@ body::after {
   color: #FCA5A5;
 }
 
+.btn-secondary {
+  flex: 1;
+  min-width: 140px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--r-md);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  border: 1px solid var(--bronze-400);
+  background: rgba(197, 168, 128, 0.16);
+  color: var(--bronze-300);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+}
+.btn-secondary:hover {
+  background: rgba(197, 168, 128, 0.3);
+  border-color: var(--bronze-300);
+  color: #fff;
+  box-shadow: 0 0 14px var(--gold-glow);
+}
+.btn-secondary:active {
+  transform: scale(0.97);
+}
+
 /* ==========================================================================
    6. SEGMENTED NAVIGATION TABS
    ========================================================================== */
@@ -1155,10 +1185,10 @@ body::after {
   /* 5. Quick Actions Toolbar Mobile */
   .quick-action-bar {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
   }
-  .btn-action-pill {
+  .btn-action-pill, .btn-secondary {
     min-width: 0;
     height: 36px;
     padding: 0 4px;
@@ -1467,6 +1497,7 @@ body::after {
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       <span>Làm mới (3s)</span>
     </button>
+    <button type="button" class="btn btn-secondary" id="exportCsvBtn" title="Tải toàn bộ danh sách vé may mắn từ Redis ra file CSV">📥 Xuất File Quay Số (CSV)</button>
     <button type="button" class="btn-action-pill btn-reset-counter" id="btnQuickResetCounter" title="Đặt lại số đếm check-in về 0">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
       <span>Reset Đếm</span>
@@ -2113,6 +2144,84 @@ body::after {
 
   // Quick Action Buttons
   manualSyncBtn?.addEventListener('click', () => fetchConfig(true));
+
+  // Export CSV for Lucky Draw (Xuất File Quay Số)
+  const exportCsvBtn = document.getElementById('exportCsvBtn');
+  exportCsvBtn?.addEventListener('click', async () => {
+    const originalText = exportCsvBtn.innerHTML;
+    exportCsvBtn.disabled = true;
+    exportCsvBtn.innerHTML = '⏳ Đang tải CSV...';
+    showToast('Đang Xuất Dữ Liệu', 'Đang trích xuất toàn bộ danh sách vé từ Redis...', 'warning');
+
+    try {
+      const secret = getStoredSecret();
+      const res = await fetch('/api/admin/config?action=export-csv', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + secret,
+          'x-admin-secret': secret,
+        },
+      });
+
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          showToast('Xác Thực Thất Bại', 'ADMIN_SECRET chưa chính xác.', 'error');
+          openAuthModal();
+          throw new Error('Mã xác thực không hợp lệ');
+        }
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.message || \`Lỗi tải file (HTTP \${res.status})\`);
+      }
+
+      const blob = await res.blob();
+      const disposition = res.headers.get('content-disposition') || '';
+      let filename = 'The_SYNC_Show_Lucky_Draw_Tickets.csv';
+      const match = disposition.match(/filename="?([^"]+)"?/);
+      if (match && match[1]) {
+        filename = match[1];
+      }
+
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = downloadUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      playTone('success');
+      showToast('Xuất File Thành Công', \`Đã tải về danh sách vé: \${filename}\`, 'success');
+    } catch (err) {
+      if (window.location.protocol === 'file:' || err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        const mockData = MockEngine.get();
+        const BOM = '\\uFEFF';
+        const header = 'Thời Gian,Số Vé May Mắn,Họ Và Tên,Số Điện Thoại,CCCD (6 số cuối),Sàn Phân Phối,Email,Trạng Thái,Lead ID,Biên Lai (Receipt ID)';
+        const sampleRows = (mockData.database || []).map(d =>
+          \`25/09/2026 21:47:22,\${d.luckyNumber || '#088'},\${d.name || ''},\${d.phone || ''},\${(d.cccd || '').slice(-6)},\${d.agency || ''},info@gamudaland.vn,HỢP LỆ,lead_demo_088,\${d.receiptId || ''}\`
+        );
+        const csvContent = BOM + header + '\\r\\n' + sampleRows.join('\\r\\n');
+        const blob = new Blob([csvContent], { type: 'text/csv; charset=utf-8' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = downloadUrl;
+        a.download = 'The_SYNC_Show_Lucky_Draw_Tickets.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+        showToast('Xuất File Demo', 'Đã tải về file mẫu (chế độ Demo/Offline).', 'success');
+        return;
+      }
+      console.error('[Export CSV Error]:', err);
+      showToast('Lỗi Xuất File', err.message || 'Không thể xuất file CSV từ máy chủ.', 'error');
+    } finally {
+      exportCsvBtn.disabled = false;
+      exportCsvBtn.innerHTML = originalText;
+    }
+  });
 
   btnQuickResetCounter?.addEventListener('click', async () => {
     if (!window.confirm('⚠️ XÁC NHẬN:\\nĐặt lại số đếm check-in (stats:total) về 0?')) return;

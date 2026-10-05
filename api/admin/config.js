@@ -8,7 +8,7 @@
  */
 
 const { redis } = require('../../lib/redis');
-const { padZero } = require('../../lib/helpers');
+const { padZero, normalizePhoneVN, cleanCCCDLast6 } = require('../../lib/helpers');
 const { logAdminAction } = require('../../lib/audit');
 
 const DEFAULT_ADMIN_SECRET = 'norton_admin_secret_2026';
@@ -42,6 +42,188 @@ function verifyAdminAuth(req, body = {}) {
   return Boolean(providedSecret && providedSecret === secretKey);
 }
 
+/**
+ * Format phone string to preserve leading zero cleanly
+ */
+function formatPhone(phone) {
+  if (!phone) return '';
+  const norm = normalizePhoneVN(phone);
+  if (norm.isValid && norm.local) return norm.local;
+  let digits = String(phone).replace(/\D/g, '');
+  if (digits.length === 9) return '0' + digits;
+  if (digits.startsWith('84') && digits.length === 11) return '0' + digits.slice(2);
+  if (digits.startsWith('0')) return digits;
+  return digits ? '0' + digits : String(phone).trim();
+}
+
+/**
+ * Format timestamp into standard Vietnam DateTime string (DD/MM/YYYY HH:mm:ss)
+ */
+function formatTimestamp(val) {
+  if (!val) return '';
+  try {
+    const d = new Date(val);
+    if (!isNaN(d.getTime())) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const vnTime = new Date(d.getTime() + 7 * 3600 * 1000);
+      const year = vnTime.getUTCFullYear();
+      const month = pad(vnTime.getUTCMonth() + 1);
+      const day = pad(vnTime.getUTCDate());
+      const hours = pad(vnTime.getUTCHours());
+      const mins = pad(vnTime.getUTCMinutes());
+      const secs = pad(vnTime.getUTCSeconds());
+      return `${day}/${month}/${year} ${hours}:${mins}:${secs}`;
+    }
+  } catch (e) {}
+  return String(val);
+}
+
+/**
+ * Escape CSV field according to RFC 4180
+ */
+function escapeCsvCell(val) {
+  if (val === null || val === undefined) return '';
+  const str = String(val).replace(/[\r\n]+/g, ' ').trim();
+  if (str.includes(',') || str.includes('"')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+/**
+ * Handle CSV Export of all lucky draw tickets directly from Redis
+ */
+async function handleExportCsv(req, res, clientIp) {
+  try {
+    const allKeys = new Set();
+    try {
+      if (typeof redis.scan === 'function') {
+        let cursor = 0;
+        do {
+          const resScan = await redis.scan(cursor, { match: 'reg:cccd6:*', count: 250 });
+          cursor = Number(resScan[0]);
+          const batch = resScan[1] || [];
+          if (Array.isArray(batch)) {
+            batch.forEach(k => allKeys.add(k));
+          }
+        } while (cursor !== 0);
+      } else if (typeof redis.keys === 'function') {
+        const matched = await redis.keys('reg:cccd6:*');
+        if (Array.isArray(matched)) {
+          matched.forEach(k => allKeys.add(k));
+        }
+      }
+    } catch (scanErr) {
+      console.warn('[Admin Config:Export CSV Scan Warning]:', scanErr.message);
+    }
+
+    if (allKeys.size === 0 && redis.hashes) {
+      Object.keys(redis.hashes).forEach(k => {
+        if (k.startsWith('reg:cccd6:')) {
+          allKeys.add(k);
+        }
+      });
+    }
+
+    const keyList = Array.from(allKeys);
+    const entries = [];
+    const CHUNK_SIZE = 100;
+
+    for (let i = 0; i < keyList.length; i += CHUNK_SIZE) {
+      const chunk = keyList.slice(i, i + CHUNK_SIZE);
+      let batchData = [];
+      if (typeof redis.pipeline === 'function') {
+        try {
+          const p = redis.pipeline();
+          chunk.forEach(k => p.hgetall(k));
+          batchData = await p.exec();
+        } catch (e) {
+          batchData = await Promise.all(chunk.map(k => redis.hgetall(k).catch(() => null)));
+        }
+      } else {
+        batchData = await Promise.all(chunk.map(k => redis.hgetall(k).catch(() => null)));
+      }
+
+      for (let j = 0; j < batchData.length; j++) {
+        let item = batchData[j];
+        if (!item && redis.hashes && redis.hashes[chunk[j]]) {
+          item = redis.hashes[chunk[j]];
+        }
+        if (item && item.ticketNumber) {
+          entries.push(item);
+        }
+      }
+    }
+
+    if (entries.length === 0 && redis.hashes) {
+      Object.entries(redis.hashes).forEach(([k, item]) => {
+        if (k.startsWith('reg:cccd6:') && item && item.ticketNumber) {
+          entries.push(item);
+        }
+      });
+    }
+
+    // Sort entries by ticketNumber ascending or issuedAt
+    entries.sort((a, b) => {
+      const tA = String(a.ticketNumber || '');
+      const tB = String(b.ticketNumber || '');
+      const cmp = tA.localeCompare(tB, 'en', { numeric: true });
+      if (cmp !== 0) return cmp;
+      return String(a.issuedAt || '').localeCompare(String(b.issuedAt || ''));
+    });
+
+    // Generate CSV with UTF-8 BOM
+    const headerRow = 'Thời Gian,Số Vé May Mắn,Họ Và Tên,Số Điện Thoại,CCCD (6 số cuối),Sàn Phân Phối,Email,Trạng Thái,Lead ID,Biên Lai (Receipt ID)';
+    const rows = entries.map(entry => {
+      const formattedTime = formatTimestamp(entry.issuedAt || entry.checkedInAt || entry.createdAt || entry.timestamp);
+      const ticketNumber = entry.ticketNumber || '';
+      const fullName = entry.fullName || entry.name || '';
+      const phone = formatPhone(entry.phone);
+      const cccd = cleanCCCDLast6(entry.cccdLast6 || entry.cccd || '');
+      const agency = entry.agency || 'Khách mời tự do';
+      const email = entry.email || '';
+      const status = (entry.replayed === 'true' || entry.replayed === true) ? 'REPLAYED' : (entry.status || 'HỢP LỆ');
+      const leadId = entry.leadId || '';
+      const receiptId = entry.receiptId || '';
+
+      return [
+        formattedTime,
+        ticketNumber,
+        fullName,
+        phone,
+        cccd,
+        agency,
+        email,
+        status,
+        leadId,
+        receiptId,
+      ];
+    });
+
+    const BOM = '\uFEFF';
+    const csvLines = [headerRow, ...rows.map(r => r.map(escapeCsvCell).join(','))];
+    const csvContent = BOM + csvLines.join('\r\n');
+
+    await logAdminAction({
+      action: 'export_csv',
+      adminUser: 'admin',
+      ip: clientIp,
+      details: { count: entries.length, exportedAt: new Date().toISOString() },
+    }).catch(() => {});
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="The_SYNC_Show_Lucky_Draw_Tickets.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    console.error('[Admin Config:Export CSV Error]:', err.message);
+    return res.status(500).json({
+      success: false,
+      error: 'EXPORT_FAILED',
+      message: 'Lỗi khi xuất danh sách vé: ' + err.message,
+    });
+  }
+}
+
 module.exports = async function handler(req, res) {
   setCorsHeaders(res);
 
@@ -71,6 +253,15 @@ module.exports = async function handler(req, res) {
 
   const forwarded = req.headers['x-forwarded-for'];
   const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.headers['x-real-ip'] || req.socket?.remoteAddress || '127.0.0.1');
+
+  // Check for export-csv action on GET or POST
+  const isExportCsv =
+    (req.method === 'GET' && (req.query?.action === 'export-csv' || req.query?.action === 'export_csv')) ||
+    (req.method === 'POST' && (body.action === 'export-csv' || body.action === 'export_csv'));
+
+  if (isExportCsv) {
+    return await handleExportCsv(req, res, clientIp);
+  }
 
   // -------------------------------------------------------------
   // 1. GET: Real-time Stats & Config
@@ -374,7 +565,7 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({
         success: false,
         error: 'INVALID_ACTION',
-        message: `Action '${action}' không được hỗ trợ. Sử dụng 'gate', 'seed', 'config', hoặc 'reset'.`,
+        message: `Action '${action}' không được hỗ trợ. Sử dụng 'gate', 'seed', 'config', 'reset', hoặc 'export-csv'.`,
       });
     } catch (err) {
       console.error('[Admin Config:POST Error]:', err.message);

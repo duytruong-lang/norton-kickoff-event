@@ -890,12 +890,10 @@ input, select {
 .lucky-number {
   font-family: var(--serif);
   font-weight: 700;
-  font-size: 110px;
+  font-size: clamp(68px, 18vw, 100px);
   line-height: 1;
   letter-spacing: -0.02em;
-  text-align: center;
-  margin: 4px 0 2px;
-  background: linear-gradient(180deg, #FFFFFF 0%, #F5EAD3 45%, #D6B27C 85%, #B38848 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5EAD3 45%, #D6B27C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.45));
@@ -903,7 +901,7 @@ input, select {
 
 @media (min-width: 600px) {
   .lucky-number {
-    font-size: 130px;
+    font-size: 115px;
   }
 }
 
@@ -2131,6 +2129,10 @@ input, select {
       // Maintain default closed as instructed
       setGateStatus(false);
     }
+
+    if (!isGateOpen && typeof window !== 'undefined') {
+      setTimeout(probeGateStatus, 20000);
+    }
   }
 
   // 2. Agency Dropdown Logic
@@ -2594,7 +2596,7 @@ input, select {
     ctx.shadowColor = 'rgba(0,0,0,0.6)';
     ctx.shadowBlur = 24;
     ctx.shadowOffsetY = 8;
-    ctx.fillText(num, 450, 480);
+    ctx.fillText(num, 450, 480, 720);
     ctx.shadowColor = 'transparent';
 
     // 9. Perforation Line & Notches Simulation

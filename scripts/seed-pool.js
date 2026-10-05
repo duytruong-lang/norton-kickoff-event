@@ -6,13 +6,13 @@
  * 
  * Usage:
  *   node scripts/seed-pool.js
- *   node scripts/seed-pool.js --max=1000 --mode=SHUFFLE
+ *   node scripts/seed-pool.js --max=4500 --mode=SHUFFLE
  *   node scripts/seed-pool.js --max=500 --mode=SEQUENTIAL
  * 
  * Specifications:
- *   - Default: --max=1000 --mode=SHUFFLE
+ *   - Default: --max=4500 --mode=SHUFFLE
  *   - Atomic RPUSH in chunks of 100 to prevent packet overflow
- *   - Enforce config:pool_max = 1000
+ *   - Enforce config:pool_max = 4500
  *   - Enforce config:gate = 'closed' (Theo đúng chỉ đạo của Sếp Di)
  */
 
@@ -26,7 +26,7 @@ const { padZero } = require('../lib/helpers');
 // Parse CLI flags
 function parseArgs() {
   const args = process.argv.slice(2);
-  let max = 1000;
+  let max = 4500;
   let mode = 'SHUFFLE';
 
   for (const arg of args) {
@@ -60,7 +60,7 @@ async function seedPool() {
   console.log('\n============================================================');
   console.log('🌲 1990 AGENCY — NORTON PARK SALES KICK-OFF SEED CLI');
   console.log('============================================================');
-  console.log(`🎯 Mục tiêu: Seed kho vé may mắn (Lucky Draw Pool)`);
+  console.log(`🎯 Mục tiêu: Seed kho vé may mắn (Lucky Draw Pool: ${max} vé)`);
   console.log(`📦 Tổng số lượng vé (--max): ${max}`);
   console.log(`🎲 Chế độ cấp số (--mode):   ${mode}`);
   console.log(`🚪 Trạng thái cổng (config:gate): CLOSED (Chỉ đạo Sếp Di)`);
@@ -70,11 +70,12 @@ async function seedPool() {
   console.log('------------------------------------------------------------\n');
 
   try {
-    // 1. Generate formatted ticket array [NP-2026-001 ... NP-2026-1000]
-    console.log(`[1/4] 🔨 Đang tạo ${max} mã vé định dạng chuẩn NP-2026-xxx...`);
+    // 1. Generate formatted ticket array
+    const padSize = Math.max(3, String(max).length);
+    console.log(`[1/4] 🔨 Đang tạo ${max} mã vé định dạng chuẩn NP-2026-... (pad: ${padSize} chữ số)...`);
     let tickets = [];
     for (let i = 1; i <= max; i++) {
-      tickets.push(`NP-2026-${padZero(i, 3)}`);
+      tickets.push(`NP-2026-${padZero(i, padSize)}`);
     }
 
     // 2. Shuffle if requested

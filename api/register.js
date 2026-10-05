@@ -243,7 +243,7 @@ module.exports = async function handler(req, res) {
     } else {
       // Pool is exhausted -> Assign Overflow ticket atomically
       const overflowCount = await redis.incr('stats:overflow_counter');
-      ticketNumber = 'NP-OVERFLOW-' + padZero(overflowCount, 3);
+      ticketNumber = 'NP-OVERFLOW-' + padZero(overflowCount, 4);
     }
 
     // 2.5 Generate unique lead & receipt identifiers
@@ -272,30 +272,60 @@ module.exports = async function handler(req, res) {
     };
 
     // 2.6 Persistence: Redis Hash, phone index, counter, receipt, audit stream
-    await Promise.all([
-      redis.hset(cccdKey, registrationRecord),
-      redis.set('idx:phone:' + phoneInfo.local, clean6Id),
-      redis.incr('stats:total'),
-      writeReceipt(leadId, {
-        ...registrationRecord,
-        replayed: false,
-        clientIp,
-        userAgent,
-      }),
-      logRequest({
-        leadId,
-        receiptId,
-        ticketNumber,
-        cccdLast6: clean6Id,
-        phone: phoneInfo.local,
-        ip: clientIp,
-        geo: { city, country, region },
-        userAgent,
-        action: 'register',
-        status: 'SUCCESS',
-        responseTimeMs: Date.now() - startTime,
-      }),
-    ]);
+    if (typeof redis.pipeline === 'function') {
+      const pipe = redis.pipeline();
+      pipe.hset(cccdKey, registrationRecord);
+      pipe.set('idx:phone:' + phoneInfo.local, clean6Id);
+      pipe.incr('stats:total');
+      await pipe.exec();
+      // writeReceipt and logRequest can run in parallel
+      await Promise.all([
+        writeReceipt(leadId, {
+          ...registrationRecord,
+          replayed: false,
+          clientIp,
+          userAgent,
+        }),
+        logRequest({
+          leadId,
+          receiptId,
+          ticketNumber,
+          cccdLast6: clean6Id,
+          phone: phoneInfo.local,
+          ip: clientIp,
+          geo: { city, country, region },
+          userAgent,
+          action: 'register',
+          status: 'SUCCESS',
+          responseTimeMs: Date.now() - startTime,
+        }),
+      ]);
+    } else {
+      await Promise.all([
+        redis.hset(cccdKey, registrationRecord),
+        redis.set('idx:phone:' + phoneInfo.local, clean6Id),
+        redis.incr('stats:total'),
+        writeReceipt(leadId, {
+          ...registrationRecord,
+          replayed: false,
+          clientIp,
+          userAgent,
+        }),
+        logRequest({
+          leadId,
+          receiptId,
+          ticketNumber,
+          cccdLast6: clean6Id,
+          phone: phoneInfo.local,
+          ip: clientIp,
+          geo: { city, country, region },
+          userAgent,
+          action: 'register',
+          status: 'SUCCESS',
+          responseTimeMs: Date.now() - startTime,
+        }),
+      ]);
+    }
 
     const responseTimeMs = Date.now() - startTime;
 
@@ -315,8 +345,8 @@ module.exports = async function handler(req, res) {
       responseTimeMs,
     };
 
-    // 2.8 Sync CAPI + Sheets with 2s timeout BEFORE res.json() (Vercel Serverless Lifecycle Rule)
-    const syncTimeout = new Promise((resolve) => setTimeout(resolve, 2000));
+    // 2.8 Sync CAPI + Sheets with 800ms timeout BEFORE res.json() (Vercel Serverless Lifecycle Rule)
+    const syncTimeout = new Promise((resolve) => setTimeout(resolve, 800));
     await Promise.race([
       Promise.allSettled([
         sendMetaLeadEvent({
