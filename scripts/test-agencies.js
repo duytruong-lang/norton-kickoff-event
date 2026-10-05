@@ -80,20 +80,20 @@ try {
     options.push({ value, isDisabled, raw: m[0] });
   }
 
-  assert(options.length >= 51, `Expected at least 51 options (placeholder + 49 agencies + Khác), found ${options.length}`);
+  assert.strictEqual(options.length, 50, `Expected exactly 50 options (1 placeholder + 49 agencies), found ${options.length}`);
 
   // Assert first option is empty disabled placeholder
   const firstOption = options[0];
   assert.strictEqual(firstOption.value, '', 'First option must have an empty value ("")');
   assert(firstOption.isDisabled, 'First option must have the "disabled" attribute');
 
-  // Assert last option is "Khác"
+  // Assert last option is AGENCIES[48] (no value="Khác")
   const lastOption = options[options.length - 1];
-  assert.strictEqual(lastOption.value, 'Khác', 'Last option must have value="Khác"');
+  assert.strictEqual(lastOption.value, AGENCIES[48], `Last option must have value="${AGENCIES[48]}"`);
 
-  // Decode &amp; -> &, drop empty placeholder and 'Khác' option
+  // Decode &amp; -> &, drop empty placeholder
   const decodedAgencies = options
-    .slice(1, -1)
+    .slice(1)
     .map(opt => opt.value.replace(/&amp;/g, '&'));
 
   assert.deepStrictEqual(
@@ -102,7 +102,7 @@ try {
     'Dropdown options do not match AGENCIES array in order and content'
   );
 
-  pass('Check B: index.html dropdown', '51 options total, placeholder & Khác correctly placed, 49 agencies match exact order');
+  pass('Check B: index.html dropdown', '50 options total, placeholder + 49 agencies match exact order');
 } catch (err) {
   fail('Check B: index.html dropdown', err);
 }
@@ -120,7 +120,7 @@ try {
     { input: 't&a', expected: 'T&A' },
     { input: 'Việt Nam Land', expected: 'VIỆT NAM LAND' },
     { input: 'viet nam property', expected: 'VIET NAM PROPERTY' },
-    { input: 'Công ty ABC', expected: 'Công ty ABC' },
+    { input: 'Công ty ABC', expected: '' },
     { input: '', expected: '' },
   ];
 
@@ -129,12 +129,12 @@ try {
     assert.strictEqual(actual, expected, `normalizeAgency(${JSON.stringify(input)}) should be ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
   }
 
-  // 200-char string truncation to length 80
+  // Unrecognized string returns empty string
   const longInput = 'A'.repeat(200);
   const normalizedLong = normalizeAgency(longInput);
-  assert.strictEqual(normalizedLong.length, 80, `Expected 200-char input to be truncated to length 80, got ${normalizedLong.length}`);
+  assert.strictEqual(normalizedLong, '', 'Unrecognized string should return empty string');
 
-  pass('Check C: normalizeAgency test cases', 'All 8 specific test cases + 80-char truncation passed');
+  pass('Check C: normalizeAgency test cases', 'All test cases passed, unrecognized agency returns empty string');
 } catch (err) {
   fail('Check C: normalizeAgency test cases', err);
 }
@@ -209,6 +209,8 @@ try {
     'danh sách xác nhận',
     'trung tâm hội nghị',
     'Rạp Xiếc Phú Thọ',
+    'Đăng ký thêm vé',
+    'Đại lý khác',
   ];
 
   const hits = [];

@@ -113,6 +113,14 @@ module.exports = async function handler(req, res) {
       });
     }
 
+    if (!agency) {
+      return res.status(400).json({
+        success: false,
+        error: 'INVALID_AGENCY',
+        message: 'Sàn phân phối không hợp lệ. Vui lòng chọn sàn trong danh sách chính thức.',
+      });
+    }
+
     if (!clean6Id || clean6Id.length !== 6) {
       return res.status(400).json({
         success: false,

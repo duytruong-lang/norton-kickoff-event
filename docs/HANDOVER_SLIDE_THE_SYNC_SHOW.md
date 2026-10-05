@@ -98,8 +98,6 @@ Danh sách dưới đây là các sàn tham gia ngày kick-off, đúng thứ t�
 | 16 | ERA | 33 | PITALAND | | |
 | 17 | GEMS LAND | 34 | PQR | | |
 
-+ Mục "Đại lý khác..." (nhập tay, cần đối soát thẻ nhân viên)
-
 ---
 
 <!-- SLIDE 4: ĐIỀU KHIỂN CỔNG TIẾP NHẬN - HOT BUTTON (MỤC TIÊU 2) -->

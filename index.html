@@ -1652,12 +1652,8 @@ input, select {
               <option value="UNITY LAND">UNITY LAND</option>
               <option value="VIET NAM PROPERTY">VIET NAM PROPERTY</option>
               <option value="VIỆT NAM LAND">VIỆT NAM LAND</option>
-              <option value="Khác">Đại lý khác...</option>
             </select>
             <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-          <div id="agencyOtherWrap" style="display:none; margin-top:8px;">
-            <input id="agencyOther" name="agencyOther" type="text" autocomplete="organization" placeholder="Nhập tên Đại lý / Sàn phân phối của bạn...">
           </div>
           <div class="form-error" data-for="agency">Vui lòng chọn hoặc nhập tên Đại lý / Sàn phân phối.</div>
         </div>
@@ -1755,7 +1751,6 @@ input, select {
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>Tải vé (PNG)</span>
       </button>
-      <button type="button" class="btn-ticket-reset" id="resetTicketBtn">Đăng ký thêm vé</button>
     </div>
 
     <p class="ticket-hint">Chụp màn hình hoặc tải ảnh lá vé để xuất trình khi quay số may mắn trong ngày sự kiện 08.10.2026 tại Rạp Xiếc Và Biểu Diễn Đa Năng Phú Thọ.</p>
@@ -1925,8 +1920,6 @@ input, select {
   const resetTicketBtn = document.getElementById('resetTicketBtn');
   const crestReset = document.getElementById('crestReset');
   const agencySelect = document.getElementById('agency');
-  const agencyOtherWrap = document.getElementById('agencyOtherWrap');
-  const agencyOtherInput = document.getElementById('agencyOther');
   const legalModal = document.getElementById('legalModal');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
   const modalOkBtn = document.getElementById('modalOkBtn');
@@ -2111,54 +2104,23 @@ input, select {
   // 2. Agency Dropdown Logic
   function getSelectedAgency() {
     if (!agencySelect) return '';
-    const val = agencySelect.value.trim();
-    if (val === 'Khác') {
-      return agencyOtherInput ? agencyOtherInput.value.trim() : '';
-    }
-    return val;
+    return agencySelect.value.trim();
   }
 
   agencySelect?.addEventListener('change', function() {
-    if (this.value === 'Khác') {
-      if (agencyOtherWrap) agencyOtherWrap.style.display = 'block';
-      if (agencyOtherInput) {
-        agencyOtherInput.focus();
-        if (!agencyOtherInput.value.trim()) agencyOtherInput.classList.add('error');
-      }
-    } else {
-      if (agencyOtherWrap) agencyOtherWrap.style.display = 'none';
-      if (agencyOtherInput) {
-        agencyOtherInput.value = '';
-        agencyOtherInput.classList.remove('error');
-      }
-    }
     showError('agency', false);
-  });
-
-  agencyOtherInput?.addEventListener('input', function() {
-    if (this.value.trim()) {
-      this.classList.remove('error');
-      showError('agency', false);
-    }
   });
 
   // Pre-fill Agency if URL param (?agency=... or ?ref=...)
   const urlParams = new URLSearchParams(window.location.search);
   const urlAgency = urlParams.get('agency') || urlParams.get('f1') || urlParams.get('ref') || '';
   if (urlAgency && agencySelect) {
-    let matched = false;
     const cleanParam = urlAgency.trim().toLowerCase();
     for (let i = 0; i < agencySelect.options.length; i++) {
       if (agencySelect.options[i].value && agencySelect.options[i].value.toLowerCase() === cleanParam) {
         agencySelect.selectedIndex = i;
-        matched = true;
         break;
       }
-    }
-    if (!matched) {
-      agencySelect.value = 'Khác';
-      if (agencyOtherWrap) agencyOtherWrap.style.display = 'block';
-      if (agencyOtherInput) agencyOtherInput.value = urlAgency.trim();
     }
   }
 
@@ -2212,13 +2174,9 @@ input, select {
     // 4. Agency validation
     if (!agency) {
       showError('agency', true);
-      if (agencySelect?.value === 'Khác' && agencyOtherInput) {
-        agencyOtherInput.classList.add('error');
-      }
       isValid = false;
     } else {
       showError('agency', false);
-      if (agencyOtherInput) agencyOtherInput.classList.remove('error');
     }
 
     // 5. Email validation (if provided)
