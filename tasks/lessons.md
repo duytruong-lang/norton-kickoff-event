@@ -76,3 +76,10 @@
 - **Mistake**: Agency dropdown was free-form; backend accepted any string, fragmenting per-agency stats. User-pasted list had stray quotes/trailing spaces.
 - **Root Cause**: No canonical list or server-side normalization.
 - **Rule**: Keep lib/agencies.js as source of truth with normalizeAgency(); run scripts/test-agencies.js (syncs index.html dropdown, A-Z order, no F1) before shipping. Clean pasted lists first.
+
+## Pattern: Upstash Redis 64-bit cursor integer overflow in JavaScript Number()
+- **Date**: 2026-10-08
+- **Mistake**: `cursor = Number(resScan[0])` inside `redis.scan` loops caused 64-bit Upstash cursor strings (e.g. `10845708177697531349`) to exceed `Number.MAX_SAFE_INTEGER`, corrupting the cursor on subsequent HTTP requests and prematurely terminating scan loops at the first batch (250 keys instead of 1,420).
+- **Root Cause**: Coercing string cursors from Redis REST APIs to JavaScript primitive numbers.
+- **Rule**: In Upstash Redis REST SDK, ALWAYS keep scan cursors as Strings (`String(resScan[0] ?? '0')`) and terminate on string `'0'`. Never use `Number(cursor)`.
+
