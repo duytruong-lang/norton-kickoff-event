@@ -98,15 +98,15 @@ async function handleExportCsv(req, res, clientIp) {
     const allKeys = new Set();
     try {
       if (typeof redis.scan === 'function') {
-        let cursor = 0;
+        let cursor = '0';
         do {
           const resScan = await redis.scan(cursor, { match: 'reg:cccd6:*', count: 250 });
-          cursor = Number(resScan[0]);
+          cursor = String(resScan[0] ?? '0');
           const batch = resScan[1] || [];
           if (Array.isArray(batch)) {
             batch.forEach(k => allKeys.add(k));
           }
-        } while (cursor !== 0);
+        } while (cursor !== '0');
       } else if (typeof redis.keys === 'function') {
         const matched = await redis.keys('reg:cccd6:*');
         if (Array.isArray(matched)) {
@@ -462,14 +462,14 @@ module.exports = async function handler(req, res) {
                 matched.forEach(k => allKeysToDelete.add(k));
               }
             } else if (typeof redis.scan === 'function') {
-              let cursor = 0;
+              let cursor = '0';
               do {
                 const [nextCursor, batch] = await redis.scan(cursor, { match: pat, count: 200 });
-                cursor = Number(nextCursor);
+                cursor = String(nextCursor ?? '0');
                 if (batch && batch.length > 0) {
                   batch.forEach(k => allKeysToDelete.add(k));
                 }
-              } while (cursor !== 0);
+              } while (cursor !== '0');
             }
           } catch (scanErr) {
             console.warn(`[Reset Scan Warning for ${pat}]:`, scanErr.message);

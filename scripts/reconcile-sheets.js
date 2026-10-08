@@ -27,16 +27,16 @@ async function reconcile() {
 
   // 1. Scan all registration keys
   const keys = [];
-  let cursor = 0;
+  let cursor = '0';
   try {
     if (typeof redis.scan === 'function') {
       do {
         const [nextCursor, batch] = await redis.scan(cursor, { match: 'reg:cccd6:*', count: 200 });
-        cursor = Number(nextCursor);
+        cursor = String(nextCursor ?? '0');
         if (Array.isArray(batch)) {
           keys.push(...batch);
         }
-      } while (cursor !== 0);
+      } while (cursor !== '0');
     } else if (typeof redis.keys === 'function') {
       const batch = await redis.keys('reg:cccd6:*');
       if (Array.isArray(batch)) keys.push(...batch);
